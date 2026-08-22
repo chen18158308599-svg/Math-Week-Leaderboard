@@ -97,6 +97,19 @@ export interface Database {
         Args: { new_nickname: string };
         Returns: void;
       };
+      claim_token: {
+        Args: { p_token: string };
+        Returns: { game_id: string; game_name: string; points_awarded: number }[];
+      };
+      submit_puzzle_answer: {
+        Args: { p_slug: string; p_answer: string };
+        Returns: {
+          correct: boolean;
+          game_id: string;
+          game_name: string;
+          points_awarded: number;
+        }[];
+      };
     };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;

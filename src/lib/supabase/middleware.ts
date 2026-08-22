@@ -1,7 +1,12 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PUBLIC_PATHS = ["/", "/login", "/auth/callback", "/kiosk", "/station", "/puzzle"];
+// /claim and /puzzle require login (scan → sign in → claim/answer), so they are
+// deliberately NOT public — only the kiosk/station screens and auth entry points are.
+const PUBLIC_PATHS = ["/", "/login", "/auth/callback", "/kiosk", "/station"];
+
+// Paths where a signed-in-but-nicknameless user gets bounced to onboarding first.
+const NEEDS_NICKNAME_PREFIXES = ["/claim", "/puzzle"];
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -55,7 +60,8 @@ export async function updateSession(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    if (profile && !profile.nickname && pathname.startsWith("/claim")) {
+    const needsNickname = NEEDS_NICKNAME_PREFIXES.some((p) => pathname.startsWith(p));
+    if (profile && !profile.nickname && needsNickname) {
       const redirectUrl = new URL("/onboarding/nickname", request.url);
       redirectUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(redirectUrl);
