@@ -31,5 +31,6 @@ export async function setNicknameAction(
     return { error: message };
   }
 
-  redirect(next || "/");
+  const destination = next || "/";
+  redirect(`${destination}${destination.includes("?") ? "&" : "?"}saved=1`);
 }

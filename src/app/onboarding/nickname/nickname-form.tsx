@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useSearchParams } from "next/navigation";
 import { setNicknameAction, type NicknameFormState } from "./actions";
 
 export function NicknameForm({
@@ -10,6 +11,7 @@ export function NicknameForm({
   defaultValue: string;
   next: string;
 }) {
+  const justSaved = useSearchParams().get("saved") === "1";
   const action = setNicknameAction.bind(null, next);
   const [state, formAction, pending] = useActionState<NicknameFormState, FormData>(
     action,
@@ -34,6 +36,12 @@ export function NicknameForm({
       <p className="text-xs text-neutral-500">
         3-20 characters, no email or real name.
       </p>
+
+      {justSaved && !state.error && (
+        <p className="rounded-lg border border-green-800/40 bg-green-950/40 px-3 py-2 text-sm text-green-200">
+          Saved.
+        </p>
+      )}
 
       {state.error && (
         <p className="rounded-lg border border-red-800/40 bg-red-950/40 px-3 py-2 text-sm text-red-200">
