@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { useLeaderboard, type LeaderboardMode } from "@/lib/leaderboard/use-leaderboard";
+import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
 
 // The library's one leaderboard screen. Public, no login, no interaction — this is a
 // quiet monitor at the entrance, not a hype screen. Only real submissions ever change
 // what's on it (see useLeaderboard: realtime + a polling fallback, nothing simulated).
+//
+// Individual ranking only for now (group mode is on hold per a live decision) — the
+// group leaderboard view/data plumbing stays in the schema and useLeaderboard so
+// flipping this back on later is a one-line change, not a rebuild.
 export function KioskView() {
-  const [mode, setMode] = useState<LeaderboardMode>("individual");
-  const { rows, loading } = useLeaderboard(mode, 8);
+  const { rows, loading } = useLeaderboard("individual", 8);
 
   return (
     <main
@@ -20,28 +22,9 @@ export function KioskView() {
       }}
     >
       {/* header */}
-      <div className="flex flex-row items-start justify-between">
-        <div className="flex flex-col gap-1.5">
-          <div className="font-display text-4xl font-bold tracking-wide">MATH WEEK</div>
-          <div className="text-sm tracking-[0.18em] text-[#9aa3b2]">LEADERBOARD</div>
-        </div>
-
-        <div className="flex flex-row gap-1 rounded-full border border-[#2e3542] bg-[#1c212b] p-1">
-          {(["individual", "group"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => setMode(m)}
-              className={
-                "rounded-full px-6 py-2.5 text-sm font-medium capitalize transition " +
-                (mode === m
-                  ? "bg-[#d9a441] text-[#1c1409] font-semibold"
-                  : "text-[#9aa3b2]")
-              }
-            >
-              {m}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-col gap-1.5">
+        <div className="font-display text-4xl font-bold tracking-wide">MATH WEEK</div>
+        <div className="text-sm tracking-[0.18em] text-[#9aa3b2]">LEADERBOARD</div>
       </div>
 
       {/* body */}
