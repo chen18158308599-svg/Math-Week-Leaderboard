@@ -9,7 +9,7 @@ const CLAIM_TOKEN_TTL_SECONDS = 25;
 // POST /api/games/report-win  { game_id: string }
 //
 // Two callers, two trust levels:
-//  - A digital station's win bridge (see /station/[stationId]) — anonymous, and only
+//  - The Digital-Based subpage's win bridge (see /games) — anonymous, and only
 //    allowed to report a win for a `digital` game. This is deliberately open (per the
 //    partner spec, the embedded game itself never handles auth/tokens) but scoped
 //    tightly: it can only mint a token for a game that is actually digital and active,

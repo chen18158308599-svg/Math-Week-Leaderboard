@@ -15,8 +15,8 @@ const ibmPlexSans = IBM_Plex_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Math Week Leaderboard",
-  description: "Scorekeeping & leaderboard for Math Week",
+  title: "Math Week",
+  description: "Math Week @ XMUM Library — event hub, games, and leaderboard",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

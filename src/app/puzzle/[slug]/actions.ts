@@ -5,7 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 export type PuzzleAnswerResult =
   | { status: "idle" }
   | { status: "correct"; gameName: string; pointsAwarded: number }
-  | { status: "incorrect" }
+  | { status: "incorrect"; attemptsLeft: number }
+  | { status: "locked" }
   | { status: "error"; message: string };
 
 const ERROR_MESSAGES: Record<string, string> = {
@@ -15,6 +16,8 @@ const ERROR_MESSAGES: Record<string, string> = {
 
 type PuzzleRpcRow = {
   correct: boolean;
+  locked: boolean;
+  attempts_left: number;
   game_id: string;
   game_name: string;
   points_awarded: number;
@@ -49,7 +52,10 @@ export async function submitPuzzleAnswerAction(
   }
 
   if (!row.correct) {
-    return { status: "incorrect" };
+    if (row.locked) {
+      return { status: "locked" };
+    }
+    return { status: "incorrect", attemptsLeft: row.attempts_left };
   }
 
   return {

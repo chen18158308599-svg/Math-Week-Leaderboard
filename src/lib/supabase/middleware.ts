@@ -2,8 +2,22 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // /claim and /puzzle require login (scan → sign in → claim/answer), so they are
-// deliberately NOT public — only the kiosk/station screens and auth entry points are.
-const PUBLIC_PATHS = ["/", "/login", "/auth/callback", "/kiosk", "/station"];
+// deliberately NOT public — everything the main-site touchscreen itself needs
+// (the hub and all four subpages) plus the read-only game/claim-status APIs those
+// pages fetch from client-side are. /kiosk stays public too — it 302s to /leaderboard,
+// and that redirect has to survive an anonymous visit.
+const PUBLIC_PATHS = [
+  "/",
+  "/login",
+  "/auth/callback",
+  "/kiosk",
+  "/leaderboard",
+  "/games",
+  "/directory",
+  "/stock-market",
+  "/api/games",
+  "/api/claim",
+];
 
 // Paths where a signed-in-but-nicknameless user gets bounced to onboarding first.
 const NEEDS_NICKNAME_PREFIXES = ["/claim", "/puzzle"];

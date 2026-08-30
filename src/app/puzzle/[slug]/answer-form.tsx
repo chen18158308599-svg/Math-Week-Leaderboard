@@ -29,6 +29,17 @@ export function AnswerForm({ slug, gameName }: { slug: string; gameName: string 
     );
   }
 
+  if (result.status === "locked") {
+    return (
+      <div className="flex flex-col items-center gap-2 text-center">
+        <div className="font-display text-2xl font-bold text-red-400">Out of attempts</div>
+        <p className="text-neutral-400">
+          You&apos;ve used all 3 tries on this puzzle. Ask staff for help.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={submit} className="flex w-full flex-col gap-3">
       <label htmlFor="answer" className="text-xs font-medium text-neutral-400">
@@ -45,7 +56,10 @@ export function AnswerForm({ slug, gameName }: { slug: string; gameName: string 
 
       {result.status === "incorrect" && (
         <p className="rounded-lg border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm text-neutral-300">
-          Not quite — try again.
+          Not quite — try again.{" "}
+          {result.attemptsLeft > 0
+            ? `${result.attemptsLeft} attempt${result.attemptsLeft === 1 ? "" : "s"} left.`
+            : ""}
         </p>
       )}
       {result.status === "error" && (

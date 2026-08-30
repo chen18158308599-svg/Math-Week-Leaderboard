@@ -40,7 +40,7 @@ export function GameForm({
         <input name="embed_url" defaultValue={game?.embed_url ?? ""} className={input} />
       </Field>
 
-      <Field label="STATION — digital games only">
+      <Field label="STATION — legacy, safe to leave as none">
         <select name="station_id" defaultValue={game?.station_id ?? ""} className={input}>
           <option value="">— none —</option>
           {stations.map((s) => (
@@ -49,6 +49,11 @@ export function GameForm({
             </option>
           ))}
         </select>
+        <p className="text-xs text-neutral-400">
+          There&apos;s exactly one physical touchscreen for the whole event (/games), so
+          this no longer does anything — kept only in case a future event brings back
+          multiple screens.
+        </p>
       </Field>
 
       <div className="flex flex-row gap-4">

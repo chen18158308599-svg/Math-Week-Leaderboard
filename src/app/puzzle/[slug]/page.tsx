@@ -41,8 +41,10 @@ export default async function PuzzlePage({
       <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
       <div className="w-full max-w-sm text-center">
         <p className="text-xs text-neutral-500">{game.name}</p>
+        {/* Deliberately short — the full question/context lives on the printed card,
+            never here. See website_prompt.md's "Questions Module Changes". */}
         <p className="font-display mt-1 text-xl font-semibold">
-          {puzzle.prompt ?? "Solve the puzzle on the card."}
+          {puzzle.prompt ?? "Enter the answer from the card."}
         </p>
         <div className="mt-6">
           <AnswerForm slug={slug} gameName={game.name} />

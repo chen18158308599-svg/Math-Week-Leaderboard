@@ -6,6 +6,7 @@
 export type UserRole = "student" | "booth_staff" | "admin";
 export type GameType = "digital" | "physical" | "card";
 export type SubmissionSource = "claim_token" | "qr_checkin" | "card_answer";
+export type DailyFeatureKind = "poster" | "video";
 
 export interface Profile {
   id: string;
@@ -66,6 +67,16 @@ export interface Submission {
   created_at: string;
 }
 
+export interface DailyFeature {
+  id: string;
+  date: string;
+  kind: DailyFeatureKind;
+  title: string;
+  media_url: string;
+  link_href: string | null;
+  created_at: string;
+}
+
 export interface LeaderboardIndividualRow {
   user_id: string;
   nickname: string;
@@ -87,6 +98,7 @@ export interface Database {
       card_puzzles: { Row: CardPuzzle; Insert: Partial<CardPuzzle>; Update: Partial<CardPuzzle>; Relationships: [] };
       claim_tokens: { Row: ClaimToken; Insert: Partial<ClaimToken>; Update: Partial<ClaimToken>; Relationships: [] };
       submissions: { Row: Submission; Insert: Partial<Submission>; Update: Partial<Submission>; Relationships: [] };
+      daily_features: { Row: DailyFeature; Insert: Partial<DailyFeature>; Update: Partial<DailyFeature>; Relationships: [] };
     };
     Views: {
       leaderboard_individual: { Row: LeaderboardIndividualRow; Relationships: [] };
@@ -105,6 +117,8 @@ export interface Database {
         Args: { p_slug: string; p_answer: string };
         Returns: {
           correct: boolean;
+          locked: boolean;
+          attempts_left: number;
           game_id: string;
           game_name: string;
           points_awarded: number;

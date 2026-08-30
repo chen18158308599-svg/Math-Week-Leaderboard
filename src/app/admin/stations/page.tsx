@@ -16,8 +16,8 @@ export default async function StationsPage() {
   return (
     <div>
       <PageHeader
-        title="Stations"
-        subtitle="Unsupervised digital-game computers around the library."
+        title="Stations (legacy)"
+        subtitle="v3: there's exactly one physical touchscreen for the whole event now (/games), so this no longer affects anything live — kept only in case a future event brings back multiple screens."
         action={
           <Link href="/admin/stations/new" className={primaryButton}>
             + Add Station

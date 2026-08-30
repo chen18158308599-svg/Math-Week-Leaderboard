@@ -1,10 +1,8 @@
-import { KioskView } from "./kiosk-view";
+import { redirect } from "next/navigation";
 
-// Always live-rendered — a static build-time snapshot of the leaderboard would be
-// wrong the moment someone scores, and this page also needs real Supabase env vars
-// at request time rather than baked into a prerendered build artifact.
-export const dynamic = "force-dynamic";
-
+// v3: the leaderboard is now one of four subpages of the main site, not its own
+// top-level destination — /kiosk stays as a redirect so old bookmarks/QR stickers
+// still land somewhere sensible instead of 404ing.
 export default function KioskPage() {
-  return <KioskView />;
+  redirect("/leaderboard");
 }

@@ -38,13 +38,19 @@ export function PuzzleForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className={label}>PROMPT — shown on the answer page</span>
+        <span className={label}>
+          SHORT PROMPT — only the interrogative sentence (e.g. &quot;Enter the age.&quot;)
+        </span>
         <textarea
           name="prompt"
           defaultValue={puzzle?.prompt ?? ""}
-          rows={3}
+          rows={2}
           className={input}
         />
+        <p className="text-xs text-neutral-500">
+          The full question/context is printed on the physical card only — don&apos;t put it
+          here. Students get 3 attempts before this puzzle locks for them.
+        </p>
       </div>
 
       <div className="flex flex-col gap-1.5">

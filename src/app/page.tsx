@@ -1,60 +1,33 @@
-import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { todayInEventTimezone } from "@/lib/event-date";
+import type { DailyFeature, Game } from "@/lib/supabase/types";
+import { MainHub } from "./main-hub";
 
-// A real student almost never lands here on purpose — the actual entry points are a
-// QR code (/claim/:token, /puzzle/:slug) or the library kiosk (/kiosk). This page
-// exists for the rare cases they do (bookmarked it, a stray link, session hiccup), so
-// it needs to at least reflect whether they're signed in rather than always showing
-// "Sign in" regardless of session state.
+// The Main Page (v3) — the default/idle view for the library touchscreen. Replaces
+// the old placeholder home; see new_instructions/website_prompt.md for the full spec
+// and math_week_website_plc.md for the wireframe this follows. Always live-rendered:
+// which digital game is "today's" changes by date, and this needs real Supabase env
+// vars at request time rather than a prerendered build artifact.
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const today = todayInEventTimezone();
 
-  let nickname: string | null = null;
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("nickname")
-      .eq("id", user.id)
+  const [{ data: digitalGame }, { data: feature }] = await Promise.all([
+    supabase
+      .from("games")
+      .select("id, name")
+      .eq("type", "digital")
+      .eq("is_active", true)
+      .or(`active_from.is.null,active_from.lte.${today}`)
+      .or(`active_until.is.null,active_until.gte.${today}`)
+      .order("active_from", { ascending: false, nullsFirst: false })
+      .limit(1)
       .maybeSingle()
-      .returns<{ nickname: string | null }>();
-    nickname = profile?.nickname ?? null;
-  }
+      .returns<Pick<Game, "id" | "name">>(),
+    supabase.from("daily_features").select("*").eq("date", today).maybeSingle().returns<DailyFeature>(),
+  ]);
 
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-neutral-950 px-6 text-center text-neutral-100">
-      <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
-      <h1 className="text-2xl font-semibold">Scorekeeping &amp; Leaderboard</h1>
-
-      {user ? (
-        <>
-          <p className="max-w-sm text-sm text-neutral-400">
-            Signed in as <span className="text-neutral-200">{nickname ?? user.email}</span>.
-            Scan a QR code at a game or booth to claim points — you&apos;re all set.
-          </p>
-          <Link
-            href="/profile"
-            className="mt-2 rounded-lg bg-amber-500 px-5 py-2.5 font-semibold text-neutral-950 transition hover:bg-amber-400"
-          >
-            View profile
-          </Link>
-        </>
-      ) : (
-        <>
-          <p className="max-w-sm text-sm text-neutral-400">
-            You&apos;ll only need to sign in when claiming points after a win — scan the QR
-            code at a game or booth to get started.
-          </p>
-          <Link
-            href="/login"
-            className="mt-2 rounded-lg bg-amber-500 px-5 py-2.5 font-semibold text-neutral-950 transition hover:bg-amber-400"
-          >
-            Sign in
-          </Link>
-        </>
-      )}
-    </main>
-  );
+  return <MainHub initialDigitalGame={digitalGame ?? null} feature={feature ?? null} />;
 }
