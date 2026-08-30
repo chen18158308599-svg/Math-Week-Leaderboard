@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import QRCode from "qrcode";
+import { IdleRedirect } from "@/components/idle-redirect";
+import { KioskNavBar } from "@/components/kiosk-nav-bar";
 
 type Game = {
   id: string;
@@ -15,21 +16,12 @@ type Phase = "loading" | "idle" | "win" | "empty";
 const GAME_REFRESH_MS = 60_000; // pick up a day rollover to a new game without a manual reload
 const CLAIM_POLL_MS = 2_000;
 
-type Variant = "standalone" | "embedded";
-
 // Subpage 2 — Daily Digital-Based Games. v3 confirms this embeds the actual playable
 // game (not a description page) and that there's exactly one physical touchscreen for
 // the whole event, so there's no station picker — just "today's" digital game by date
-// window.
-//
-// Shared between two call sites (see answers.md #10 — the main hub's rotation expands
-// a card into its *full* content, not just a bigger label):
-//   "standalone" — /games itself, full-bleed, back-to-hub link.
-//   "embedded"   — the main hub's rotating big panel, sized to its container, no back
-//                  link (the hub's own header/footer already frame it). The main hub
-//                  pauses its rotation timer while this is on screen, so a game in
-//                  progress doesn't get yanked away mid-play.
-export function DigitalGamePanel({ variant = "standalone" }: { variant?: Variant }) {
+// window. This is the only place the game is actually playable — the main hub's
+// rotation only shows a preview and links here (see main-hub.tsx's BigPanel).
+export function DigitalGamePanel() {
   const [game, setGame] = useState<Game | null>(null);
   const [phase, setPhase] = useState<Phase>("loading");
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
@@ -109,9 +101,6 @@ export function DigitalGamePanel({ variant = "standalone" }: { variant?: Variant
     if (phase === "win" && secondsLeft === 0) endWin();
   }, [phase, secondsLeft, endWin]);
 
-  const embedded = variant === "embedded";
-  const qrSize = embedded ? 160 : 248;
-
   let body: React.ReactNode;
 
   if (phase === "loading") {
@@ -120,48 +109,40 @@ export function DigitalGamePanel({ variant = "standalone" }: { variant?: Variant
     body = (
       <Centered>
         <div className="flex flex-col items-center gap-3 text-center">
-          <div className="font-display text-xl font-semibold text-[#8891a3] md:text-2xl">
+          <div className="font-display text-2xl font-semibold text-[#a9b2c4]">
             No digital game scheduled right now
           </div>
-          <div className="text-sm text-[#5b6478]">Check back later today.</div>
-          {!embedded && <BackHome />}
+          <div className="text-sm text-[#7b859c]">Check back later today.</div>
         </div>
       </Centered>
     );
   } else if (phase === "win") {
     body = (
       <Centered>
-        <div className={embedded ? "flex flex-col items-center gap-4" : "flex flex-col items-center gap-9"}>
+        <div className="flex flex-col items-center gap-9">
           <div className="flex flex-col items-center gap-2">
-            <div className="text-[13px] tracking-[0.22em] text-[#8891a3]">GAME COMPLETE</div>
-            <div className={embedded ? "font-display text-3xl font-bold" : "font-display text-6xl font-bold"}>
-              You Won!
-            </div>
-            <div className="text-[#a6adbc]">{game.name}</div>
+            <div className="text-[15px] tracking-[0.22em] text-[#a9b2c4]">GAME COMPLETE</div>
+            <div className="font-display text-6xl font-bold">You Won!</div>
+            <div className="text-[#b9c1d1]">{game.name}</div>
           </div>
 
-          <div className="relative flex flex-col items-center rounded-3xl border border-[#2a3554] bg-[#141a29] p-6">
-            <div
-              className="flex items-center justify-center rounded-xl bg-[#f2f0ea] p-3"
-              style={{ height: qrSize + 32, width: qrSize + 32 }}
-            >
+          <div className="relative flex flex-col items-center rounded-3xl border border-[#3f4f74] bg-[#232f49] p-9">
+            <div className="flex h-70 w-70 items-center justify-center rounded-xl bg-[#f2f0ea] p-4">
               {qrDataUrl && (
                 // eslint-disable-next-line @next/next/no-img-element -- a generated data: URL, not an optimizable remote image
-                <img src={qrDataUrl} alt="Scan to claim your points" width={qrSize} height={qrSize} />
+                <img src={qrDataUrl} alt="Scan to claim your points" width={248} height={248} />
               )}
             </div>
-            <div className="absolute -bottom-5 -right-5 flex h-16 w-16 items-center justify-center rounded-full border border-[#2a3554] bg-[#141a29]">
-              <div className="font-display text-lg font-bold text-[#5f8fdd]">{secondsLeft}s</div>
+            <div className="absolute -bottom-6.5 -right-6.5 flex h-22 w-22 items-center justify-center rounded-full border border-[#3f4f74] bg-[#232f49]">
+              <div className="font-display text-2xl font-bold text-[#7fa8f5]">{secondsLeft}s</div>
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-1 text-center">
-            <div className="font-medium">Scan to claim your points</div>
-            {!embedded && (
-              <div className="text-[15px] text-[#8891a3]">
-                Screen returns to the game automatically after
-              </div>
-            )}
+          <div className="flex flex-col items-center gap-1">
+            <div className="text-xl font-medium">Scan to claim your points</div>
+            <div className="text-[15px] text-[#a9b2c4]">
+              Screen returns to the game automatically after
+            </div>
           </div>
         </div>
       </Centered>
@@ -177,48 +158,22 @@ export function DigitalGamePanel({ variant = "standalone" }: { variant?: Variant
       />
     ) : (
       <Centered>
-        <div className="text-[#8891a3]">{game.name} has no embed URL configured yet</div>
+        <div className="text-[#a9b2c4]">{game.name} has no embed URL configured yet</div>
       </Centered>
     );
   }
 
-  if (embedded) {
-    return (
-      <div className="flex h-full w-full flex-col">
-        <div className="flex flex-row items-center justify-between px-6 pb-3 pt-5">
-          <span className="text-xs tracking-[0.2em] text-[#5f8fdd]">DIGITAL BASED</span>
-          <Link
-            href="/games"
-            className="rounded-lg border border-[#2a3554] bg-[#0b0f1a] px-3 py-1.5 text-xs font-medium text-[#f2f0ea] transition hover:border-[#3e4d78]"
-          >
-            Play fullscreen →
-          </Link>
-        </div>
-        <div className="flex flex-grow flex-col overflow-hidden px-6 pb-6">{body}</div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex h-screen w-screen flex-col bg-[#0b0f1a] text-[#f2f0ea]">
-      <div className="flex flex-row items-center justify-between p-4">
-        <BackHome />
+    <div className="flex h-screen w-screen flex-col bg-[#1b2436] text-[#f2f0ea]">
+      <IdleRedirect seconds={60} />
+
+      <div className="flex flex-row items-center justify-center p-4">
         {game && <div className="font-display text-lg font-semibold">{game.name}</div>}
-        <div className="w-16" />
       </div>
       <div className="flex flex-grow flex-col overflow-hidden px-4 pb-4">{body}</div>
-    </div>
-  );
-}
 
-function BackHome() {
-  return (
-    <Link
-      href="/"
-      className="rounded-lg border border-[#2a3554] bg-[#141a29] px-3.5 py-1.5 text-sm text-[#a6adbc] transition hover:border-[#3e4d78]"
-    >
-      ← Main hub
-    </Link>
+      <KioskNavBar />
+    </div>
   );
 }
 

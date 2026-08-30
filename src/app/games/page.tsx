@@ -5,5 +5,5 @@ import { DigitalGamePanel } from "./digital-game-panel";
 export const dynamic = "force-dynamic";
 
 export default function GamesPage() {
-  return <DigitalGamePanel variant="standalone" />;
+  return <DigitalGamePanel />;
 }
