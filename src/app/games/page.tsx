@@ -1,9 +1,13 @@
-import { DigitalGamePanel } from "./digital-game-panel";
-
-// Subpage 2 — Daily Digital-Based Games. Always live: which game is "today's" can
-// change at midnight, and this needs real Supabase env vars at request time.
+import { WeekShell } from "@/components/week-shell";
+import { DailyGamePreview } from "@/components/daily-game-preview";
+import { EmbeddedGames } from "@/components/embedded-games";
+import { todayInEventTimezone } from "@/lib/event-date";
 export const dynamic = "force-dynamic";
-
 export default function GamesPage() {
-  return <DigitalGamePanel />;
+  return (
+    <WeekShell idleSeconds={120}>
+      <EmbeddedGames />
+      <DailyGamePreview initialDate={todayInEventTimezone()} />
+    </WeekShell>
+  );
 }

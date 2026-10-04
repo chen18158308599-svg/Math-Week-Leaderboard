@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<!-- Locks pinch-zoom off — this runs on a fixed kiosk touchscreen, not a phone. -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Math Week — Digital Game Template</title>
+<style>
+  /* ---------------------------------------------------------------------
+     Starting CSS reset. Keep the responsive approach (%, vh/vw, flex/grid)
+     — do NOT hard-code pixel widths/heights. This same file has to look
+     right both full-bleed on /games and shrunk into the main hub's panel
+     (see digital_game_embed_spec.md, "How it's hosted").
+     --------------------------------------------------------------------- */
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden; /* no scrollbars inside the iframe */
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    -webkit-user-select: none;
+    user-select: none; /* avoid the OS text-selection bubble on a long touch-hold */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #game-root {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(12px, 3vh, 32px);
+    background: #ffffff; /* replace with your game's own background/theme */
+    color: #111827;
+    text-align: center;
+    padding: clamp(12px, 4vh, 40px);
+  }
+
+  h1 {
+    font-size: clamp(1.1rem, 3.5vw, 2rem); /* scales with the embed's actual size */
+    margin: 0;
+  }
+
+  p { margin: 0; font-size: clamp(0.85rem, 2vw, 1.1rem); color: #4b5563; }
+
+  /* Touch targets: at least 44x44 CSS px, per the embed spec. */
+  button {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0.75em 1.5em;
+    font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+    border: none;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+  }
+  button:active { opacity: 0.8; }
+
+  #win-banner {
+    display: none;
+    font-size: clamp(1.4rem, 4vw, 2.4rem);
+    font-weight: 700;
+    color: #16a34a;
+  }
+</style>
+</head>
+<body>
+  <div id="game-root">
+    <h1>Your Game Name Here</h1>
+    <p>Replace everything in #game-root with your actual game UI.</p>
+
+    <!-- Demo button standing in for "the player just won" — call reportWin()
+         from wherever your own win condition actually fires. -->
+    <button id="demo-win-button" type="button">Simulate a win (dev only — remove)</button>
+
+    <div id="win-banner">You won! 🎉</div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------------------------------------------------------------
+  // REQUIRED: set this to the exact game ID the Math Week team gives you
+  // once your game is registered in their admin panel. Everything else in
+  // this file works without it, but the win signal won't be recognized.
+  // ---------------------------------------------------------------------
+  var GAME_ID = "REPLACE_WITH_REAL_GAME_ID";
+
+  // Detect standalone testing (opened directly, not inside the host's
+  // iframe) so you can develop/test this file on its own before handoff.
+  var isEmbedded = window.parent !== window;
+
+  // Call this the moment your own game logic decides the player has won.
+  // Do not add auth/session/token handling here — none needed, see spec.
+  function reportWin() {
+    document.getElementById("win-banner").style.display = "block";
+
+    if (isEmbedded) {
+      window.parent.postMessage(
+        { type: "mathweek:report-win", gameId: GAME_ID },
+        "*"
+      );
+    } else {
+      // Standalone/dev mode: no parent to notify, just log it.
+      console.log("[dev mode] would have reported a win for game:", GAME_ID);
+    }
+
+    // Per the spec: show "You won!" and stop — the host page (when embedded)
+    // takes over from here with its own QR/claim screen. Don't try to keep
+    // playing, show a QR yourself, or navigate away.
+  }
+
+  // Wire up the placeholder button — delete this block once your real win
+  // condition calls reportWin() directly.
+  document.getElementById("demo-win-button").addEventListener("click", reportWin);
+})();
+</script>
+</body>
+</html>

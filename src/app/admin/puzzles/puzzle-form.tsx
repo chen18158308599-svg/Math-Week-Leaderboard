@@ -54,13 +54,21 @@ export function PuzzleForm({
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <span className={label}>CORRECT ANSWER — case/whitespace-insensitive match</span>
+        <span className={label}>
+          CORRECT ANSWER(S) — separate multiple accepted forms with &quot;|&quot;
+        </span>
         <input
           name="correct_answer"
           defaultValue={puzzle?.correct_answer}
+          placeholder="e.g. 1/3|0.33|0.333|33%"
           required
           className={input}
         />
+        <p className="text-xs text-neutral-500">
+          Matching ignores case and ALL whitespace (so &quot;4/3, 1.618&quot; and
+          &quot;4/3,1.618&quot; are the same). A submission is correct if it matches any
+          one of the &quot;|&quot;-separated answers.
+        </p>
       </div>
 
       <div className="mt-2 flex flex-row gap-3">

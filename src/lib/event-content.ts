@@ -79,7 +79,11 @@ export const THEMES: ThemeBlock[] = [
 export const ZONES = [
   {
     zone: "Library 2F — Zone II",
-    items: ["Mathematics {Canvas} Display", "Code (Interactive) Based ×2", "Digital Wall"],
+    items: [
+      "Mathematics {Canvas} Display",
+      "Code (Interactive) Based ×2",
+      "Digital Wall",
+    ],
   },
   {
     zone: "Library 2F — Zone III",
@@ -90,30 +94,41 @@ export const ZONES = [
       "Wall of Knowledge",
     ],
   },
-  { zone: "Library 2F — Zone IV", items: ["Mathematics across Culture display"] },
-  { zone: "Library 1F", items: ["Mathematics across Culture display", "Zones I, II, V"] },
+  {
+    zone: "Library 2F — Zone IV",
+    items: ["Mathematics across Culture display"],
+  },
+  {
+    zone: "Library 1F",
+    items: ["Mathematics across Culture display", "Zones I, II, V"],
+  },
 ];
 
 export const ACTIVITIES = [
   {
     category: "Code (Card) Based",
-    detail: "20+ printed-card puzzles scattered around the library — scan a card's QR to answer (/puzzle/…).",
+    detail:
+      "Read a printed puzzle card, scan its QR code, sign in on your phone and submit your answer.",
   },
   {
     category: "Digital Based",
-    detail: "One playable game per day, live on the library's touchscreen — see the Digital Based subpage.",
+    detail:
+      "Play touchscreen games about patterns, probability and strategy. View daily previews and open the game website from Digital Games.",
   },
   {
     category: "Committee Based",
-    detail: "Staffed mini-events — Poker/Card Magic, Tower of Hanoi, Probability Board, and more, by theme block.",
+    detail:
+      "Planned staff-led activities include card magic, Tower of Hanoi and probability challenges. Confirm availability with staff.",
   },
   {
     category: "Exhibitions",
-    detail: "Canvas displays across Library 1F & 2F — Mathematics in XMU/XMUM, Mathematics in Daily Life, Mathematics in Curriculum.",
+    detail:
+      "Displays exploring mathematics in XMU/XMUM, everyday life, culture and academic subjects.",
   },
   {
     category: "MAT Mini Events",
-    detail: "Math Movie Night (Good Will Hunting), club collaborations (Rubik Society, Board Game Society, Handcraft Society, ACG Society).",
+    detail:
+      "Planned Math Movie Night featuring Good Will Hunting and club collaborations. Times and activities will be announced when confirmed.",
   },
 ];
 

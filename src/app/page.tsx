@@ -26,8 +26,19 @@ export default async function Home() {
       .limit(1)
       .maybeSingle()
       .returns<Pick<Game, "id" | "name">>(),
-    supabase.from("daily_features").select("*").eq("date", today).maybeSingle().returns<DailyFeature>(),
+    supabase
+      .from("daily_features")
+      .select("*")
+      .eq("date", today)
+      .maybeSingle()
+      .returns<DailyFeature>(),
   ]);
 
-  return <MainHub initialDigitalGame={digitalGame ?? null} feature={feature ?? null} />;
+  return (
+    <MainHub
+      initialDigitalGame={digitalGame ?? null}
+      feature={feature ?? null}
+      eventDate={today}
+    />
+  );
 }
