@@ -1,249 +1,108 @@
 "use client";
+import Image from "next/image";
 import Link from "next/link";
-import { DailyGamePreview } from "@/components/daily-game-preview";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { WeekShell } from "@/components/week-shell";
-import { MathPlayground } from "@/components/math-playground";
 import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
-import { THEMES, themesActiveOn } from "@/lib/event-content";
-import type { DailyFeature } from "@/lib/supabase/types";
-export function MainHub({
-  feature,
-  eventDate,
-}: {
-  initialDigitalGame: { id: string; name: string } | null;
-  feature: DailyFeature | null;
-  eventDate: string;
-}) {
-  const { rows, loading } = useLeaderboard("individual", 3);
-  return (
-    <WeekShell>
-      <section className="home-hero">
-        <div className="hero-copy">
-          <p className="week-eyebrow">
-            <span className="live-dot" /> MAT STUDENT COUNCIL × XMUM LIBRARY
-          </p>
-          <h1>
-            Math Week
-            <br />
-            <span>2026</span>
-          </h1>
-          <p className="hero-description">
-            Explore exhibitions, solve mathematical puzzles and join interactive
-            activities showing how mathematics connects finance, AI, arts and
-            science.
-          </p>
-          <div className="hero-actions">
-            <Link className="week-button" href="/directory">
-              View activities ↗
-            </Link>
-            <Link className="week-button secondary" href="/games">
-              Digital games →
-            </Link>
-          </div>
-          <div className="hero-meta">
-            <span>
-              <strong>19–25</strong> October 2026
-            </span>
-            <span>
-              <strong>XMUM</strong> Library
-            </span>
-            <span>
-              <strong>Opening hours</strong> Library opening hours
-            </span>
-          </div>
-        </div>
-        <MathPlayground />
-      </section>
-      <section className="today-summary">
-        <div>
-          <p className="week-eyebrow">
-            {eventDate < "2026-10-19"
-              ? "STARTS 19 OCTOBER"
-              : eventDate > "2026-10-25"
-                ? "EVENT FINISHED"
-                : "TODAY AT MATH WEEK"}
-          </p>
-          <h2>
-            {eventDate < "2026-10-19"
-              ? "Plan your visit to Math Week"
-              : eventDate > "2026-10-25"
-                ? "Math Week ran from 19–25 October"
-                : "Today's themes"}
-          </h2>
-          <p>
-            {themesActiveOn(eventDate).length
-              ? themesActiveOn(eventDate)
-                  .map((t) => t.theme.replace("Mathematics in ", ""))
-                  .join(" · ")
-              : "19–25 October 2026 · XMUM Library · During library opening hours"}
-          </p>
-        </div>
-        <Link href="/directory" className="week-button secondary">
-          View the event directory →
-        </Link>
-      </section>
-      <DailyGamePreview initialDate={eventDate} />
-      <section className="home-discover">
-        <div className="section-heading">
-          <div>
-            <p className="week-eyebrow">ACTIVITIES & POINTS</p>
-            <h2>Games, scores and upcoming activities</h2>
-          </div>
-          <span className="section-note">Choose a page to learn more.</span>
-        </div>
-        <div className="discovery-grid">
-          <Link href="/games" className="discovery-card game-teaser">
-            <div className="card-top">
-              <span className="week-eyebrow">01 / DIGITAL GAMES</span>
-              <span className="card-arrow">↗</span>
-            </div>
-            <div className="portal-preview" aria-hidden="true">
-              <span>✦</span>
-              <div className="portal-ring">∞</div>
-              <span>✧</span>
-            </div>
-            <h3>Digital Games</h3>
-            <p>
-              Play the digital games on this screen. Browse the daily previews
-              above, then choose a game from the game website&apos;s menu.
-            </p>
-            <span className="card-label">DIGITAL GAMES · TAP TO PLAY</span>
-          </Link>
-          <Link href="/leaderboard" className="discovery-card">
-            <div className="card-top">
-              <span className="week-eyebrow">02 / LEADERBOARD</span>
-              <span className="card-arrow">↗</span>
-            </div>
-            <h3>Math Week Leaderboard</h3>
-            <div className="mini-ranking">
-              {loading ? (
-                <p>Loading the leaderboard…</p>
-              ) : rows.length ? (
-                rows.map((r, i) => (
-                  <div key={r.key}>
-                    <span className="rank-number">0{i + 1}</span>
-                    <span>{r.label}</span>
-                    <strong>
-                      {r.total_points}
-                      <small> pts</small>
-                    </strong>
-                  </div>
-                ))
-              ) : (
-                <p>
-                  No points recorded yet.
-                  <br />
-                  Scores appear here as students play.
-                </p>
-              )}
-            </div>
-            <span className="card-label">
-              <span className="live-dot" /> LIVE LEADERBOARD
-            </span>
-          </Link>
-          <Link href="/stock-market" className="discovery-card market-teaser">
-            <div className="card-top">
-              <span className="week-eyebrow">03 / STOCK MARKET</span>
-              <span className="card-arrow">↗</span>
-            </div>
-            <div className="market-visual" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
-              <span />
-              <span />
-            </div>
-            <h3>MAT Stock Market</h3>
-            <p>
-              A planned simulated trading activity about price changes,
-              transaction fees and investment decisions.
-            </p>
-            <span className="card-label">MAT STOCK MARKET · COMING SOON</span>
-          </Link>
-        </div>
-      </section>
-      {feature && (
-        <section className="daily-feature">
-          <div>
-            <p className="week-eyebrow">IN THE SPOTLIGHT</p>
-            <h2>{feature.title}</h2>
-            <Link href="/directory" className="text-link">
-              Explore our events →
-            </Link>
-          </div>
-          {feature.kind === "poster" ? (
-            // eslint-disable-next-line @next/next/no-img-element -- admin-supplied poster URL
-            <img src={feature.media_url} alt={feature.title} />
-          ) : /\.(mp4|webm|ogg)(\?.*)?$/i.test(feature.media_url) ? (
-            <video
-              src={feature.media_url}
-              autoPlay
-              loop
-              muted
-              playsInline
-              controls
-            />
-          ) : (
-            <iframe
-              src={feature.media_url}
-              title={feature.title}
-              allow="autoplay; fullscreen"
-            />
-          )}
-        </section>
-      )}
-      <section className="directory-section">
-        <div className="section-heading">
-          <h2>How to participate</h2>
-        </div>
-        <div className="participation-grid">
-          <article>
-            <span className="rank-number">01</span>
-            <h3>Visit the exhibitions</h3>
-            <p>
-              Explore mathematics in university life, culture and everyday
-              applications around the library.
-            </p>
-          </article>
-          <article>
-            <span className="rank-number">02</span>
-            <h3>Solve a puzzle card</h3>
-            <p>
-              Read the printed question, scan its QR code and sign in with your
-              university Microsoft account to answer. Each puzzle allows three
-              wrong attempts.
-            </p>
-          </article>
-          <article>
-            <span className="rank-number">03</span>
-            <h3>Join staffed activities</h3>
-            <p>
-              Follow the staff&apos;s instructions. After a qualifying win, scan
-              the claim QR on your phone to collect points. Each activity awards
-              points once.
-            </p>
-          </article>
-        </div>
-      </section>
-      <section className="directory-section">
-        <div className="section-heading">
-          <h2>The week&apos;s themes</h2>
-          <Link href="/directory" className="text-link">
-            View activity details →
-          </Link>
-        </div>
-        <div className="theme-overview">
-          {THEMES.map((t) => (
-            <article key={t.from}>
-              <span className="week-eyebrow">
-                {t.from.slice(8)}–{t.to.slice(8)} OCT · {t.days}
-              </span>
-              <h3>{t.theme.replace("Mathematics in ", "")}</h3>
-            </article>
-          ))}
-        </div>
-      </section>
-    </WeekShell>
-  );
+import { DIGITAL_DAYS, digitalDayIndex } from "@/lib/digital-games";
+import { todayInEventTimezone } from "@/lib/event-date";
+import { THEMES, ACTIVITIES } from "@/lib/event-content";
+const PANELS = ["events", "digital", "market", "ranking"] as const;
+type Panel = typeof PANELS[number];
+const TITLES = { events: "What's on", digital: "Digital Based", market: "MAT Stock Market", ranking: "Leaderboard" };
+const LINKS = { events: "/directory", digital: "/games", market: "/stock-market", ranking: "/leaderboard" };
+function LiveScore({ points }: { points: number }) {
+  const element = useRef<HTMLSpanElement>(null);
+  const previous = useRef(points);
+  useEffect(() => {
+    if (previous.current !== points && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      element.current?.animate([
+        { backgroundColor: "#4d6bfe30", color: "#3455e4" },
+        { backgroundColor: "transparent", color: "inherit" },
+      ], { duration: 1200, easing: "ease-out" });
+    }
+    previous.current = points;
+  }, [points]);
+  return <span ref={element} className="hub-score">{points}</span>;
+}
+export function MainHub({ eventDate }: { eventDate: string }) {
+  const windows = useRef<HTMLElement>(null);
+  const previousPositions = useRef<Map<string, DOMRect>>(new Map());
+  const [step, setStep] = useState(0);
+  const [remaining, setRemaining] = useState(20);
+  const [paused, setPaused] = useState(false);
+  const [date, setDate] = useState(eventDate);
+  const { rows, loading } = useLeaderboard("individual", 5);
+  useLayoutEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    windows.current?.querySelectorAll<HTMLElement>(".hub-panel").forEach(panel => {
+      const id = panel.dataset.panel!;
+      const next = panel.getBoundingClientRect();
+      const previous = previousPositions.current.get(id);
+      if (previous && !reduced) {
+        panel.animate([
+          { transform: `translate(${previous.x - next.x}px, ${previous.y - next.y}px) scale(${previous.width / next.width}, ${previous.height / next.height})` },
+          { transform: "none" },
+        ], { duration: 500, easing: "cubic-bezier(.22, 1, .36, 1)" });
+      }
+      previousPositions.current.set(id, next);
+    });
+  }, [step]);
+  useEffect(() => {
+    if (paused) return;
+    let deadline = Date.now() + 20000;
+    const reset = () => { deadline = Date.now() + 20000; setRemaining(20); };
+    const events = ["pointerdown", "keydown", "wheel"] as const;
+    events.forEach(event => window.addEventListener(event, reset, { passive: true }));
+    const timer = window.setInterval(() => {
+      if (Date.now() >= deadline) {
+        setStep(value => (value + 1) % 4);
+        deadline = Date.now() + 20000;
+      }
+      setRemaining(Math.max(0, Math.ceil((deadline - Date.now()) / 1000)));
+    }, 250);
+    return () => { clearInterval(timer); events.forEach(event => window.removeEventListener(event, reset)); };
+  }, [paused]);
+  useEffect(() => {
+    const timer = setInterval(() => setDate(todayInEventTimezone()), 60000);
+    return () => clearInterval(timer);
+  }, []);
+  const game = DIGITAL_DAYS[digitalDayIndex(date)];
+  const gameName = game.name;
+  function content(panel: Panel, large: boolean) {
+    if (panel === "events") return <div className="hub-week-programme">
+      <div className="hub-programme-heading"><span className="week-eyebrow">19–25 OCTOBER · XMUM LIBRARY</span><h3>This week at Math Week</h3></div>
+      <div className="hub-programme-list">{THEMES.map(theme => <div key={theme.from} className={date >= theme.from && date <= theme.to ? "is-today" : ""}>
+        <span className="hub-programme-date">{theme.from.slice(8)}–{theme.to.slice(8)} OCT<small>{theme.days}</small></span>
+        <strong>{theme.theme.replace("Mathematics in ", "")}</strong>
+        {date >= theme.from && date <= theme.to && <span className="hub-status">TODAY</span>}
+      </div>)}</div>
+      {large && <div className="hub-programme-activities"><span className="week-eyebrow">ACTIVITIES THROUGHOUT THE WEEK</span><div>{ACTIVITIES.map(activity => <span key={activity.category}>{activity.category}</span>)}</div></div>}
+      <span className="hub-action">View activities & locations →</span>
+    </div>;
+    if (panel === "digital") return <>
+      <div className="hub-media"><Image src={game.image} alt={`${game.name} gameplay preview`} sizes={large ? "65vw" : "22vw"} /></div>
+      <div className="hub-detail"><span className="week-eyebrow">{game.date === date ? "TODAY'S GAME" : "GAME PREVIEW"} · {game.date.slice(8)} OCT</span><h3>{gameName}</h3>{large && <p>{game.description}</p>}<span className="hub-action">Tap to play <span className="hub-play-arrow" aria-hidden="true">→</span></span></div>
+    </>;
+    if (panel === "market") return <>
+      <div className="hub-market-visual" aria-hidden="true"><span>↗</span><div>{[25, 42, 35, 63, 55, 82].map((height, i) => <i key={i} style={{ height: `${height}%` }} />)}</div></div>
+      <div className="hub-detail"><span className="hub-status">COMING SOON</span><h3>MAT Stock Market</h3>{large && <p>Explore price changes, transaction fees and investment decisions in a planned simulated trading activity.</p>}<span className="hub-action">View details →</span></div>
+    </>;
+    return <div className="hub-ranking"><span className="week-eyebrow"><span className="live-dot" /> LIVE SCORES</span>{large && <h3>Math Week&apos;s top players</h3>}<div className="hub-ranking-rows">{loading ? <p role="status">Loading scores…</p> : rows.length ? rows.slice(0, large ? 5 : 3).map((row, i) => <div key={row.key}><span className="hub-rank">{String(i + 1).padStart(2, "0")}</span><span className="hub-player" title={row.label}>{row.label}</span><strong><LiveScore points={row.total_points} /><small> pts</small></strong></div>) : <p>Scores will appear as students play.</p>}</div><span className="hub-action">Full leaderboard →</span></div>;
+  }
+  return <WeekShell kioskHome>
+    <div className="hub-toolbar"><div><span className="live-dot" /> ALL OF MATH WEEK, AT A GLANCE</div><div><span>{paused ? "Paused" : `Next display in ${remaining}s`}</span><button onClick={() => setPaused(value => !value)}>{paused ? "Resume" : "Pause"}</button></div></div>
+    <section ref={windows} className="hub-windows" aria-label="Math Week activities">
+      {PANELS.map(panel => {
+        const slot = (PANELS.indexOf(panel) - step + 4) % 4;
+        const large = slot === 0;
+        return <article key={panel} data-panel={panel} className={`hub-panel hub-${panel} hub-slot-${slot} ${large ? "hub-large" : "hub-small"}`}>
+          <div className="hub-panel-title"><h2>{TITLES[panel]}</h2><span>{large ? "ON DISPLAY" : "EXPLORE ↗"}</span></div>
+          <div key={slot} className="hub-panel-body">{content(panel, large)}</div>
+          <Link href={LINKS[panel]} className="hub-panel-link" aria-label={panel === "digital" ? `Play ${gameName} on this screen` : `Open ${TITLES[panel]}`} />
+        </article>;
+      })}
+    </section>
+    <div className="hub-loop-footer"><span>Explore · Play · Compete</span><div>{PANELS.map((panel, i) => <span key={panel} className={step === i ? "active" : ""}>{TITLES[panel]}</span>)}</div><span>20s / display</span></div>
+  </WeekShell>;
 }

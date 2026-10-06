@@ -8,11 +8,11 @@ export function EmbeddedGames() {
   useEffect(() => {
     const onActivity = (event: MessageEvent) => {
       if (
-        event.origin === DIGITAL_GAME_URL &&
+        event.origin === new URL(DIGITAL_GAME_URL).origin &&
         event.source === frame.current?.contentWindow &&
         event.data?.type === "mathweek:activity"
       )
-        window.dispatchEvent(new Event("pointerdown"));
+        window.dispatchEvent(new Event("mathweek:activity"));
     };
     window.addEventListener("message", onActivity);
     return () => window.removeEventListener("message", onActivity);
@@ -47,20 +47,20 @@ export function EmbeddedGames() {
             src={DIGITAL_GAME_URL}
             title="Math Week digital game website"
             allow="fullscreen"
-            allowFullScreen
+            sandbox="allow-scripts allow-same-origin allow-forms"
             onLoad={() => setLoaded(true)}
           />
         </div>
       ) : (
         <div className="game-launch">
           <p>
-            Open the game website to start playing. Automatic display rotation
+            Start playing here on the Math Week screen. Automatic display rotation
             shows previews only.
           </p>
           <button
             className="week-button"
             onClick={() => {
-              window.dispatchEvent(new Event("pointerdown"));
+              window.dispatchEvent(new Event("mathweek:activity"));
               setLoaded(false);
               setPlaying(true);
             }}
@@ -69,14 +69,7 @@ export function EmbeddedGames() {
           </button>
         </div>
       )}
-      <a
-        className="text-link"
-        href={DIGITAL_GAME_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Game not loading? Open in a new tab ↗
-      </a>
+
     </section>
   );
 }

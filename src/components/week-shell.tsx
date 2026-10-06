@@ -6,14 +6,16 @@ import { MovingBackground } from "./moving-background";
 export function WeekShell({
   children,
   idleSeconds,
+  kioskHome = false,
 }: {
   children: React.ReactNode;
   idleSeconds?: number;
+  kioskHome?: boolean;
 }) {
   return (
-    <div className="week-site">
+    <div className={kioskHome ? "week-site kiosk-home" : "week-site"}>
       <MovingBackground />
-      <IdleRedirect seconds={idleSeconds ?? 60} />
+      <IdleRedirect seconds={idleSeconds ?? 30} />
       <header className="week-header">
         <Link href="/" className="week-brand" aria-label="Math Week home">
           <Image src="/mat-logo.png" alt="MAT" width={42} height={42} />
@@ -22,7 +24,7 @@ export function WeekShell({
             <small>XMUM · LIBRARY</small>
           </span>
         </Link>
-        <KioskNavBar />
+        {kioskHome ? <span className="hub-header-label">MAT × XMUM LIBRARY</span> : <KioskNavBar />}
         <span className="header-date">
           19 — 25 OCT <strong>2026</strong>
         </span>

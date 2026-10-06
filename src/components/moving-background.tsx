@@ -14,12 +14,17 @@ export function MovingBackground() {
   }, []);
   return (
     <div className="background-scene" aria-hidden="true">
+      <span className="background-glow background-glow-one" />
+      <span className="background-glow background-glow-two" />
       <div className="background-shapes">
         <span className="bg-shape bg-circle" />
         <span className="bg-shape bg-square" />
         <span className="bg-shape bg-triangle" />
         <span className="bg-shape bg-orbit" />
         <span className="bg-shape bg-dot" />
+        <span className="bg-shape bg-diamond" />
+        <span className="bg-shape bg-ring" />
+        <span className="bg-shape bg-hexagon" />
       </div>
       {touch && (
         <span

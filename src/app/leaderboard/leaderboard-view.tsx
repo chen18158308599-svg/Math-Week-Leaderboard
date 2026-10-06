@@ -5,7 +5,7 @@ import { WeekShell } from "@/components/week-shell";
 export function LeaderboardView() {
   const { rows, loading } = useLeaderboard("individual", 20);
   return (
-    <WeekShell idleSeconds={60}>
+    <WeekShell idleSeconds={30}>
       <div className="page-intro">
         <p className="week-eyebrow">
           <span className="live-dot" /> LIVE LEADERBOARD

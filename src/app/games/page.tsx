@@ -5,7 +5,7 @@ import { todayInEventTimezone } from "@/lib/event-date";
 export const dynamic = "force-dynamic";
 export default function GamesPage() {
   return (
-    <WeekShell idleSeconds={120}>
+    <WeekShell idleSeconds={30}>
       <EmbeddedGames />
       <DailyGamePreview initialDate={todayInEventTimezone()} />
     </WeekShell>

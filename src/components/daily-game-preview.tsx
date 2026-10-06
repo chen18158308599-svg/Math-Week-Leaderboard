@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { DIGITAL_DAYS, digitalDayIndex } from "@/lib/digital-games";
 import { todayInEventTimezone } from "@/lib/event-date";
@@ -33,12 +32,6 @@ export function DailyGamePreview({ initialDate }: { initialDate: string }) {
         </p>
         <h2>{game.name}</h2>
         <p>{game.description}</p>
-        <Link href="/games" className="week-button">
-          Open game website ↗
-        </Link>
-        <p className="game-menu-note">
-          Select {game.name} in the game website&apos;s menu.
-        </p>
         <div className="game-day-picker" aria-label="Game previews by date">
           {DIGITAL_DAYS.map((day, i) => (
             <button

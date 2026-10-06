@@ -105,3 +105,15 @@ the return to your game. You don't need to detect or react to that handoff.
 - Multiple stations — there's only one screen.
 - Responsiveness beyond the two sizes above — this isn't served on phones/desktops,
   just the one touchscreen.
+
+## Player activity and return to home
+
+Games stay embedded inside the Math Week `/games` page. Do not open a new tab or navigate the top-level window. The host returns to the main page after 60 seconds without player input on the kiosk.
+
+Send the following message on genuine pointer, keyboard, or touch input, throttled to at most once every 500 milliseconds:
+
+```js
+window.parent.postMessage({ type: "mathweek:activity" }, "*");
+```
+
+Do not send a timer-based heartbeat: an unattended game must still time out. The supplied HTML template includes this input listener. The deployed game must include it too; the host cannot read input inside a cross-origin iframe directly.

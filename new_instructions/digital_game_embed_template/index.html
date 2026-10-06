@@ -95,6 +95,16 @@
   // iframe) so you can develop/test this file on its own before handoff.
   var isEmbedded = window.parent !== window;
 
+  // Notify the host of genuine player input so its idle timer can reset.
+  var lastActivity = 0;
+  ["pointerdown", "pointermove", "keydown", "wheel", "touchstart"].forEach(function (name) {
+    window.addEventListener(name, function () {
+      if (!isEmbedded || Date.now() - lastActivity < 500) return;
+      lastActivity = Date.now();
+      window.parent.postMessage({ type: "mathweek:activity" }, "*");
+    }, { passive: true });
+  });
+
   // Call this the moment your own game logic decides the player has won.
   // Do not add auth/session/token handling here — none needed, see spec.
   function reportWin() {

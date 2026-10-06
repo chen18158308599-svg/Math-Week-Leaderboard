@@ -2,7 +2,7 @@ import { ACTIVITIES, THEMES, ZONES } from "@/lib/event-content";
 import { WeekShell } from "@/components/week-shell";
 export default function DirectoryPage() {
   return (
-    <WeekShell idleSeconds={60}>
+    <WeekShell idleSeconds={30}>
       <div className="page-intro">
         <p className="week-eyebrow">THE EVENT DIRECTORY</p>
         <h1>

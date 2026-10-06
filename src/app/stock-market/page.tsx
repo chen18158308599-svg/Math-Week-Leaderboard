@@ -2,7 +2,7 @@ import Link from "next/link";
 import { WeekShell } from "@/components/week-shell";
 export default function StockMarketPage() {
   return (
-    <WeekShell idleSeconds={60}>
+    <WeekShell idleSeconds={30}>
       <section className="coming-soon">
         <span className="coming-icon" aria-hidden="true">
           ↗
