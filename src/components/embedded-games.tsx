@@ -5,18 +5,38 @@ export function EmbeddedGames() {
   const frame = useRef<HTMLIFrameElement>(null);
   const [playing, setPlaying] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const activitySupported = useRef(false);
   useEffect(() => {
     const onActivity = (event: MessageEvent) => {
       if (
         event.origin === new URL(DIGITAL_GAME_URL).origin &&
         event.source === frame.current?.contentWindow &&
         event.data?.type === "mathweek:activity"
-      )
+      ) {
+        activitySupported.current = true;
         window.dispatchEvent(new Event("mathweek:activity"));
+      }
     };
     window.addEventListener("message", onActivity);
     return () => window.removeEventListener("message", onActivity);
   }, []);
+  useEffect(() => {
+    if (!playing) return;
+    activitySupported.current = false;
+    // Cross-origin input is invisible to the host. Until the game demonstrates
+    // activity-message support, protect focused gameplay from false idle exits.
+    const syncFocus = () => {
+      const focused = document.activeElement === frame.current;
+      window.dispatchEvent(new CustomEvent("mathweek:idle-hold", {
+        detail: focused && !activitySupported.current,
+      }));
+    };
+    const timer = window.setInterval(syncFocus, 200);
+    return () => {
+      window.clearInterval(timer);
+      window.dispatchEvent(new CustomEvent("mathweek:idle-hold", { detail: false }));
+    };
+  }, [playing]);
   return (
     <section className={playing ? "embedded-games playing" : "embedded-games"}>
       <div className="embed-toolbar">
