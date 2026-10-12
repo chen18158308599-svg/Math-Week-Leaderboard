@@ -1,13 +1,14 @@
 import { requireUser } from "@/lib/auth";
 import { NicknameForm } from "./nickname-form";
+import { authDestination } from "@/lib/auth-destination";
 
 export default async function NicknameOnboardingPage({
   searchParams,
 }: {
   searchParams: Promise<{ next?: string }>;
 }) {
-  const profile = await requireUser();
   const { next } = await searchParams;
+  const profile = await requireUser(authDestination(next));
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-neutral-950 px-6 text-neutral-100">
@@ -19,7 +20,7 @@ export default async function NicknameOnboardingPage({
           can change it later from your profile.
         </p>
 
-        <NicknameForm defaultValue={profile.nickname ?? ""} next={next ?? "/"} />
+        <NicknameForm defaultValue={profile.nickname ?? ""} next={authDestination(next)} />
       </div>
     </main>
   );

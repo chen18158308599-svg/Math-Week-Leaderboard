@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { submitPuzzleAnswerAction, type PuzzleAnswerResult } from "./actions";
 
 export function AnswerForm({ slug, gameName }: { slug: string; gameName: string }) {
@@ -25,6 +26,8 @@ export function AnswerForm({ slug, gameName }: { slug: string; gameName: string 
             ? `+${result.pointsAwarded} points — ${result.gameName}`
             : "You already solved this one — no extra points, but nicely done."}
         </p>
+        <Link href="/leaderboard" className="mt-4 inline-flex min-h-11 items-center text-blue-300">View your score on the leaderboard →</Link>
+        <Link href="/puzzles" className="inline-flex min-h-11 items-center text-sm text-neutral-400">Choose another card</Link>
       </div>
     );
   }

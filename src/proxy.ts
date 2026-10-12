@@ -3,7 +3,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 
 // Renamed from middleware.ts — Next.js 16 deprecated the `middleware` file convention
 // in favor of `proxy` (see node_modules/next/dist/docs/.../proxy.md). Same behavior,
-// new name: this is what actually runs before every matched request now.
+// With src/app, this file must live in src so Next.js discovers the auth proxy.
 export async function proxy(request: NextRequest) {
   return updateSession(request);
 }

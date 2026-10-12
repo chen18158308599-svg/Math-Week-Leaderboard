@@ -2,6 +2,7 @@ import "server-only";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Profile, UserRole } from "@/lib/supabase/types";
+import { authDestination } from "@/lib/auth-destination";
 
 // Defense in depth: the primary domain restriction is the Azure AD app registration
 // being single-tenant (only your university's directory can consent), configured in
@@ -17,17 +18,20 @@ export function isAllowedEmail(email: string | null | undefined) {
 
 // Loads the current user's profile row, or redirects to /login if signed out.
 // Also signs out and redirects anyone whose email fails the domain check.
-export async function requireUser(): Promise<Profile> {
+export async function requireUser(destination?: string): Promise<Profile> {
+  const loginUrl = new URL("/login", "https://mathweek.invalid");
+  loginUrl.searchParams.set("next", authDestination(destination));
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) redirect("/login");
+  if (!user) redirect(`${loginUrl.pathname}${loginUrl.search}`);
 
   if (!isAllowedEmail(user.email)) {
     await supabase.auth.signOut();
-    redirect("/login?error=domain");
+    loginUrl.searchParams.set("error", "domain");
+    redirect(`${loginUrl.pathname}${loginUrl.search}`);
   }
 
   const { data: profile } = await supabase
@@ -36,7 +40,7 @@ export async function requireUser(): Promise<Profile> {
     .eq("id", user.id)
     .single();
 
-  if (!profile) redirect("/login");
+  if (!profile) redirect(`${loginUrl.pathname}${loginUrl.search}`);
 
   return profile;
 }

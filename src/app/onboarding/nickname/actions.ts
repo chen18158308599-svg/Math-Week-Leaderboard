@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { authDestination } from "@/lib/auth-destination";
 
 export type NicknameFormState = { error?: string };
 
@@ -31,6 +32,7 @@ export async function setNicknameAction(
     return { error: message };
   }
 
-  const destination = next || "/";
-  redirect(`${destination}${destination.includes("?") ? "&" : "?"}saved=1`);
+  const destination = new URL(authDestination(next), "https://mathweek.invalid");
+  destination.searchParams.set("saved", "1");
+  redirect(`${destination.pathname}${destination.search}${destination.hash}`);
 }

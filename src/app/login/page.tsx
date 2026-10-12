@@ -3,6 +3,17 @@
 import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { authDestination } from "@/lib/auth-destination";
+
+function LoginHeading() {
+  const next = authDestination(useSearchParams().get("next"));
+  const card = next === "/puzzles" || next.startsWith("/puzzle/");
+  const title = card ? "Sign in to answer your puzzle card" : next.startsWith("/claim/") ? "Sign in to claim your points" : next.startsWith("/digital/pair/") ? "Sign in to join your game" : "Sign in to Math Week";
+  return <>
+    <h1 className="mt-1 text-2xl font-semibold">{title}</h1>
+    {card && <p className="mt-3 text-sm text-neutral-400">After signing in, you&apos;ll return to your card&apos;s answer page. If you opened this login directly, choose your card next.</p>}
+  </>;
+}
 
 function LoginError() {
   const params = useSearchParams();
@@ -50,7 +61,7 @@ export default function LoginPage() {
       }
       const supabase = createClient();
       const params = new URLSearchParams(window.location.search);
-      const next = params.get("next") ?? "/";
+      const next = authDestination(params.get("next"));
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "azure",
         options: {
@@ -73,7 +84,9 @@ export default function LoginPage() {
       <div className="flex w-full max-w-sm flex-col items-center gap-6 text-center">
         <div>
           <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
-          <h1 className="mt-1 text-2xl font-semibold">Sign in to claim your points</h1>
+          <Suspense fallback={<h1 className="mt-1 text-2xl font-semibold">Sign in to answer your puzzle card</h1>}>
+            <LoginHeading />
+          </Suspense>
         </div>
 
         <Suspense fallback={null}>

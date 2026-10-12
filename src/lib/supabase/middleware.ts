@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { authDestination } from "@/lib/auth-destination";
 
 // /claim and /puzzle require login (scan → sign in → claim/answer), so they are
 // deliberately NOT public — everything the main-site touchscreen itself needs
@@ -20,7 +21,7 @@ const PUBLIC_PATHS = [
 ];
 
 // Paths where a signed-in-but-nicknameless user gets bounced to onboarding first.
-const NEEDS_NICKNAME_PREFIXES = ["/claim", "/puzzle"];
+const NEEDS_NICKNAME_PREFIXES = ["/claim", "/puzzle", "/puzzles"];
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -38,6 +39,11 @@ export async function updateSession(request: NextRequest) {
   }
 
   let response = NextResponse.next({ request });
+  const redirectWithCookies = (url: URL) => {
+    const redirected = NextResponse.redirect(url);
+    response.cookies.getAll().forEach(cookie => redirected.cookies.set(cookie));
+    return redirected;
+  };
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -67,8 +73,8 @@ export async function updateSession(request: NextRequest) {
   if (!user) {
     if (!isPublic(pathname)) {
       const redirectUrl = new URL("/login", request.url);
-      redirectUrl.searchParams.set("next", pathname);
-      return NextResponse.redirect(redirectUrl);
+      redirectUrl.searchParams.set("next", authDestination(pathname + request.nextUrl.search));
+      return redirectWithCookies(redirectUrl);
     }
     return response;
   }
@@ -81,11 +87,11 @@ export async function updateSession(request: NextRequest) {
       .eq("id", user.id)
       .single();
 
-    const needsNickname = NEEDS_NICKNAME_PREFIXES.some((p) => pathname.startsWith(p));
+    const needsNickname = NEEDS_NICKNAME_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
     if (profile && !profile.nickname && needsNickname) {
       const redirectUrl = new URL("/onboarding/nickname", request.url);
-      redirectUrl.searchParams.set("next", pathname);
-      return NextResponse.redirect(redirectUrl);
+      redirectUrl.searchParams.set("next", authDestination(pathname + request.nextUrl.search));
+      return redirectWithCookies(redirectUrl);
     }
   }
 

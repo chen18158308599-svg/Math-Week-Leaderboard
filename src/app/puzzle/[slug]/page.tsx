@@ -11,7 +11,7 @@ export default async function PuzzlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  await requireUser(); // middleware already enforces login + nickname
+  await requireUser(`/puzzle/${slug}`); // preserve the card even if session expires
 
   const admin = createAdminClient();
   const { data: puzzle } = await admin
