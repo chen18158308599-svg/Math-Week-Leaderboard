@@ -23,21 +23,49 @@ function LoginError() {
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
+  const [signInError, setSignInError] = useState<string | null>(null);
 
   async function signInWithMicrosoft() {
     setLoading(true);
-    const supabase = createClient();
-    const params = new URLSearchParams(window.location.search);
-    const next = params.get("next") ?? "/";
-
-    await supabase.auth.signInWithOAuth({
-      provider: "azure",
-      options: {
-        scopes: "email openid profile",
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
-      },
-    });
-    // Browser is redirected to Microsoft; setLoading(false) never needs to run here.
+    setSignInError(null);
+    try {
+      // OAuth normally navigates without checking whether the auth service is
+      // reachable. Keep the user here with a retryable error during an outage.
+      const authOrigin = process.env.NEXT_PUBLIC_SUPABASE_URL;
+      const publicKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+      if (!authOrigin || !publicKey) {
+        setSignInError("School sign-in is not configured. Please contact the Math Week team.");
+        return;
+      }
+      const response = await fetch(`${authOrigin.replace(/\/$/, "")}/auth/v1/settings`, {
+        headers: { apikey: publicKey },
+        signal: AbortSignal.timeout(8000),
+        cache: "no-store",
+      });
+      if (!response.ok) throw new Error("Authentication service unavailable");
+      const settings = await response.json();
+      if (settings.external?.azure !== true) {
+        setSignInError("Microsoft school sign-in is unavailable. Please contact the Math Week team.");
+        return;
+      }
+      const supabase = createClient();
+      const params = new URLSearchParams(window.location.search);
+      const next = params.get("next") ?? "/";
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "azure",
+        options: {
+          scopes: "email openid profile",
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
+          skipBrowserRedirect: true,
+        },
+      });
+      if (error || !data.url) throw new Error("Unable to start Microsoft sign-in");
+      window.location.assign(data.url);
+    } catch {
+      setSignInError("The school sign-in service cannot be reached. Please try again later or contact the Math Week team.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -51,6 +79,12 @@ export default function LoginPage() {
         <Suspense fallback={null}>
           <LoginError />
         </Suspense>
+
+        {signInError && (
+          <p role="alert" className="rounded-lg border border-red-800/40 bg-red-950/40 px-4 py-3 text-sm text-red-200">
+            {signInError}
+          </p>
+        )}
 
         <button
           onClick={signInWithMicrosoft}
