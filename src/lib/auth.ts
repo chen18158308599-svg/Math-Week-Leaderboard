@@ -51,7 +51,7 @@ export async function requireRole(minRole: UserRole): Promise<Profile> {
   const rank: Record<UserRole, number> = { student: 0, booth_staff: 1, admin: 2 };
 
   if (rank[profile.role] < rank[minRole]) {
-    redirect("/");
+    redirect("/my-score");
   }
 
   return profile;

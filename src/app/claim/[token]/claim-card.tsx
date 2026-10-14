@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import { claimTokenAction, type ClaimResult } from "./actions";
 
 export function ClaimCard({
@@ -31,6 +32,7 @@ export function ClaimCard({
           +{result.pointsAwarded} points!
         </div>
         <p className="text-neutral-400">{result.gameName} — nice work.</p>
+        <Link href="/my-score" className="inline-flex min-h-11 items-center text-blue-300">View my points & rank →</Link>
       </Card>
     );
   }

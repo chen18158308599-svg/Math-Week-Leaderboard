@@ -105,6 +105,10 @@ export interface Database {
       leaderboard_group: { Row: LeaderboardGroupRow; Relationships: [] };
     };
     Functions: {
+      verify_site_pin: {
+        Args: { p_digest: string; p_client_key: string };
+        Returns: { authorized: boolean; retry_after: number }[];
+      };
       set_my_nickname: {
         Args: { new_nickname: string };
         Returns: void;

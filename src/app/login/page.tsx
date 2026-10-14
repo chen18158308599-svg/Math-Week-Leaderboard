@@ -80,8 +80,8 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-neutral-950 px-6 text-neutral-100">
-      <div className="flex w-full max-w-sm flex-col items-center gap-6 text-center">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 participant-page px-6">
+      <div className="participant-card flex w-full max-w-sm flex-col items-center gap-6 text-center">
         <div>
           <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
           <Suspense fallback={<h1 className="mt-1 text-2xl font-semibold">Sign in to answer your puzzle card</h1>}>
@@ -100,6 +100,7 @@ export default function LoginPage() {
         )}
 
         <button
+          data-provider="microsoft"
           onClick={signInWithMicrosoft}
           disabled={loading}
           className="flex w-full items-center justify-center gap-3 rounded-lg border border-neutral-700 bg-white px-5 py-3 font-medium text-neutral-900 transition hover:bg-neutral-100 disabled:opacity-60"

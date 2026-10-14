@@ -34,7 +34,7 @@ export function NicknameForm({
         className="rounded-lg border border-neutral-700 bg-neutral-900 px-4 py-3 text-lg outline-none focus:border-amber-500"
       />
       <p className="text-xs text-neutral-500">
-        3-20 characters, no email or real name.
+        3-20 characters, no email or real name. Nicknames must be unique, including case variants.
       </p>
 
       {justSaved && !state.error && (
@@ -44,7 +44,7 @@ export function NicknameForm({
       )}
 
       {state.error && (
-        <p className="rounded-lg border border-red-800/40 bg-red-950/40 px-3 py-2 text-sm text-red-200">
+        <p role="alert" className="rounded-lg border border-red-800/40 bg-red-950/40 px-3 py-2 text-sm text-red-200">
           {state.error}
         </p>
       )}

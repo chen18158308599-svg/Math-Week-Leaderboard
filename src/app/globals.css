@@ -1556,3 +1556,28 @@ body {
 .kiosk-home .background-scene .bg-orbit { border-color: #173b7026; }
 @keyframes blue-orbit-drift { from { transform: translate(0, 0) rotate(0); } to { transform: translate(-30px, 18px) rotate(20deg); } }
 @media (prefers-reduced-motion: reduce) { .kiosk-home .hub-week-programme::before { animation: none; } }
+/* Student phone flows share the website's blue palette without its kiosk navigation. */
+.participant-page { position: relative; color: #202939; background: radial-gradient(ellipse at 0 0, #dfeaff, transparent 60%), radial-gradient(ellipse at 100% 100%, #eaf0ff, transparent 55%), #f7f9fc; }
+.participant-card { background: #ffffffed; border: 1px solid #d7e2f4; border-radius: 24px; padding: 30px; box-shadow: 0 16px 48px #173b7010; }
+.participant-page h1, .participant-page h2, .participant-page .font-display { color: #173b70; }
+.participant-page .text-neutral-400, .participant-page .text-neutral-500, .participant-page .text-neutral-300 { color: #667891; }
+.participant-page .bg-neutral-900 { background: #f2f6ff; }
+.participant-page .border-neutral-700, .participant-page .border-neutral-800 { border-color: #cddbf0; }
+.participant-page input { color: #202939; background: #f7faff; border-color: #cddbf0; min-height: 48px; }
+.participant-page input:focus { outline: 2px solid #4d6bfe; outline-offset: 2px; border-color: #4d6bfe; }
+.participant-page button:not([data-provider="microsoft"]):not(.participant-quiet) { background: #4d6bfe; color: white; min-height: 44px; cursor: pointer; }
+.participant-page button[data-provider="microsoft"] { background: white; color: #202939; border-color: #cddbf0; min-height: 48px; }
+.participant-page .text-blue-300 { color: #345dcc; }
+.participant-page .text-green-400 { color: #167346; }
+.participant-page .text-red-400, .participant-page [role="alert"] { color: #a33142; }
+.participant-page [class*="border-red-"] { background: #fff0f2; border-color: #efc2ca; color: #a33142; }
+.participant-page [class*="border-green-"] { background: #eef9f3; border-color: #b9e0cc; color: #167346; }
+.participant-page .bg-amber-500\/15 { background: #e9f0ff; }
+.participant-page .text-amber-500 { color: #4d6bfe; }
+.participant-page .bg-green-800\/30 { background: #e8f6ee; }
+.participant-link { display: flex; min-height: 48px; align-items: center; justify-content: center; border: 1px solid #d7e2f4; border-radius: 12px; color: #345dcc; background: #f4f7ff; }
+.my-score-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0; }
+.my-score-summary > div { padding: 20px 8px; border-radius: 16px; background: #edf3ff; }
+.my-score-summary strong { display: block; color: #173b70; font-size: 36px; }
+.my-score-summary span { display: block; color: #667891; font-size: 12px; }
+@media (max-width: 480px) { .participant-card { padding: 24px 20px; } }

@@ -11,7 +11,7 @@ export async function setNicknameAction(
   _prevState: NicknameFormState,
   formData: FormData
 ): Promise<NicknameFormState> {
-  const nickname = String(formData.get("nickname") ?? "").trim();
+  const nickname = String(formData.get("nickname") ?? "").trim().normalize("NFKC");
 
   if (nickname.length < 3 || nickname.length > 20) {
     return { error: "Nickname must be 3-20 characters." };
@@ -26,9 +26,9 @@ export async function setNicknameAction(
 
   if (error) {
     // Most likely the unique constraint on profiles.nickname.
-    const message = error.message.includes("duplicate")
+    const message = error.code === "23505" || error.message.includes("duplicate") || error.message.includes("nickname_taken")
       ? "That nickname is taken — try another."
-      : error.message;
+      : "Unable to save your nickname. Please try again.";
     return { error: message };
   }
 

@@ -10,6 +10,7 @@ import { authDestination } from "@/lib/auth-destination";
 const PUBLIC_PATHS = [
   "/",
   "/login",
+  "/site-access",
   "/auth/callback",
   "/kiosk",
   "/leaderboard",
@@ -21,7 +22,7 @@ const PUBLIC_PATHS = [
 ];
 
 // Paths where a signed-in-but-nicknameless user gets bounced to onboarding first.
-const NEEDS_NICKNAME_PREFIXES = ["/claim", "/puzzle", "/puzzles"];
+const NEEDS_NICKNAME_PREFIXES = ["/claim", "/puzzle", "/puzzles", "/my-score"];
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -34,7 +35,7 @@ export async function updateSession(request: NextRequest) {
   // Public display routes neither read a session nor require onboarding. Keep
   // remote authentication off their navigation path, including signed-in visits.
   const displayPaths = ["/", "/directory", "/games", "/leaderboard", "/stock-market", "/kiosk"];
-  if (displayPaths.includes(request.nextUrl.pathname)) {
+  if (displayPaths.includes(request.nextUrl.pathname) || request.nextUrl.pathname === "/site-access") {
     return NextResponse.next({ request });
   }
 

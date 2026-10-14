@@ -3,6 +3,7 @@ import Link from "next/link";
 import { KioskNavBar } from "./kiosk-nav-bar";
 import { IdleRedirect } from "./idle-redirect";
 import { MovingBackground } from "./moving-background";
+import { lockSite } from "@/app/site-access/actions";
 export function WeekShell({
   children,
   idleSeconds,
@@ -31,6 +32,7 @@ export function WeekShell({
       </header>
       <main className="week-content">{children}</main>
       <footer className="week-footer">
+        <form action={lockSite}><button className="cursor-pointer text-blue-600">Lock display</button></form>
         <span>19–25 October 2026 · During library opening hours</span>
         <span>MAT × XMUM Library · Math Week 2026</span>
       </footer>

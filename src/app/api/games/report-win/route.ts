@@ -3,6 +3,8 @@ import { randomBytes } from "crypto";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { Game, Profile } from "@/lib/supabase/types";
+import { cookies } from "next/headers";
+import { SITE_ACCESS_COOKIE, validSiteAccessToken } from "@/lib/site-access";
 
 const CLAIM_TOKEN_TTL_SECONDS = 25;
 
@@ -43,7 +45,9 @@ export async function POST(request: Request) {
   let issuedBy: string | null = null;
 
   if (game.type === "digital") {
-    // Anonymous is fine — this is the station's own win bridge.
+    if (!validSiteAccessToken((await cookies()).get(SITE_ACCESS_COOKIE)?.value)) {
+      return NextResponse.json({ error: "Event display password required" }, { status: 403 });
+    }
   } else if (game.type === "physical") {
     const supabase = await createClient();
     const {

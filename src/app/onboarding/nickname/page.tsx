@@ -11,8 +11,8 @@ export default async function NicknameOnboardingPage({
   const profile = await requireUser(authDestination(next));
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-neutral-950 px-6 text-neutral-100">
-      <div className="w-full max-w-sm text-center">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 participant-page px-6">
+      <div className="participant-card w-full max-w-sm text-center">
         <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
         <h1 className="mt-1 text-2xl font-semibold">Welcome! Pick a nickname</h1>
         <p className="mt-3 text-sm text-neutral-400">

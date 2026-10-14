@@ -11,7 +11,7 @@ export default async function ClaimPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const profile = await requireUser(); // middleware already enforces login + nickname
+  const profile = await requireUser(`/claim/${token}`);
 
   const admin = createAdminClient();
   const { data: claim } = await admin
@@ -58,9 +58,9 @@ export default async function ClaimPage({
 
 function Shell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-neutral-950 px-6 text-neutral-100">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 participant-page px-6">
       <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
-      <div className="w-full max-w-sm">{children}</div>
+      <div className="participant-card w-full max-w-sm">{children}</div>
     </main>
   );
 }

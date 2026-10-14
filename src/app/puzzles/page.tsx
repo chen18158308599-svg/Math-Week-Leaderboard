@@ -21,8 +21,8 @@ export default async function CardPuzzlesPage() {
     .returns<PuzzleLink[]>();
   const cards = (data ?? []).filter(row => /^00000000-0000-0000-0000-0000000003\d{2}$/.test(row.games.id))
     .sort((a, b) => a.games.id.localeCompare(b.games.id));
-  return <main className="min-h-screen bg-neutral-950 px-6 py-10 text-neutral-100">
-    <div className="mx-auto max-w-lg">
+  return <main className="min-h-screen participant-page px-6 py-10">
+    <div className="participant-card mx-auto max-w-lg">
       <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
       <h1 className="mt-2 text-2xl font-semibold">Choose your puzzle card</h1>
       <p className="mt-3 text-sm text-neutral-400">Scan the QR on your printed card to open its answer page directly, or choose its number below. The full question is on the printed card.</p>
@@ -35,7 +35,7 @@ export default async function CardPuzzlesPage() {
           </Link>
         </li>)}
       </ol>}
-      <Link href="/leaderboard" className="mt-8 inline-flex min-h-11 items-center text-sm text-blue-300">View leaderboard →</Link>
+      <Link href="/my-score" className="mt-8 inline-flex min-h-11 items-center text-sm text-blue-300">View my points & rank →</Link>
     </div>
   </main>;
 }

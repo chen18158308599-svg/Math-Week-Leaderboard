@@ -37,9 +37,9 @@ export default async function PuzzlePage({
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-neutral-950 px-6 text-neutral-100">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 participant-page px-6">
       <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
-      <div className="w-full max-w-sm text-center">
+      <div className="participant-card w-full max-w-sm text-center">
         <p className="text-xs text-neutral-500">{game.name}</p>
         {/* Deliberately short — the full question/context lives on the printed card,
             never here. See website_prompt.md's "Questions Module Changes". */}
@@ -56,7 +56,7 @@ export default async function PuzzlePage({
 
 function Message({ title, body }: { title: string; body: string }) {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-6 bg-neutral-950 px-6 text-center text-neutral-100">
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 participant-page px-6 text-center">
       <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
       <p className="font-display text-2xl font-bold">{title}</p>
       <p className="text-neutral-400">{body}</p>
