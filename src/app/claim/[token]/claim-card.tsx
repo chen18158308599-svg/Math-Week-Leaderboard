@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { CompletedGame } from "@/components/completed-game";
 import { claimTokenAction, type ClaimResult } from "./actions";
 
 export function ClaimCard({
@@ -9,11 +10,13 @@ export function ClaimCard({
   gameName,
   pointsValue,
   nickname,
+  completed = false,
 }: {
   token: string;
   gameName: string;
   pointsValue: number;
   nickname: string;
+  completed?: boolean;
 }) {
   const [result, setResult] = useState<ClaimResult>({ status: "idle" });
   const [pending, startTransition] = useTransition();
@@ -22,6 +25,10 @@ export function ClaimCard({
     startTransition(async () => {
       setResult(await claimTokenAction(token));
     });
+  }
+
+  if (result.status === "already_completed" || (completed && result.status !== "success")) {
+    return <CompletedGame />;
   }
 
   if (result.status === "success") {

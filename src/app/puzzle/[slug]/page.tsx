@@ -11,7 +11,7 @@ export default async function PuzzlePage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  await requireUser(`/puzzle/${slug}`); // preserve the card even if session expires
+  const profile = await requireUser(`/puzzle/${slug}`); // preserve the card even if session expires
 
   const admin = createAdminClient();
   const { data: puzzle } = await admin
@@ -36,6 +36,17 @@ export default async function PuzzlePage({
     return <Message title="Puzzle not available" body="Ask staff for help." />;
   }
 
+  const { data: submission, error: submissionError } = await admin
+    .from("submissions")
+    .select("id")
+    .eq("user_id", profile.id)
+    .eq("game_id", game.id)
+    .maybeSingle()
+    .returns<{ id: string }>();
+  if (submissionError) {
+    return <Message title="Temporarily unavailable" body="We couldn't check your progress. Please try again." />;
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 participant-page px-6">
       <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
@@ -47,7 +58,7 @@ export default async function PuzzlePage({
           {puzzle.prompt ?? "Enter the answer from the card."}
         </p>
         <div className="mt-6">
-          <AnswerForm slug={slug} gameName={game.name} />
+          <AnswerForm slug={slug} gameName={game.name} completed={!!submission} />
         </div>
       </div>
     </main>

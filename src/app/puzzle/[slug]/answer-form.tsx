@@ -2,9 +2,18 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { CompletedGame } from "@/components/completed-game";
 import { submitPuzzleAnswerAction, type PuzzleAnswerResult } from "./actions";
 
-export function AnswerForm({ slug, gameName }: { slug: string; gameName: string }) {
+export function AnswerForm({
+  slug,
+  gameName,
+  completed = false,
+}: {
+  slug: string;
+  gameName: string;
+  completed?: boolean;
+}) {
   const [answer, setAnswer] = useState("");
   const [result, setResult] = useState<PuzzleAnswerResult>({ status: "idle" });
   const [pending, startTransition] = useTransition();
@@ -17,14 +26,17 @@ export function AnswerForm({ slug, gameName }: { slug: string; gameName: string 
     });
   }
 
+  // Preserve the immediate first-win message while a revalidation updates the page.
+  if (result.status === "already_completed" || (completed && result.status !== "correct")) {
+    return <CompletedGame />;
+  }
+
   if (result.status === "correct") {
     return (
       <div className="flex flex-col items-center gap-2 text-center">
         <div className="font-display text-3xl font-bold text-green-400">Correct!</div>
         <p className="text-neutral-400">
-          {result.pointsAwarded > 0
-            ? `+${result.pointsAwarded} points — ${result.gameName}`
-            : "You already solved this one — no extra points, but nicely done."}
+          +{result.pointsAwarded} points — {result.gameName}
         </p>
         <Link href="/my-score" className="mt-4 inline-flex min-h-11 items-center text-blue-300">View my points & rank →</Link>
         <Link href="/puzzles" className="inline-flex min-h-11 items-center text-sm text-neutral-400">Choose another card</Link>

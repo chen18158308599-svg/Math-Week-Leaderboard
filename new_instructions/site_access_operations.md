@@ -21,6 +21,29 @@ The database stores only a keyed PIN digest; only the server service role can re
 
 Nickname creation and editing use the same database function. A unique normalized index enforces uniqueness atomically, including case, full-width compatibility variants and surrounding spaces. Existing names were checked for conflicts before installing the index; no existing names were renamed. The UI gives a clear duplicate-name error.
 
+## Completed games and points
+
+Each registered game can award points only once per school account. Completion is
+keyed by the Supabase user UUID and the registered game UUID, not by nickname,
+browser, device, answer, QR token or attempt. Different cards remain separate games
+and can each award points. Logging out, changing a nickname, rescanning a card or
+winning again with a fresh claim QR cannot reset completion.
+
+Card answer pages and claim pages show **Already completed** for an existing winner
+and remove the submission/claim control. Database RPCs also reject completed games
+before grading another answer or consuming another token. Both scoring paths lock
+the participant's row while checking completion and recording a win; the existing
+unique `(user_id, game_id)` constraint is the final protection against duplicate
+awards. Failed attempts before a win retain the existing three-attempt limit.
+Historical points are retained. This rule is installed by migration
+`supabase/migrations/0009_completed_games.sql`.
+
+The separately hosted teammate game must use this same registered game identity
+for repeat plays and honor the shared receiver's `already_scored` / zero-award
+receipt. The agreed handoff already requires this rule; a separate Google Sheet
+or a newly generated result/session/QR ID cannot be treated as permission to award
+another win for the same player and game.
+
 ## External game boundary
 
 This PIN protects the Math Week host website and its local digital-claim entry point. It cannot protect a separately hosted game's direct URL. The digital/stock-game owner must validate authorized screen/play sessions on their own backend to prevent independent play or forged score submissions there.

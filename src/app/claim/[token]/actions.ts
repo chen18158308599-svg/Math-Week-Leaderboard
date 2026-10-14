@@ -1,9 +1,11 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export type ClaimResult =
   | { status: "idle" }
+  | { status: "already_completed" }
   | { status: "success"; gameName: string; pointsAwarded: number }
   | { status: "error"; message: string };
 
@@ -11,7 +13,6 @@ const ERROR_MESSAGES: Record<string, string> = {
   invalid_token: "This code isn't valid. Ask staff for help.",
   already_claimed: "This code was already claimed.",
   expired_token: "This code expired — ask staff for a new one.",
-  already_scored: "You've already scored this game.",
   not_authenticated: "Sign in first, then try again.",
 };
 
@@ -30,6 +31,7 @@ export async function claimTokenAction(token: string): Promise<ClaimResult> {
   };
 
   if (error) {
+    if (error.message === "already_scored") return { status: "already_completed" };
     const message = ERROR_MESSAGES[error.message] ?? "Something went wrong. Try again.";
     return { status: "error", message };
   }
@@ -38,6 +40,10 @@ export async function claimTokenAction(token: string): Promise<ClaimResult> {
   if (!row) {
     return { status: "error", message: "Something went wrong. Try again." };
   }
+
+  revalidatePath(`/claim/${token}`);
+  revalidatePath("/puzzles");
+  revalidatePath("/my-score");
 
   return {
     status: "success",

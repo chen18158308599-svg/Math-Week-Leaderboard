@@ -467,6 +467,19 @@ Identical retry → HTTP `200`, `data.status: duplicate`, same original receipt/
 
 **Already-scored player:** a valid NEW session/result still returns `201 accepted` and completes, but receipt has `award_outcome: already_scored`, `points_awarded: 0`. Submitted points remain configured win value. This is successful synchronization, not a retryable error. Display “You already earned points for this game,” not the submitted amount. Identical replay returns `200 duplicate` and that same zero-award receipt. Distinct result IDs do not bypass the scoring limit.
 
+**Repeat-win requirement:** once a participant succeeds and earns points for a
+registered game, further wins in that game must never increase their leaderboard
+total. Keep the same registered game UUID/key for every replay; never create a new
+game identity to represent an attempt. Completion follows the shared Supabase user
+UUID, including after logout/login, a nickname change, a new QR, a new session,
+or a switch of device/browser. Other registered games can still award their own
+points. The owner's current card-answer and claim-token scoring enforce this rule
+in the database and show “Already completed” on return visits. Your separate game
+must enforce the agreed receiver contract above and show the receipt's actual
+award. Its own Sheet/local score counter must not independently add another
+leaderboard award for the repeat win. The owner API endpoints described here still
+require implementation and verification before launch.
+
 Result records are immutable. Display actual `receipt.points_awarded`; do not claim success based only on a Sheet write or posted request.
 
 Receipt JSON in section 10 is the exact success shape; no live aggregate total or ranking position is promised in that response. Those are calculated by the owner's leaderboard. Participants with zero-award receipts are not newly credited. A receiver transaction must not mark a session completed without durably storing its receipt, even if no new award is created.

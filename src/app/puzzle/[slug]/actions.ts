@@ -1,9 +1,11 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 
 export type PuzzleAnswerResult =
   | { status: "idle" }
+  | { status: "already_completed" }
   | { status: "correct"; gameName: string; pointsAwarded: number }
   | { status: "incorrect"; attemptsLeft: number }
   | { status: "locked" }
@@ -42,6 +44,7 @@ export async function submitPuzzleAnswerAction(
   };
 
   if (error) {
+    if (error.message === "already_scored") return { status: "already_completed" };
     const message = ERROR_MESSAGES[error.message] ?? "Something went wrong. Try again.";
     return { status: "error", message };
   }
@@ -57,6 +60,11 @@ export async function submitPuzzleAnswerAction(
     }
     return { status: "incorrect", attemptsLeft: row.attempts_left };
   }
+
+  if (row.points_awarded === 0) return { status: "already_completed" };
+  revalidatePath(`/puzzle/${slug}`);
+  revalidatePath("/puzzles");
+  revalidatePath("/my-score");
 
   return {
     status: "correct",

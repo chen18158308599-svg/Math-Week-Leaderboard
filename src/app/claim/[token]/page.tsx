@@ -24,15 +24,6 @@ export default async function ClaimPage({
   if (!claim) {
     return <Message title="Invalid code" body="Ask staff for help." />;
   }
-  if (claim.used_at) {
-    return <Message title="Already claimed" body="This code has already been used." />;
-  }
-  if (new Date(claim.expires_at) < new Date()) {
-    return (
-      <Message title="Expired" body="This code expired — ask staff for a new one." />
-    );
-  }
-
   const { data: game } = await admin
     .from("games")
     .select("*")
@@ -44,6 +35,23 @@ export default async function ClaimPage({
     return <Message title="Invalid code" body="Ask staff for help." />;
   }
 
+  const { data: submission, error: submissionError } = await admin
+    .from("submissions")
+    .select("id")
+    .eq("user_id", profile.id)
+    .eq("game_id", game.id)
+    .maybeSingle()
+    .returns<{ id: string }>();
+  if (submissionError) {
+    return <Message title="Temporarily unavailable" body="We couldn't check your progress. Please try again." />;
+  }
+  if (!submission && claim.used_at) {
+    return <Message title="Already claimed" body="This code has already been used." />;
+  }
+  if (!submission && new Date(claim.expires_at) < new Date()) {
+    return <Message title="Expired" body="This code expired — ask staff for a new one." />;
+  }
+
   return (
     <Shell>
       <ClaimCard
@@ -51,6 +59,7 @@ export default async function ClaimPage({
         gameName={game.name}
         pointsValue={game.points_value}
         nickname={profile.nickname ?? ""}
+        completed={!!submission}
       />
     </Shell>
   );
