@@ -883,3 +883,9 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
  GET / 200 in 1352ms (next.js: 183ms, proxy.ts: 174ms, application-code: 995ms)
  GET /games 200 in 77ms (next.js: 16ms, proxy.ts: 8ms, application-code: 53ms)
  GET / 200 in 29ms (next.js: 5ms, proxy.ts: 6ms, application-code: 18ms)
+✓ Compiled in 172ms
+ GET /login?next=%2Fadmin 200 in 79ms (next.js: 12ms, proxy.ts: 5ms, application-code: 61ms)
+ GET / 200 in 73ms (next.js: 12ms, proxy.ts: 32ms, application-code: 29ms)
+ GET /my-score 200 in 480ms (next.js: 71ms, proxy.ts: 372ms, application-code: 37ms)
+ GET /admin/games 200 in 470ms (next.js: 13ms, proxy.ts: 357ms, application-code: 99ms)
+✓ Compiled in 449ms

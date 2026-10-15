@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import stockPreview from "../../assets/stock.png";
 import Market from "./stock-market/market";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -93,8 +92,12 @@ export function MainHub({ eventDate }: { eventDate: string }) {
       <div className="hub-detail"><span className="week-eyebrow">{game.date === date ? "TODAY'S GAME" : "GAME PREVIEW"} · {game.date.slice(8)} OCT</span><h3>{gameName}</h3>{large && <p>{game.description}</p>}<span className="hub-action">Tap to play <span className="hub-play-arrow" aria-hidden="true">→</span></span></div>
     </>;
     if (panel === "market") return <>
-      <div className="hub-media"><Image src={stockPreview} alt="MAT Stock Market interface preview" sizes={large ? "65vw" : "22vw"} /></div>
-      <div className="hub-detail"><span className="hub-status">COMING SOON</span><h3>MAT Stock Market</h3>{large && <p>Explore price changes, transaction fees and investment decisions in a planned simulated trading activity.</p>}<span className="hub-action">View details →</span></div>
+      <div className="hub-market-preview" aria-label="MAT Exchange preview: three stocks starting at MC 100">
+        <div className="market-preview-heading"><strong>▥ MAT EXCHANGE</strong><span>Math Coin · MC</span></div>
+        <div className="market-preview-balance"><div><span>Available cash</span><strong>MC 5,000.00</strong></div><div><span>Total assets</span><strong>MC 5,000.00</strong></div></div>
+        <div className="market-preview-stocks">{[{ code: "LIB", name: "Library Footfall", icon: "↗" }, { code: "BOOK", name: "Book Borrowing", icon: "▤" }, { code: "DONA", name: "Book Donations", icon: "◇" }].map(stock => <div key={stock.code}><span className="market-preview-symbol">{stock.icon}</span><b>{stock.code}</b><small>{stock.name}</small><strong>MC 100.00</strong><span className="market-preview-initial">Initial price</span><svg viewBox="0 0 140 30" aria-hidden="true"><path d="M0 8H140 M0 26H140" stroke="#e2e8da" strokeDasharray="3 4"/><path d="M0 17H140" stroke="#176b52" strokeWidth="2"/><circle cx="135" cy="17" r="3" fill="#176b52"/></svg></div>)}</div>
+      </div>
+      <div className="hub-detail"><span className="hub-status">EXPLORE THE MARKET</span><h3>MAT Stock Market</h3>{large && <p>Three stocks. Seven days. Invest Math Coins and follow the clues.</p>}<span className="hub-action">Open trading terminal →</span></div>
     </>;
     return <div className="hub-ranking"><span className="week-eyebrow"><span className="live-dot" /> LIVE SCORES</span>{large && <h3>Math Week&apos;s top players</h3>}<div className="hub-ranking-rows">{loading ? <p role="status">Loading scores…</p> : rows.length ? rows.slice(0, large ? 5 : 3).map((row, i) => <div key={row.key}><span className="hub-rank">{String(i + 1).padStart(2, "0")}</span><span className="hub-player" title={row.label}>{row.label}</span><strong><LiveScore points={row.total_points} /><small> pts</small></strong></div>) : <p>Scores will appear as students play.</p>}</div><span className="hub-action">Full leaderboard →</span></div>;
   }
