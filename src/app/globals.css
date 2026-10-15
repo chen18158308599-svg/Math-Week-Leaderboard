@@ -1581,3 +1581,15 @@ body {
 .my-score-summary strong { display: block; color: #173b70; font-size: 36px; }
 .my-score-summary span { display: block; color: #667891; font-size: 12px; }
 @media (max-width: 480px) { .participant-card { padding: 24px 20px; } }
+
+/* Stock market opens inside the event hub; closing restores the original hub. */
+.market-embed-dialog { position: fixed; inset: 0; margin: auto; width: min(1440px, 98vw); max-width: 98vw; height: 94dvh; max-height: 94dvh; padding: 0; border: 1px solid #35475b; border-radius: 12px; background: #0c1119; color: #dce7f3; overflow: auto; }
+.market-embed-dialog::backdrop { background: #07101ed9; backdrop-filter: blur(6px); }
+.market-embed-bar { display: flex; align-items: center; justify-content: space-between; padding: 10px 22px; background: #1c293a; color: #9fb2ca; font-size: 10px; letter-spacing: 1px; }
+.market-embed-bar button { color: white; border: 1px solid #53657d; border-radius: 5px; padding: 8px 14px; cursor: pointer; letter-spacing: 0; font-size: 12px; }
+.market-embed-bar button:focus-visible { outline: 2px solid #40d9ac; outline-offset: 2px; }
+.market-embed-dialog { background: #f7f7f2; color: #294d3e; border-color: #d4dfcd; }
+.market-embed-dialog::backdrop { background: #263b2d99; }
+.market-embed-bar { background: #e9eee2; color: #55704c; border-bottom: 1px solid #d4dfcd; }
+.market-embed-bar button { background: #fffefa; color: #294d3e; border-color: #bfceb4; }
+.market-embed-bar button:focus-visible { outline-color: #176b52; }

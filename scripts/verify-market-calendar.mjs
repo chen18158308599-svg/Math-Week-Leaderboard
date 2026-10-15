@@ -1,0 +1,30 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { createRequire } from "node:module";
+import vm from "node:vm";
+const require = createRequire(import.meta.url);
+const ts = require("typescript");
+const source = readFileSync(new URL("../src/lib/stock-market/calendar.ts", import.meta.url), "utf8");
+const output = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
+const context = { exports: {}, Intl, Date };
+vm.runInNewContext(output, context);
+const calendar = iso => context.exports.marketCalendar(new Date(iso));
+for (const iso of ["2026-10-01T00:00:00Z", "2026-10-18T15:59:59Z"]) {
+  const value = calendar(iso);
+  assert.equal(value.date, "2026-10-19"); assert.equal(value.day, 1);
+  assert.equal(value.preview, true); assert.equal(value.phase, "open");
+}
+assert.equal(calendar("2026-10-18T16:00:00Z").preview, false);
+assert.equal(calendar("2026-10-18T16:00:00Z").phase, "upcoming");
+assert.equal(calendar("2026-10-19T00:59:59Z").phase, "upcoming");
+assert.equal(calendar("2026-10-19T01:00:00Z").phase, "open");
+assert.equal(calendar("2026-10-19T13:59:59Z").phase, "open");
+assert.equal(calendar("2026-10-19T14:00:00Z").phase, "closed");
+assert.equal(calendar("2026-10-19T16:00:00Z").day, 2);
+assert.equal(calendar("2026-10-24T01:00:00Z").close, "17:00");
+assert.equal(calendar("2026-10-24T08:59:59Z").phase, "open");
+assert.equal(calendar("2026-10-24T09:00:00Z").phase, "closed");
+assert.equal(calendar("2026-10-25T09:00:00Z").day, 7);
+assert.equal(calendar("2026-10-25T16:00:00Z").phase, "ended");
+assert.equal(calendar("2026-11-01T00:00:00Z").day, 7);
+console.log("Market calendar: preview, Malaysia midnight, opening, closing, weekends and final-day boundaries passed.");
