@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { IdleRedirect } from "@/components/idle-redirect";
 import { useEffect, useRef, useState } from "react";
 import s from "./market.module.css";
 import type { MarketCalendar } from "@/lib/stock-market/calendar";
@@ -18,7 +20,8 @@ const stocks: { code: Code; name: [string, string]; description: [string, string
 const initialHoldings = (): Record<Code, number> => ({ LIB: 0, BOOK: 0, DONA: 0 });
 const money = (n: number) => `$${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-export default function Market() {
+export default function Market({ onReturnHome }: { onReturnHome?: () => void } = {}) {
+  const router = useRouter();
   const [zh, setZh] = useState(false);
   const t = (en: string, cn: string) => zh ? cn : en;
   const [tab, setTab] = useState("market");
@@ -48,8 +51,6 @@ export default function Market() {
   const [dialog, setDialog] = useState<"guide" | "result" | "trade" | null>(null);
   const [order, setOrder] = useState<{ code: Code; side: "buy" | "sell" }>({ code: "LIB", side: "buy" });
   const [quantity, setQuantity] = useState("1");
-  const [warning, setWarning] = useState<number | null>(null);
-  const lastInput = useRef(0);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const savedDemo = useRef<{ cash: number; holdings: Record<Code, number>; trades: Trade[] } | null>(null);
   const submitting = useRef(false);
@@ -84,22 +85,11 @@ export default function Market() {
     setActive(true); setDialog(null); setQuantity("1");
   };
   const todayTrades = trades.filter(trade => trade.date === calendar?.date);
-  const finish = () => { setActive(false); setCash(5000); setHoldings(initialHoldings()); setTrades([]); setDialog(null); setWarning(null); setQuantity("1"); };
+  const finish = () => { setActive(false); setCash(5000); setHoldings(initialHoldings()); setTrades([]); setDialog(null); setQuantity("1"); };
   useEffect(() => {
-    if (!active) return;
-    lastInput.current = Date.now();
-    const input = () => { lastInput.current = Date.now(); };
-    window.addEventListener("pointerdown", input); window.addEventListener("keydown", input);
-    const timer = window.setInterval(() => {
-      const seconds = Math.floor((Date.now() - lastInput.current) / 1000);
-      if (seconds >= 75) finish(); else setWarning(seconds >= 60 ? 75 - seconds : null);
-    }, 1000);
-    return () => { clearInterval(timer); window.removeEventListener("pointerdown", input); window.removeEventListener("keydown", input); };
-  }, [active]);
-  useEffect(() => {
-    if (dialog || warning !== null) { if (!dialogRef.current?.open) dialogRef.current?.showModal(); }
+    if (dialog) { if (!dialogRef.current?.open) dialogRef.current?.showModal(); }
     else dialogRef.current?.close();
-  }, [dialog, warning]);
+  }, [dialog]);
   useEffect(() => {
     if (dialog !== "result" || todayTrades.length !== 3) return;
     const timeout = setTimeout(finish, 10000); return () => clearTimeout(timeout);
@@ -126,6 +116,7 @@ export default function Market() {
   };
   const openTrade = (code: Code, side: "buy" | "sell") => { submitting.current = false; setOrder({ code, side }); setQuantity("1"); setDialog("trade"); };
   return <div className={s.page} lang={zh ? "zh-CN" : "en"}>
+    <IdleRedirect seconds={30} onIdle={() => { finish(); if (onReturnHome) onReturnHome(); else router.replace("/"); }} />
     <header className={s.header}>
       <div className={s.terminalBrand}><span className={s.blue}>▥</span> MAT <strong>EXCHANGE</strong><small>{t("Virtual currency · $", "虚拟货币 · $")}</small></div>
       <div className={s.languages} aria-label={t("Language", "语言")}><button aria-pressed={!zh} onClick={() => setZh(false)}>EN</button><button aria-pressed={zh} onClick={() => setZh(true)}>中文</button></div>
@@ -167,14 +158,12 @@ export default function Market() {
       </> : <section className={s.ranking}><span className={s.eyebrow}>{t("SEVEN DAYS. YOUR STRATEGY.", "七天挑战，你的策略。")}</span><h2>{t("Market leaderboard", "市场排行榜")}</h2><p>{t("Ranked by total assets. Equal values share a rank.", "按总资产排名，相同金额并列。")}</p><div className={s.row}><span>{t("Rank", "名次")}</span><span>{t("Player", "玩家")}</span><span>{t("Total assets", "总资产")}</span></div>{settlement && active ? <div className={s.row}><b>1</b><span>{t("Demo investor (this browser only)", "演示玩家（仅当前浏览器）")}</span><strong>{money(assets)}</strong></div> : <div className={s.empty}>◇<h3>{t("The first chapter starts soon.", "排名即将开启。")}</h3><p>{t("Daily rankings will appear after the first settlement.", "首次结算后，将在这里公布每日排名。")}</p></div>}<Link href="/leaderboard" className={s.quiet}>{t("View activity points leaderboard", "查看活动积分榜")} ↗</Link></section>}
       <footer className={s.footer}><span>MAT × XMUM LIBRARY</span><span>{t("Virtual currency · Simulation", "虚拟投资，真实探索。")}</span></footer>
     </main>
-    <dialog ref={dialogRef} className={s.modal} onCancel={e => { e.preventDefault(); if (warning === null) setDialog(null); }}>
+    <dialog ref={dialogRef} className={s.modal} onCancel={e => { e.preventDefault(); setDialog(null); }}>
       {storageError && <p className={s.notice} role="alert">{t("Unable to read or save demo data. Check browser storage.", "演示数据无法读取或保存，请检查浏览器存储。")}</p>}
-      {warning !== null ? <><span className={s.eyebrow}>{t("SESSION PAUSED", "会话已暂停")}</span><h2>{t("Still there?", "还在操作吗？")}</h2><p>{t(`Signing out in ${warning} seconds.`, `${warning}秒后将自动退出。`)}</p><div className={s.actions}><button className={s.primary} onClick={() => { lastInput.current = Date.now(); setWarning(null); }}>{t("Keep going", "继续操作")}</button><button onClick={finish}>{t("Sign out now", "立即退出")}</button></div></> : <>
       <button className={s.close} aria-label={t("Close", "关闭")} onClick={() => setDialog(null)}>×</button>
       {dialog === "guide" && <><span className={s.eyebrow}>{t("THE MARKET BRIEF", "市场指南")}</span><h2>{t("Start small. Think ahead.", "从观察开始。")}</h2><p>{t("Start with $5,000 virtual cash. Buy and sell three library-inspired stocks. Your total assets decide your final rank after seven days.", "你有 $5,000 虚拟资金，可买卖三只股票。七天结束后按总资产排名。")}</p><ol><li>{t("Read the clues and explore each stock.", "阅读提示，了解股票。")}</li><li>{t("Visit the library to trade. One buy or sell per stock each day.", "到图书馆交易，每只股票每天只能买入或卖出一次。")}</li><li>{t("Keep your holdings if you make no trade. No fees.", "不操作就继续持有，不收手续费。")}</li><li>{t("Check back after daily settlement for your rank.", "每日结算后查看资产和排名。")}</li></ol><button className={s.primary} onClick={() => setDialog(null)}>{t("Got it", "明白了")}</button></>}
       {dialog === "trade" && <><span className={s.eyebrow}>{t("PRACTICE ORDER", "练习交易")}</span><h2>{order.side === "buy" ? t("Buy", "买入") : t("Sell", "卖出")} {order.code}</h2><label className={s.quantity}>{t("Quantity (whole units)", "数量（整数）")}<input autoFocus type="number" min="1" step="1" value={quantity} onChange={e => setQuantity(e.target.value)}/></label><div className={s.row}><span>{t("Price per unit", "每单位")}</span><b>{money(unitPrice)}</b></div><div className={s.row}><span>{t("Total · No fees", "总金额 · 无手续费")}</span><b>{money(valid ? total : 0)}</b></div><div className={s.row}><span>{t("Cash after trade", "交易后现金")}</span><b>{valid ? money(cash + (order.side === "buy" ? -total : total)) : "—"}</b></div><div className={s.row}><span>{t("Units after trade", "交易后持有")}</span><b>{valid ? holdings[order.code] + (order.side === "buy" ? units : -units) : "—"}</b></div><p className={s.notice}>{!valid ? t("Enter a whole number of at least 1.", "请输入至少1的整数。") : !canTrade ? t("Trading is unavailable, or cash / holdings are insufficient.", "当前不可交易，或现金／持仓不足。") : t("Once confirmed, you cannot trade this stock again today.", "确认后，今天不能再买卖这只股票。")}</p><button className={s.primary} disabled={!canTrade} onClick={submit}>{t("Confirm", "确认")} {order.side === "buy" ? t("buy", "买入") : t("sell", "卖出")}</button></>}
       {dialog === "result" && <><span className={s.eyebrow}>{t("PRACTICE COMPLETE", "练习成交")}</span><h2>{t("Your move is made.", "交易成功。")}</h2><p>{order.code} · {order.side === "buy" ? t("Bought", "买入") : t("Sold", "卖出")} {quantity} {t("units", "单位")} · {money(total)}</p><button className={s.primary} onClick={finish}>{t("Finish & sign out", "结束并退出")}</button><button className={s.quiet} onClick={() => setDialog(null)}>{t("Continue with other stocks", "继续交易其他股票")}</button>{todayTrades.length === 3 && <p>{t("All daily trades used. Signing out automatically in 10 seconds.", "今日交易机会已用完，10秒后自动退出。")}</p>}</>}
-      </>}
     </dialog>
   </div>;
 }

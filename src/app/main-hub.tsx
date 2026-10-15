@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import Image from "next/image";
 import Market from "./stock-market/market";
 import Link from "next/link";
@@ -104,7 +104,7 @@ export function MainHub({ eventDate }: { eventDate: string }) {
   return <WeekShell kioskHome>
     <dialog ref={marketDialog} className="market-embed-dialog" onCancel={() => setMarketOpen(false)} onClose={() => setMarketOpen(false)}>
       <div className="market-embed-bar"><span>MAT STOCK MARKET</span><button onClick={() => setMarketOpen(false)}>Close / 关闭 ×</button></div>
-      {marketOpen && <Market />}
+      {marketOpen && <Market onReturnHome={() => setMarketOpen(false)} />}
     </dialog>
     <div className="hub-toolbar"><div><span className="live-dot" /> ALL OF MATH WEEK, AT A GLANCE</div><div><span>{paused ? "Paused" : `Next display in ${remaining}s`}</span><button onClick={() => setPaused(value => !value)}>{paused ? "Resume" : "Pause"}</button></div></div>
     <section ref={windows} className="hub-windows" aria-label="Math Week activities">
