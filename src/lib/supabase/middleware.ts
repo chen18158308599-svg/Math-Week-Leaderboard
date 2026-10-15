@@ -35,7 +35,7 @@ export async function updateSession(request: NextRequest) {
   // Public display routes neither read a session nor require onboarding. Keep
   // remote authentication off their navigation path, including signed-in visits.
   const displayPaths = ["/", "/directory", "/games", "/leaderboard", "/stock-market", "/kiosk"];
-  if (displayPaths.includes(request.nextUrl.pathname) || request.nextUrl.pathname === "/site-access" || request.nextUrl.pathname === "/api/stock-market/status") {
+  if (displayPaths.includes(request.nextUrl.pathname) || request.nextUrl.pathname === "/site-access" || request.nextUrl.pathname === "/api/stock-market/status" || request.nextUrl.pathname === "/api/stock-market/demo-settlement") {
     return NextResponse.next({ request });
   }
 
