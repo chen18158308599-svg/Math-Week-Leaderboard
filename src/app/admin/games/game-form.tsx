@@ -30,7 +30,7 @@ export function GameForm({
           <option value="">None (physical / card / legacy)</option>
           {["average", "conway", "deal", "knn", "sequence", "planarity", "symmetry"].map(key => <option key={key} value={key}>{key}</option>)}
         </select>
-        <p className="text-xs text-neutral-400">Digital results award the final gameplay score. Average stores the selected number with points pending.</p>
+        <p className="text-xs text-neutral-400">Digital results convert gameplay scores to 0-19 claim points. Average stores the selected number with points pending.</p>
       </Field>
       <Field label="POINTS">
         <input

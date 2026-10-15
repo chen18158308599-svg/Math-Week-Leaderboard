@@ -5,6 +5,8 @@ import vm from "node:vm";
 import ts from "typescript";
 import { PGlite } from "@electric-sql/pglite";
 const require = createRequire(import.meta.url);
+const scaling = {};
+vm.runInNewContext(ts.transpileModule(readFileSync(new URL('../src/lib/digital-points.ts', import.meta.url),'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, {exports: scaling});
 const db = new PGlite();
 await db.exec(`
 create role anon; create role authenticated;
@@ -17,6 +19,22 @@ create table submissions(id uuid primary key default gen_random_uuid(), user_id 
 `);
 await db.exec(readFileSync(new URL('../supabase/migrations/0010_digital_result_claims.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0011_digital_claim_hard_expiry.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0012_digital_points_scaling.sql', import.meta.url), 'utf8'));
+for (const [key, target] of Object.entries(scaling.DIGITAL_SCORE_TARGETS)) {
+  assert.equal(scaling.digitalClaimPoints(key,target),19);
+  assert.equal((await db.query('select digital_claim_points($1,$2) as points',[key,target])).rows[0].points,19);
+  assert.equal(scaling.digitalClaimPoints(key,target-1),18);
+}
+for (const key of [...Object.keys(scaling.DIGITAL_SCORE_TARGETS), 'average']) {
+  let previous = 0;
+  for (const raw of [0, 1, 50, 215, 1394, 5000, 10000, 100000]) {
+    const points = scaling.digitalClaimPoints(key, raw);
+    assert.ok(points >= previous && points >= 0 && points < 20);
+    assert.equal((await db.query('select digital_claim_points($1,$2) as points',[key,raw])).rows[0].points,points);
+    previous = points;
+  }
+}
+
 const user1 = '00000000-0000-4000-8000-000000000001';
 const user2 = '00000000-0000-4000-8000-000000000002';
 await db.query('insert into profiles values ($1),($2)', [user1,user2]);
@@ -55,6 +73,7 @@ const source = ts.transpileModule(readFileSync(new URL('../src/app/api/games/cla
 vm.runInNewContext(source, { exports, URL, Date, Object, JSON, require: name => {
   if (name === 'next/server') return { NextResponse: { json: (value, init) => Response.json(value, init) } };
   if (name === 'next/headers') return { cookies: async () => ({ get: () => ({ value: 'display' }) }) };
+  if (name.endsWith('/digital-points')) return scaling;
   if (name.endsWith('/admin')) return { createAdminClient: () => ({ from: table }) };
   if (name.endsWith('/site-access')) return { SITE_ACCESS_COOKIE: 'access', validSiteAccessToken: () => authorized };
   if (name.endsWith('/event-date')) return { todayInEventTimezone: () => '2026-10-15' };
@@ -70,16 +89,19 @@ authorized=false; assert.equal((await report()).status,403); authorized=true;
 assert.equal((await report({...base,finalScore:-1})).status,400);
 assert.equal((await report({...base,playerSlot:'p1'})).status,400);
 assert.equal((await report({...base,gameKey:'average',finalScore:101,outcome:'completed'})).status,400);
-const first = await report(); assert.equal(first.status,200); assert.equal(first.pointsAwarded,8750);
+const first = await report(); assert.equal(first.status,200); assert.equal(first.pointsAwarded,19);
 assert.equal((await report()).token,first.token);
 assert.equal((await report({...base,finalScore:8751})).status,409);
 const dual = {...base,gameKey:'conway',attemptId:'conway-12345678'};
 const p1 = await report({...dual,playerSlot:'p1',finalScore:1210,outcome:'win'});
+assert.equal(p1.pointsAwarded,19);
 const p2 = await report({...dual,playerSlot:'p2',finalScore:50});
 assert.equal(p1.status,200); assert.equal(p2.status,200); assert.notEqual(p1.token,p2.token);
+// Even an old/misconfigured high snapshot cannot bypass the database scaling.
+await db.query('update claim_tokens set points_snapshot=8750 where token=$1',[first.token]);
 await db.query("select set_config('test.uid',$1,false)",[user1]);
 const awarded = await db.query('select * from claim_token($1)',[first.token]);
-assert.equal(awarded.rows[0].points_awarded,8750);
+assert.equal(awarded.rows[0].points_awarded,19);
 const saved = (await db.query('select * from submissions where user_id=$1',[user1])).rows[0];
 assert.equal(saved.result_payload.finalScore,8750); assert.equal(saved.result_payload.outcome,'loss');
 assert.equal((await report()).used,true);

@@ -1,3 +1,4 @@
+import { digitalClaimPoints } from "@/lib/digital-points";
 import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ClaimToken, Game } from "@/lib/supabase/types";
@@ -48,7 +49,7 @@ export default async function ClaimPage({
   if (!submission && claim.used_at) {
     return <Message title="Already claimed" body="This code has already been used." />;
   }
-  if (!submission && Date.now() >= Math.min(Date.parse(claim.expires_at), claim.result_payload ? Date.parse(claim.created_at) + 60000 : Infinity)) {
+  if (!submission && new Date().getTime() >= Math.min(Date.parse(claim.expires_at), claim.result_payload ? Date.parse(claim.created_at) + 60000 : Infinity)) {
     return <Message title="Expired" body="This code expired — ask staff for a new one." />;
   }
 
@@ -57,7 +58,7 @@ export default async function ClaimPage({
       <ClaimCard
         token={token}
         gameName={game.name}
-        pointsValue={claim.points_snapshot ?? game.points_value}
+        pointsValue={claim.result_payload ? digitalClaimPoints(claim.result_payload.gameKey, claim.result_payload.finalScore) : game.type === "digital" ? Math.min(19, Math.max(0, game.points_value)) : game.points_value}
         resultPayload={claim.result_payload}
         nickname={profile.nickname ?? ""}
         completed={!!submission}

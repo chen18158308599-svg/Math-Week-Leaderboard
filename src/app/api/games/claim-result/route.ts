@@ -6,6 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_ACCESS_COOKIE, validSiteAccessToken } from "@/lib/site-access";
 import { todayInEventTimezone } from "@/lib/event-date";
 import type { ClaimToken, Game } from "@/lib/supabase/types";
+import { digitalClaimPoints } from "@/lib/digital-points";
 const schema = z.object({
   gameKey: z.enum(["average", "conway", "deal", "knn", "sequence", "planarity", "symmetry"]),
   attemptId: z.string().min(8).max(160).regex(/^[a-zA-Z0-9-]+$/),
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
     if (!game.is_active || (game.active_from && today < game.active_from) || (game.active_until && today > game.active_until)) return reply({ error: "This game is not open for scoring today" }, 409);
     if (Date.parse(result.finalizedAt) > Date.now() + 30000) return reply({ error: "Invalid result time" }, 400);
   }
-  const points = result.gameKey === "average" ? 0 : result.finalScore;
+  const points = digitalClaimPoints(result.gameKey, result.finalScore);
   if (!claim) {
     const values = { game_id: game.id, attempt_id: result.attemptId, player_slot: result.playerSlot,
       result_payload: result, points_snapshot: points, token: randomBytes(32).toString("base64url"), expires_at: new Date(Date.now() + TTL * 1000).toISOString() };
@@ -56,5 +57,5 @@ export async function POST(request: Request) {
   const deadline = Math.min(Date.parse(claim.expires_at), Date.parse(claim.created_at) + TTL * 1000);
   if (!claim.used_at && deadline <= Date.now()) return reply({ code: "RESULT_EXPIRED", error: "This result expired and cannot be claimed again." }, 410);
   return reply({ token: claim.token, expiresAt: new Date(deadline).toISOString(), used: !!claim.used_at,
-    pointsAwarded: claim.points_snapshot, claimUrl: `${new URL(request.url).origin}/claim/${claim.token}` });
+    pointsAwarded: claim.used_at ? claim.points_snapshot : points, claimUrl: `${new URL(request.url).origin}/claim/${claim.token}` });
 }
