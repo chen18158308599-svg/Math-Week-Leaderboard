@@ -5,7 +5,7 @@ import day4 from "../../assets/day4.png";
 import day5 from "../../assets/day5.png";
 import day6 from "../../assets/day6.png";
 import day7 from "../../assets/day7.png";
-export const DIGITAL_GAME_URL = "https://mathweekdigitalbased.onrender.com";
+export const DIGITAL_GAME_URL = process.env.NEXT_PUBLIC_DIGITAL_GAME_URL || "https://mathweekdigitalbased.onrender.com";
 // The supplied day1–day7 filenames are the updated event order.
 export const DIGITAL_DAYS = [
   {

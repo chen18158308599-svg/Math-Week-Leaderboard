@@ -1,5 +1,6 @@
 "use client";
 
+import type { ClaimToken } from "@/lib/supabase/types";
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { CompletedGame } from "@/components/completed-game";
@@ -11,12 +12,14 @@ export function ClaimCard({
   pointsValue,
   nickname,
   completed = false,
+  resultPayload,
 }: {
   token: string;
   gameName: string;
   pointsValue: number;
   nickname: string;
   completed?: boolean;
+  resultPayload?: ClaimToken["result_payload"];
 }) {
   const [result, setResult] = useState<ClaimResult>({ status: "idle" });
   const [pending, startTransition] = useTransition();
@@ -36,7 +39,7 @@ export function ClaimCard({
       <Card>
         <CheckIcon />
         <div className="font-display text-3xl font-bold">
-          +{result.pointsAwarded} points!
+          {resultPayload?.gameKey === "average" ? "Number saved" : `+${result.pointsAwarded} points!`}
         </div>
         <p className="text-neutral-400">{result.gameName} — nice work.</p>
         <Link href="/my-score" className="inline-flex min-h-11 items-center text-blue-300">View my points & rank →</Link>
@@ -54,12 +57,13 @@ export function ClaimCard({
           <CheckIcon small />
         </div>
         <div>
-          <p className="text-sm font-medium">Win confirmed</p>
+          <p className="text-sm font-medium">Result confirmed</p>
           <p className="text-xs text-neutral-500">Claimed via QR scan just now</p>
         </div>
       </div>
 
-      <p className="mt-4 font-display text-lg font-semibold">Claim {pointsValue} points?</p>
+      {resultPayload && <p className="text-sm text-neutral-300">{resultPayload.gameKey === "average" ? "Chosen number" : "Final score"}: {resultPayload.finalScore} / {resultPayload.outcome} / {resultPayload.playerSlot}</p>}
+      <p className="mt-4 font-display text-lg font-semibold">{resultPayload?.gameKey === "average" ? "Save your number? Points are pending final results." : `Claim ${pointsValue} points?`}</p>
 
       {result.status === "error" && (
         <p className="rounded-lg border border-red-800/40 bg-red-950/40 px-3 py-2 text-sm text-red-200">
@@ -72,7 +76,7 @@ export function ClaimCard({
         disabled={pending}
         className="mt-1 rounded-lg bg-amber-500 px-5 py-3 font-semibold text-neutral-950 transition hover:bg-amber-400 disabled:opacity-60"
       >
-        {pending ? "Claiming…" : "Claim My Points"}
+        {pending ? "Claiming…" : resultPayload?.gameKey === "average" ? "Save My Number" : "Claim My Points"}
       </button>
       <p className="text-xs text-neutral-500">Logged in as {nickname}</p>
     </Card>

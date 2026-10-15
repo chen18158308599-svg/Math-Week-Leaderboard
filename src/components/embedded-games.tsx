@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useDigitalClaims } from "./use-digital-claims";
 import { DIGITAL_GAME_URL } from "@/lib/digital-games";
 export function EmbeddedGames() {
   const frame = useRef<HTMLIFrameElement>(null);
   const [playing, setPlaying] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const activitySupported = useRef(false);
+  useDigitalClaims(frame, playing);
   useEffect(() => {
     const onActivity = (event: MessageEvent) => {
       if (
@@ -67,7 +69,7 @@ export function EmbeddedGames() {
             src={DIGITAL_GAME_URL}
             title="Math Week digital game website"
             allow="fullscreen"
-            sandbox="allow-scripts allow-same-origin allow-forms"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
             onLoad={() => setLoaded(true)}
           />
         </div>

@@ -16,6 +16,7 @@ function parseGameForm(formData: FormData) {
   return {
     name: String(formData.get("name") ?? "").trim(),
     type,
+    digital_key: type === "digital" ? String(formData.get("digital_key") ?? "").trim() || null : null,
     points_value: Number(formData.get("points_value") ?? 0),
     embed_url: type === "digital" ? embedUrl || null : null,
     station_id: type === "digital" ? stationId || null : null,

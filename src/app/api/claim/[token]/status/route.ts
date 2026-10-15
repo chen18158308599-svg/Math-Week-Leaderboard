@@ -12,19 +12,20 @@ export async function GET(
   const { token } = await params;
   const admin = createAdminClient();
 
-  const { data } = await admin
+  const { data, error } = await admin
     .from("claim_tokens")
     .select("*")
     .eq("token", token)
     .maybeSingle()
     .returns<ClaimToken>();
 
+  if (error) return NextResponse.json({ error: "Status unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
   if (!data) {
-    return NextResponse.json({ used: false, expired: true });
+    return NextResponse.json({ used: false, expired: true }, { headers: { "Cache-Control": "no-store" } });
   }
 
   return NextResponse.json({
     used: data.used_at !== null,
-    expired: new Date(data.expires_at) < new Date(),
-  });
+    expired: Date.now() >= Math.min(Date.parse(data.expires_at), data.result_payload ? Date.parse(data.created_at) + 60000 : Infinity),
+  }, { headers: { "Cache-Control": "no-store" } });
 }

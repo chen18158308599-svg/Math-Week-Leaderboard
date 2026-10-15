@@ -48,7 +48,7 @@ export default async function ClaimPage({
   if (!submission && claim.used_at) {
     return <Message title="Already claimed" body="This code has already been used." />;
   }
-  if (!submission && new Date(claim.expires_at) < new Date()) {
+  if (!submission && Date.now() >= Math.min(Date.parse(claim.expires_at), claim.result_payload ? Date.parse(claim.created_at) + 60000 : Infinity)) {
     return <Message title="Expired" body="This code expired — ask staff for a new one." />;
   }
 
@@ -57,7 +57,8 @@ export default async function ClaimPage({
       <ClaimCard
         token={token}
         gameName={game.name}
-        pointsValue={game.points_value}
+        pointsValue={claim.points_snapshot ?? game.points_value}
+        resultPayload={claim.result_payload}
         nickname={profile.nickname ?? ""}
         completed={!!submission}
       />

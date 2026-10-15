@@ -29,6 +29,7 @@ export interface Game {
   name: string;
   type: GameType;
   points_value: number;
+  digital_key: string | null;
   embed_url: string | null;
   station_id: string | null;
   active_from: string | null;
@@ -47,6 +48,10 @@ export interface CardPuzzle {
 }
 
 export interface ClaimToken {
+  result_payload: { gameKey: string; attemptId: string; playerSlot: string; finalScore: number; outcome: string; finalizedAt: string } | null;
+  points_snapshot: number | null;
+  attempt_id: string | null;
+  player_slot: string | null;
   id: string;
   game_id: string;
   token: string;

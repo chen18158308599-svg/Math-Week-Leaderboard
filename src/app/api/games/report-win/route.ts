@@ -45,6 +45,7 @@ export async function POST(request: Request) {
   let issuedBy: string | null = null;
 
   if (game.type === "digital") {
+    if (game.digital_key) return NextResponse.json({ error: "This game must submit its final result through claim-result" }, { status: 409 });
     if (!validSiteAccessToken((await cookies()).get(SITE_ACCESS_COOKIE)?.value)) {
       return NextResponse.json({ error: "Event display password required" }, { status: 403 });
     }
