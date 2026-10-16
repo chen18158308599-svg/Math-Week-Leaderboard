@@ -13,13 +13,14 @@ create role anon; create role authenticated;
 create schema auth;
 create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('test.uid', true), '')::uuid $$;
 create table profiles(id uuid primary key);
-create table games(id uuid primary key default gen_random_uuid(), name text, type text, points_value int, is_active boolean default true, active_from text, active_until text);
+create table games(id uuid primary key default gen_random_uuid(), name text, type text, points_value int, is_active boolean default true, active_from text, active_until text, embed_url text);
 create table claim_tokens(id uuid primary key default gen_random_uuid(), game_id uuid references games, token text unique, issued_by uuid, created_at timestamptz default now(), expires_at timestamptz, used_at timestamptz, claimed_by_user_id uuid);
 create table submissions(id uuid primary key default gen_random_uuid(), user_id uuid, game_id uuid, points_awarded int, source text, unique(user_id,game_id));
 `);
 await db.exec(readFileSync(new URL('../supabase/migrations/0010_digital_result_claims.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0011_digital_claim_hard_expiry.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0012_digital_points_scaling.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0013_all_day_games_remove_average.sql', import.meta.url), 'utf8'));
 for (const [key, target] of Object.entries(scaling.DIGITAL_SCORE_TARGETS)) {
   assert.equal(scaling.digitalClaimPoints(key,target),19);
   assert.equal((await db.query('select digital_claim_points($1,$2) as points',[key,target])).rows[0].points,19);
@@ -39,6 +40,13 @@ const user1 = '00000000-0000-4000-8000-000000000001';
 const user2 = '00000000-0000-4000-8000-000000000002';
 await db.query('insert into profiles values ($1),($2)', [user1,user2]);
 await db.exec("insert into games(name,type,points_value,digital_key) values ('KNN','digital',10,'knn'),('Conway','digital',10,'conway'),('Average','digital',10,'average'),('Booth','physical',20,null)");
+await db.exec("insert into games(name,type,points_value,digital_key) values ('Deal','digital',10,'deal'),('Sequence','digital',10,'sequence'),('Planarity','digital',10,'planarity'),('Symmetry','digital',10,'symmetry')");
+await db.exec("update games set active_from='2026-10-20',active_until='2026-10-20' where type='digital'");
+await db.exec(readFileSync(new URL('../supabase/migrations/0013_all_day_games_remove_average.sql', import.meta.url), 'utf8'));
+assert.equal((await db.query("select is_active from games where digital_key='average'")).rows[0].is_active,false);
+assert.equal((await db.query("select count(*)::int as count from games where digital_key <> 'average' and type='digital' and active_from is null and active_until is null")).rows[0].count,6);
+await db.exec(readFileSync(new URL('../supabase/migrations/0014_same_origin_digital_games.sql', import.meta.url), 'utf8'));
+assert.equal((await db.query("select count(*)::int as count from games where type='digital' and digital_key <> 'average' and embed_url='/digital-play/index.html'")).rows[0].count,6);
 // Exercise the real route with its Supabase transport replaced by a PostgreSQL adapter.
 function table(name) {
   let op = 'select', values, filters = [], params = [];
@@ -89,6 +97,11 @@ authorized=false; assert.equal((await report()).status,403); authorized=true;
 assert.equal((await report({...base,finalScore:-1})).status,400);
 assert.equal((await report({...base,playerSlot:'p1'})).status,400);
 assert.equal((await report({...base,gameKey:'average',finalScore:101,outcome:'completed'})).status,400);
+for (const gameKey of Object.keys(scaling.DIGITAL_SCORE_TARGETS)) {
+  const result = await report({...base,gameKey,attemptId:`${gameKey}-all-days-test`,playerSlot:['conway','planarity'].includes(gameKey)?'p1':'single',finalScore:100000});
+  assert.equal(result.status,200);
+  assert.equal(result.pointsAwarded,19);
+}
 const first = await report(); assert.equal(first.status,200); assert.equal(first.pointsAwarded,19);
 assert.equal((await report()).token,first.token);
 assert.equal((await report({...base,finalScore:8751})).status,409);
@@ -118,16 +131,14 @@ await assert.rejects(db.query('select * from claim_token($1)',[p1.token]),/expir
 await db.query("update claim_tokens set created_at=now()-interval '61 seconds', expires_at=now()+interval '10 minutes' where token=$1",[p2.token]);
 await assert.rejects(db.query('select * from claim_token($1)',[p2.token]),/expired_token/);
 assert.equal((await report({...dual,playerSlot:'p2',finalScore:50})).status,410);
-const average = await report({...base,gameKey:'average',attemptId:'average-12345678',finalScore:37,outcome:'completed'});
-assert.equal(average.pointsAwarded,0);
-await db.query('select * from claim_token($1)',[average.token]);
-const choice = (await db.query("select * from submissions where result_payload->>'gameKey'='average'")).rows[0];
-assert.equal(choice.points_awarded,0); assert.equal(choice.result_payload.finalScore,37);
+assert.equal((await report({...base,gameKey:'average',attemptId:'average-12345678',finalScore:37,outcome:'completed'})).status,400);
 await db.exec("insert into claim_tokens(game_id,token,expires_at) select id,'booth-token',now()+interval '1 hour' from games where type='physical'");
 assert.equal((await db.query("select * from claim_token('booth-token')")).rows[0].points_awarded,20);
 await db.exec("update games set active_until='2026-10-14' where digital_key='knn'");
-assert.equal((await report({...base,attemptId:'knn-new-attempt'})).status,409);
+assert.equal((await report({...base,attemptId:'knn-new-attempt'})).status,200);
+await db.exec("update games set is_active=false where digital_key='knn'");
+assert.equal((await report({...base,attemptId:'knn-disabled-attempt'})).status,409);
 await db.query("select set_config('test.uid','',false)");
 await assert.rejects(db.query('select * from claim_token($1)',[p2.token]),/not_authenticated/);
 await db.close();
-console.log('Digital claims verified: variable scores, metadata, two seats, Average, idempotency, permanent expiry, authentication, event windows and legacy awards.');
+console.log('Digital claims verified: variable scores, metadata, two seats, retired Average, six all-day games, idempotency, permanent expiry, authentication and legacy awards.');

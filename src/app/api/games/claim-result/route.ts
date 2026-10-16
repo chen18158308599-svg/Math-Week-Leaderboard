@@ -4,11 +4,10 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_ACCESS_COOKIE, validSiteAccessToken } from "@/lib/site-access";
-import { todayInEventTimezone } from "@/lib/event-date";
 import type { ClaimToken, Game } from "@/lib/supabase/types";
 import { digitalClaimPoints } from "@/lib/digital-points";
 const schema = z.object({
-  gameKey: z.enum(["average", "conway", "deal", "knn", "sequence", "planarity", "symmetry"]),
+  gameKey: z.enum(["conway", "deal", "knn", "sequence", "planarity", "symmetry"]),
   attemptId: z.string().min(8).max(160).regex(/^[a-zA-Z0-9-]+$/),
   playerSlot: z.enum(["single", "p1", "p2"]),
   finalScore: z.number().int().min(0).max(100000),
@@ -28,7 +27,7 @@ export async function POST(request: Request) {
   if (!parsed.success) return reply({ error: "Invalid game result" }, 400);
   const result = parsed.data;
   const dual = result.gameKey === "conway" || result.gameKey === "planarity";
-  if (dual === (result.playerSlot === "single") || (result.gameKey === "average" && (result.finalScore > 100 || result.outcome !== "completed"))) return reply({ error: "Invalid player slot or number" }, 400);
+  if (dual === (result.playerSlot === "single")) return reply({ error: "Invalid player slot or number" }, 400);
   const admin = createAdminClient();
   const { data: game, error: gameError } = await admin.from("games").select("*").eq("digital_key", result.gameKey).eq("type", "digital").maybeSingle().returns<Game>();
   if (gameError) return reply({ error: "Game registry unavailable. Check the database migration." }, 503);
@@ -39,8 +38,7 @@ export async function POST(request: Request) {
   const sameResult = (row: ClaimToken) => Object.entries(result).every(([key, value]) => row.result_payload?.[key as keyof typeof result] === value);
   if (claim && !sameResult(claim)) return reply({ error: "This result already exists with different values" }, 409);
   if (!claim?.used_at) {
-    const today = todayInEventTimezone();
-    if (!game.is_active || (game.active_from && today < game.active_from) || (game.active_until && today > game.active_until)) return reply({ error: "This game is not open for scoring today" }, 409);
+    if (!game.is_active) return reply({ error: "This game is disabled" }, 409);
     if (Date.parse(result.finalizedAt) > Date.now() + 30000) return reply({ error: "Invalid result time" }, 400);
   }
   const points = digitalClaimPoints(result.gameKey, result.finalScore);

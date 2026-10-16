@@ -1,0 +1,117 @@
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+.home-navigation {
+  --home-tab-width: 40px;
+  --home-action-width: 100px;
+
+  position: fixed;
+  z-index: 10000;
+  top: 50%;
+  left: 0;
+  width: calc(var(--home-tab-width) + var(--home-action-width));
+  height: 44px;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.home-navigation__tab,
+.home-navigation__action {
+  box-sizing: border-box;
+  height: 44px;
+  margin: 0;
+  border: 1px solid rgba(255, 225, 150, 0.55);
+  background: linear-gradient(180deg, rgba(20, 34, 67, 0.96), rgba(6, 14, 36, 0.96));
+  color: #fff0bd;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.home-navigation__tab {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: grid;
+  width: var(--home-tab-width);
+  min-width: var(--home-tab-width);
+  max-width: var(--home-tab-width);
+  place-items: center;
+  padding: 0;
+  border-left: 0;
+  border-radius: 0 12px 12px 0;
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.home-navigation__action {
+  position: absolute;
+  top: 0;
+  left: var(--home-tab-width);
+  display: inline-flex;
+  width: var(--home-action-width);
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border-left: 0;
+  border-radius: 0 12px 12px 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 180ms ease, visibility 0s linear 180ms;
+}
+
+.home-navigation.is-expanded .home-navigation__action {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 180ms ease;
+}
+
+.home-navigation__tab svg,
+.home-navigation__action svg {
+  display: block;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.home-navigation__tab:hover,
+.home-navigation__action:hover {
+  border-color: rgba(255, 238, 190, 0.9);
+}
+
+.home-navigation__tab:active,
+.home-navigation__action:active {
+  background: linear-gradient(180deg, rgba(27, 45, 82, 0.98), rgba(8, 19, 44, 0.98));
+}
+
+.home-navigation__tab:focus-visible,
+.home-navigation__action:focus-visible {
+  outline: 2px solid rgba(255, 235, 180, 0.95);
+  outline-offset: 3px;
+}
+
+/* Keep the older in-game buttons hidden where the shared control replaces them. */
+.avg-home,
+.ns-hub-return {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-navigation__action {
+    transition: none;
+  }
+}

@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run build:digital-games && next dev",
+    "build": "npm run build:digital-games && next build",
     "start": "next start",
     "lint": "eslint",
-    "test:digital-claims": "node scripts/verify-digital-claims.mjs"
+    "test:digital-claims": "node scripts/verify-digital-claims.mjs",
+    "build:digital-games": "node scripts/build-digital-games.mjs",
+    "test:digital-games": "node digital-games/scripts/verify-scoring.mjs && node digital-games/scripts/verify-leaderboard.mjs && node digital-games/scripts/verify-host-activity.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
@@ -26,9 +28,11 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.3.4"
   }
 }

@@ -1,19 +1,12 @@
-import day1 from "../../assets/day1.png";
 import day2 from "../../assets/day2.png";
 import day3 from "../../assets/day3.png";
 import day4 from "../../assets/day4.png";
 import day5 from "../../assets/day5.png";
 import day6 from "../../assets/day6.png";
 import day7 from "../../assets/day7.png";
-export const DIGITAL_GAME_URL = process.env.NEXT_PUBLIC_DIGITAL_GAME_URL || "https://mathweekdigitalbased.onrender.com";
+export const DIGITAL_GAME_URL = "/digital-play/index.html";
 // The supplied day1–day7 filenames are the updated event order.
 export const DIGITAL_DAYS = [
-  {
-    date: "2026-10-19",
-    name: "2/3 Average",
-    image: day1,
-    description: "Choose a number close to two-thirds of the group's average.",
-  },
   {
     date: "2026-10-20",
     name: "Deal or No Deal",
@@ -55,5 +48,5 @@ export const DIGITAL_DAYS = [
 ];
 export function digitalDayIndex(date: string) {
   const index = DIGITAL_DAYS.findIndex((day) => day.date === date);
-  return index >= 0 ? index : date < DIGITAL_DAYS[0].date ? 0 : 6;
+  return index >= 0 ? index : date < DIGITAL_DAYS[0].date ? 0 : DIGITAL_DAYS.length - 1;
 }

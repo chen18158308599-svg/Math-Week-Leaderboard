@@ -12,7 +12,7 @@ export function useDigitalClaims(frame: RefObject<HTMLIFrameElement | null>, pla
     let holdUntil = 0;
     const pending = new Map<string, Pending>();
     const busy = new Set<string>();
-    const origin = new URL(DIGITAL_GAME_URL).origin;
+    const origin = new URL(DIGITAL_GAME_URL, window.location.origin).origin;
     const send = (data: object) => { if (!disposed) frame.current?.contentWindow?.postMessage({ type: "mathweek:claim-update", ...data }, origin); };
     const hold = () => window.dispatchEvent(new CustomEvent("mathweek:claim-hold", { detail: Date.now() < holdUntil }));
     const onMessage = async (event: MessageEvent) => {

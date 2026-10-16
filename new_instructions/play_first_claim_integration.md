@@ -27,3 +27,8 @@ Existing physical/card awards retain their fixed points. Registered digital game
 `npm run test:digital-claims` runs the actual API route against a PostgreSQL test engine (PGlite), applying the actual migration and claim RPC. Covers variable scores/metadata, two seats, Average, duplicate/conflicting requests, permanent expiry, unauthorized claims, date windows, and unchanged physical points. `npx tsc --noEmit` and `npm run build` validate application integration. Game repo adds `npm run test:leaderboard` for message routing and source checks; original scoring tests remain.
 
 Database migration and deployment are separate operational steps; local code changes alone do not change the live website or database.
+
+
+## Current six-game policy (16 October 2026)
+
+Apply migration 0013 after 0012. Average is retired (existing history retained). The six remaining games no longer require game PINs or per-day scheduling; the claim API ignores active_from/active_until for these games but still requires an enabled registered game and the existing authorized main-site display. Account/game uniqueness, 0-19 scaling and permanent 60-second QR expiry remain. Main-site preview rotation does not restrict playable games. The current standalone game build still requires the host iframe for claiming; see the game repo README for the same-origin hosting assessment.

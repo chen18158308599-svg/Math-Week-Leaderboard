@@ -10,7 +10,7 @@ export function EmbeddedGames() {
   useEffect(() => {
     const onActivity = (event: MessageEvent) => {
       if (
-        event.origin === new URL(DIGITAL_GAME_URL).origin &&
+        event.origin === new URL(DIGITAL_GAME_URL, window.location.origin).origin &&
         event.source === frame.current?.contentWindow &&
         event.data?.type === "mathweek:activity"
       ) {
@@ -54,7 +54,7 @@ export function EmbeddedGames() {
             onLoad={() => {
               setLoaded(true);
               window.dispatchEvent(new Event("mathweek:activity"));
-              frame.current?.contentWindow?.postMessage({ type: "mathweek:host-init" }, new URL(DIGITAL_GAME_URL).origin);
+              frame.current?.contentWindow?.postMessage({ type: "mathweek:host-init" }, new URL(DIGITAL_GAME_URL, window.location.origin).origin);
             }}
           />
         </div>

@@ -1,0 +1,565 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  background: #020714;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+/* =====================================================
+   MAIN PAGE
+   ===================================================== */
+
+.home-page {
+  position: relative;
+  flex-shrink: 0;
+  margin: auto;
+
+  width: min(100vw, 177.7778vh);
+  height: min(100vh, 56.25vw);
+
+  aspect-ratio: 16 / 9;
+
+  overflow: hidden;
+
+  background: #020714;
+
+  isolation: isolate;
+}
+
+/* =====================================================
+   BACKGROUND
+   Keep static for smoother island animation
+   ===================================================== */
+
+.home-background {
+  position: absolute;
+
+  inset: -2%;
+
+  width: 104%;
+  height: 104%;
+
+  object-fit: cover;
+
+  pointer-events: none;
+  user-select: none;
+
+  z-index: 0;
+
+  /*
+    Do not continuously animate the huge background image.
+    This significantly reduces GPU load.
+  */
+  transform: scale(1.025);
+}
+
+/* =====================================================
+   MATH WEEK TITLE
+   ===================================================== */
+
+.mathweek-title {
+  position: absolute;
+
+  left: 50%;
+  top: 42%;
+
+  transform: translate(-50%, -50%);
+
+  z-index: 999;
+
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+
+  padding:
+    10px
+    clamp(16px, 2vw, 34px)
+    12px;
+
+  pointer-events: none;
+
+  text-align: center;
+
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(39, 55, 105, 0.55) 0%,
+      rgba(11, 18, 45, 0.62) 55%,
+      rgba(4, 8, 25, 0.28) 100%
+    );
+
+  border-top:
+    1px
+    solid
+    rgba(255, 233, 170, 0.55);
+
+  border-bottom:
+    1px
+    solid
+    rgba(190, 140, 55, 0.45);
+
+  border-radius: 18px;
+
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.28),
+    0 0 22px rgba(255, 205, 100, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -8px 18px rgba(0, 0, 0, 0.16);
+
+  backdrop-filter: blur(4px);
+}
+
+/* =====================================================
+   TITLE DECORATION
+   ===================================================== */
+
+.mathweek-title::before,
+.mathweek-title::after {
+  content: "";
+
+  position: absolute;
+
+  top: 50%;
+
+  width: 105px;
+  height: 2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(244, 201, 103, 0.25) 20%,
+      #ffe4a2 70%,
+      #fff4ca 100%
+    );
+
+  box-shadow:
+    0 0 6px rgba(255, 210, 110, 0.65),
+    0 0 14px rgba(255, 196, 72, 0.35);
+
+  opacity: 0.95;
+}
+
+.mathweek-title::before {
+  right: calc(100% + 16px);
+}
+
+.mathweek-title::after {
+  left: calc(100% + 16px);
+
+  transform: rotate(180deg);
+}
+
+/* =====================================================
+   MATH WEEK TEXT
+   ===================================================== */
+
+.mathweek-title-main {
+  position: relative;
+
+  white-space: nowrap;
+
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+
+  font-size: clamp(30px, 5.4vw, 68px);
+
+  font-weight: 800;
+
+  line-height: 1;
+
+  letter-spacing: clamp(0.04em, 0.55vw, 0.1em);
+
+  background:
+    linear-gradient(
+      180deg,
+      #fffbe6 0%,
+      #fff0ad 18%,
+      #f4cd69 48%,
+      #fff1ae 68%,
+      #b97a26 100%
+    );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+
+  -webkit-text-stroke:
+    1px
+    rgba(104, 63, 10, 0.85);
+
+  /*
+    Keep title quality,
+    but title itself is no longer moving.
+  */
+  filter:
+    drop-shadow(
+      0
+      2px
+      0
+      rgba(72, 40, 5, 0.95)
+    )
+    drop-shadow(
+      0
+      4px
+      3px
+      rgba(0, 0, 0, 0.55)
+    )
+    drop-shadow(
+      0
+      0
+      5px
+      rgba(255, 242, 190, 0.8)
+    );
+}
+
+.mathweek-title-kicker,
+.mathweek-title-subtitle {
+  color: #f4d991;
+  font-family:
+    Georgia,
+    "Times New Roman",
+    serif;
+  font-size: clamp(9px, 0.9vw, 13px);
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 1px 5px rgba(255, 210, 110, 0.45);
+}
+
+.mathweek-title-main::after {
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 105%;
+  height: 130%;
+
+  transform:
+    translate(
+      -50%,
+      -50%
+    );
+
+  background:
+    radial-gradient(
+      ellipse,
+      rgba(255, 227, 135, 0.16),
+      transparent 67%
+    );
+
+  z-index: -1;
+
+  pointer-events: none;
+}
+
+/* =====================================================
+   ISLAND
+   SMOOTH FLOAT VERSION
+   ===================================================== */
+
+.island {
+  position: absolute;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  outline: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  z-index: 10;
+
+  /*
+    Only transform is animated.
+    No filter / shadow / layout property changes.
+  */
+  will-change: transform;
+
+  transform:
+    translate3d(
+      0,
+      0,
+      0
+    );
+
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+
+  animation-name: homeIslandFloat;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+
+  /*
+    Prevent browser from repeatedly repainting
+    unrelated page content.
+  */
+  contain: layout style;
+}
+
+/* =====================================================
+   ISLAND IMAGE
+   ===================================================== */
+
+.island img {
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  user-select: none;
+  pointer-events: none;
+
+  /*
+    IMPORTANT:
+    No drop-shadow filter on the large moving PNG.
+  */
+  filter: none;
+
+  /* Image follows the animated parent; avoid another forced GPU layer. */
+
+  /*
+    Hover scale is kept very light.
+  */
+  transition:
+    scale 0.18s ease,
+    opacity 0.18s ease;
+
+  scale: 1;
+
+  opacity: 1;
+}
+
+/* =====================================================
+   CHEAP STATIC-STYLE SHADOW
+   Moves together with parent without expensive
+   PNG drop-shadow recalculation
+   ===================================================== */
+
+.island::after {
+  content: "";
+
+  position: absolute;
+
+  z-index: -1;
+
+  left: 18%;
+  right: 18%;
+
+  bottom: 3%;
+
+  height: 9%;
+
+  border-radius: 50%;
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.28
+    );
+
+  box-shadow:
+    0
+    10px
+    22px
+    rgba(
+      0,
+      0,
+      0,
+      0.28
+    );
+
+  pointer-events: none;
+}
+
+/* =====================================================
+   HOVER
+   Do NOT modify transform because transform is
+   controlled by the floating animation.
+   ===================================================== */
+
+.island:hover img {
+  scale: 1.035;
+  opacity: 1;
+}
+
+.island:active img {
+  scale: 0.98;
+}
+
+/* =====================================================
+   FOCUS
+   ===================================================== */
+
+.island:focus-visible {
+  outline:
+    2px
+    solid
+    rgba(
+      255,
+      230,
+      165,
+      0.9
+    );
+
+  outline-offset: 7px;
+
+  border-radius: 50%;
+}
+
+/* =====================================================
+   ISLAND POSITIONS
+   ===================================================== */
+
+/* Conway */
+
+.conway-island {
+  right: 5%;
+  top: 7%;
+
+  width: 25%;
+
+  --float: -20px;
+
+  animation-duration: 4.4s;
+
+  animation-delay: -1.3s;
+}
+
+/* Deal or No Deal */
+
+.deal-island {
+  left: 5%;
+  top: 7%;
+
+  width: 25%;
+
+  --float: -19px;
+
+  animation-duration: 4.2s;
+
+  animation-delay: -2.1s;
+}
+
+/* KNN */
+
+.knn-island {
+  right: 2%;
+  top: 35%;
+
+  width: 25%;
+
+  --float: -24px;
+
+  animation-duration: 4.5s;
+
+  animation-delay: -0.8s;
+}
+
+/* Number Sequence */
+
+.sequence-island {
+  left: 2%;
+  top: 35%;
+
+  width: 24%;
+
+  --float: -21px;
+
+  animation-duration: 4.1s;
+
+  animation-delay: -1.9s;
+}
+
+/* Planarity */
+
+.planarity-island {
+  left: 18%;
+  top: 65%;
+
+  width: 24%;
+
+  --float: -22px;
+
+  animation-duration: 4.3s;
+
+  animation-delay: -0.95s;
+}
+
+/* Symmetry */
+
+.symmetry-island {
+  right: 18%;
+  top: 65%;
+
+  width: 24%;
+
+  --float: -20px;
+
+  animation-duration: 4.5s;
+
+  animation-delay: -2.5s;
+}
+
+/* =====================================================
+   ULTRA-SMOOTH FLOAT
+   ===================================================== */
+
+/* Smooth acceleration and deceleration at both turning points. */
+
+@keyframes homeIslandFloat {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, var(--float), 0) scale(1.027);
+  }
+}
+
+/* =====================================================
+   REDUCED MOTION
+   ===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .island {
+    animation: none;
+  }
+
+  .island img {
+    transition: none;
+  }
+}
+
+.home-leaderboard-link { position: absolute; z-index: 1000; top: 3%; left: 50%; transform: translateX(-50%); display: grid; place-items: center; min-height: 44px; padding: 8px 22px; border: 1px solid #e8c979; border-radius: 9px; color: #fff0bd; background: rgba(2, 7, 20, .8); font-size: 14px; letter-spacing: .12em; text-decoration: none; }

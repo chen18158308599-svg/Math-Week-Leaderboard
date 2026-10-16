@@ -1,0 +1,236 @@
+.post-game-submission {
+  position: fixed;
+  z-index: 1000001;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 20px;
+  color: #f8edce;
+  background:
+    radial-gradient(ellipse at 50% 36%, rgba(49, 61, 105, 0.48), transparent 58%),
+    linear-gradient(145deg, rgba(7, 17, 38, 0.96), rgba(2, 7, 20, 0.98) 72%);
+}
+
+.post-game-card {
+  width: min(100%, 560px);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: clamp(24px, 5vw, 40px);
+  border: 1px solid rgba(255, 220, 143, 0.38);
+  border-radius: 18px;
+  background: linear-gradient(150deg, rgba(18, 31, 60, 0.98), rgba(5, 12, 30, 0.99));
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.48),
+    0 0 34px rgba(255, 198, 91, 0.1),
+    inset 0 1px rgba(255, 255, 255, 0.08);
+  text-align: center;
+}
+
+.post-game-eyebrow {
+  color: #f4d991;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.post-game-card > h1 {
+  margin: 12px 0 22px;
+  color: #fff0bd;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(22px, 5vw, 30px);
+  letter-spacing: 0.05em;
+}
+
+.post-game-pending {
+  margin: -8px 0 16px;
+  text-align: left;
+}
+
+.post-game-pending summary {
+  color: #e8c979;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.post-game-pending__list {
+  display: grid;
+  gap: 6px;
+  max-height: min(24vh, 160px);
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.post-game-pending__list button {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 220, 143, 0.22);
+  border-radius: 7px;
+  background: rgba(2, 8, 22, 0.55);
+  color: #fff0bd;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  text-align: left;
+}
+
+.post-game-pending__list button strong {
+  flex: 0 0 auto;
+  color: #f4d991;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.post-game-pending__list button:hover {
+  border-color: rgba(255, 238, 190, 0.75);
+}
+
+.post-game-player-list {
+  display: grid;
+  gap: 16px;
+}
+
+.post-game-player {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 220, 143, 0.22);
+  border-radius: 12px;
+  background: rgba(2, 8, 22, 0.42);
+  text-align: left;
+}
+
+.post-game-player h2 {
+  margin: 0;
+  color: #f4d991;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+}
+
+.post-game-result-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #e8c979;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.post-game-result-line strong {
+  color: #fff0bd;
+  font-size: 24px;
+  font-variant-numeric: tabular-nums;
+}
+
+.post-game-player label {
+  display: grid;
+  gap: 6px;
+}
+
+.post-game-player label > span {
+  color: #e8c979;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.post-game-player input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 220, 143, 0.36);
+  border-radius: 7px;
+  outline: none;
+  background: rgba(2, 8, 22, 0.74);
+  color: #fff0bd;
+  font: 16px/1.2 system-ui, sans-serif;
+}
+
+.post-game-player input:focus {
+  border-color: #f4d991;
+  box-shadow: 0 0 0 3px rgba(244, 217, 145, 0.13);
+}
+
+.post-game-player button,
+.post-game-actions button {
+  min-height: 44px;
+  border: 1px solid rgba(255, 239, 184, 0.9);
+  border-radius: 7px;
+  background: linear-gradient(180deg, #fff0b2, #dba83f);
+  color: #251a08;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.post-game-player button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.post-game-error {
+  margin: 0;
+  color: #ffaca2;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.post-game-saved,
+.post-game-complete {
+  margin: 0;
+  color: #a9edca;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.post-game-note {
+  margin: 16px 0 0;
+  color: rgba(237, 229, 209, 0.7);
+  font-size: 12px;
+}
+
+.post-game-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.post-game-actions button + button {
+  border-color: rgba(255, 220, 143, 0.28);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff0bd;
+}
+
+@media (max-width: 460px) {
+  .post-game-submission {
+    padding: 12px;
+  }
+
+  .post-game-card {
+    padding: 20px 16px;
+  }
+
+  .post-game-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.claim-qr { display: block; width: min(100%, 248px); height: auto; margin: auto; padding: 10px; background: white; border-radius: 8px; }
+.post-game-player a { color: #fff0bd; }
+
+
+.claim-link { display: grid; place-items: center; min-height: 44px; padding: 10px; border: 1px solid #f4d991; border-radius: 7px; text-align: center; }
+.claim-url { overflow-wrap: anywhere; font-size: 12px; }
