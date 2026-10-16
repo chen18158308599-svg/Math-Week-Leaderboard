@@ -26,6 +26,6 @@ export async function GET(
 
   return NextResponse.json({
     used: data.used_at !== null,
-    expired: Date.now() >= Math.min(Date.parse(data.expires_at), data.result_payload ? Date.parse(data.created_at) + 30000 : Infinity),
+    expired: Date.now() >= Math.min(Date.parse(data.expires_at), data.result_payload ? Date.parse(data.created_at) + 60000 : Infinity),
   }, { headers: { "Cache-Control": "no-store" } });
 }

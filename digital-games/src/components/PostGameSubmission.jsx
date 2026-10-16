@@ -27,7 +27,10 @@ function PlayerClaim({ submission, slot, requestClaim }) {
       {(player.error || expired) && <p className="post-game-error" role="alert">{expired ? "This result has expired." : player.error}</p>}
       {window.parent === window && <p>Open this game from <a href={`${LEADERBOARD_ORIGIN}/games`}>Math Week Digital Games</a> to claim points.</p>}
       {!expired && !player.qrDataUrl && player.state === "pending" && <p role="status">Loading QR…</p>}
-      {!expired && player.state === "error" && <button onClick={() => requestClaim(submission, slot)}>RETRY QR</button>}
+      {!expired && player.state !== "expired" && <>
+        <button onClick={() => requestClaim(submission, slot)}>LOAD / RETRY QR</button>
+        <p>Retry reloads the same code. The 60-second countdown does not restart.</p>
+      </>}
     </>}
   </section>;
 }

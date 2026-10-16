@@ -47,6 +47,7 @@ assert.equal((await db.query("select is_active from games where digital_key='ave
 assert.equal((await db.query("select count(*)::int as count from games where digital_key <> 'average' and type='digital' and active_from is null and active_until is null")).rows[0].count,6);
 await db.exec(readFileSync(new URL('../supabase/migrations/0014_same_origin_digital_games.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0015_winner_only_30_second_claims.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0016_restore_60_second_claims.sql', import.meta.url), 'utf8'));
 assert.equal((await db.query("select count(*)::int as count from games where type='digital' and digital_key <> 'average' and embed_url='/digital-play/index.html'")).rows[0].count,6);
 // Exercise the real route with its Supabase transport replaced by a PostgreSQL adapter.
 function table(name) {
@@ -115,7 +116,7 @@ assert.equal((await report({...dual,playerSlot:'p2',finalScore:50,outcome:'draw'
 assert.equal((await report({...base,gameKey:'symmetry'})).status,403);
 const p2Result = {...dual,attemptId:'conway-p2-wins-1234',playerSlot:'p2',finalScore:50,outcome:'win'};
 const p2 = await report(p2Result);
-assert.ok(Date.parse(p2.expiresAt)-Date.now() <= 30000);
+assert.ok(Date.parse(p2.expiresAt)-Date.now() <= 60000);
 assert.equal(p1.status,200); assert.equal(p2.status,200); assert.notEqual(p1.token,p2.token);
 // Even an old/misconfigured high snapshot cannot bypass the database scaling.
 await db.query('update claim_tokens set points_snapshot=8750 where token=$1',[first.token]);
@@ -134,8 +135,8 @@ const expiredRetry = await report({...dual,playerSlot:'p1',finalScore:1210,outco
 assert.equal(expiredRetry.status,410);
 assert.equal(expiredRetry.code,'RESULT_EXPIRED');
 await assert.rejects(db.query('select * from claim_token($1)',[p1.token]),/expired_token/);
-// Legacy long-lived digital codes are capped at 30 seconds even if expires_at is later.
-await db.query("update claim_tokens set created_at=now()-interval '31 seconds', expires_at=now()+interval '10 minutes' where token=$1",[p2.token]);
+// Legacy long-lived digital codes are capped at 60 seconds even if expires_at is later.
+await db.query("update claim_tokens set created_at=now()-interval '61 seconds', expires_at=now()+interval '10 minutes' where token=$1",[p2.token]);
 await assert.rejects(db.query('select * from claim_token($1)',[p2.token]),/expired_token/);
 assert.equal((await report(p2Result)).status,410);
 assert.equal((await report({...base,gameKey:'average',attemptId:'average-12345678',finalScore:37,outcome:'completed'})).status,400);
@@ -147,6 +148,12 @@ await db.exec("update games set active_until='2026-10-14' where digital_key='knn
 assert.equal((await report({...base,attemptId:'knn-new-attempt'})).status,200);
 await db.exec("update games set is_active=false where digital_key='knn'");
 assert.equal((await report({...base,attemptId:'knn-disabled-attempt'})).status,409);
+const withinMinute = { ...base, gameKey: 'planarity', attemptId: 'planarity-45-second-window', playerSlot: 'p1', outcome: 'win' };
+const minuteClaim = await report(withinMinute);
+assert.equal(minuteClaim.status, 200);
+await db.query("update claim_tokens set created_at=now()-interval '45 seconds', expires_at=now()+interval '15 seconds' where token=$1", [minuteClaim.token]);
+assert.equal((await report(withinMinute)).status, 200, 'A claim remains valid after the old 30-second cutoff');
+assert.equal((await db.query('select * from claim_token($1)', [minuteClaim.token])).rows[0].game_name, 'Planarity');
 await db.query("select set_config('test.uid','',false)");
 await assert.rejects(db.query('select * from claim_token($1)',[p2.token]),/not_authenticated/);
 await db.close();

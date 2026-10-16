@@ -14,7 +14,7 @@ const schema = z.object({
   outcome: z.enum(["win", "loss", "draw", "completed"]),
   finalizedAt: z.iso.datetime(),
 }).strict();
-const TTL = 30;
+const TTL = 60;
 export async function POST(request: Request) {
   const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
   if (request.headers.get("origin") !== new URL(request.url).origin) return reply({ error: "Invalid request origin" }, 403);
