@@ -18,6 +18,14 @@ const RESULT_GAME_IDS = Object.freeze({
 
 const TWO_PLAYER_GAMES = new Set(["conway", "planarity"]);
 
+export function canClaimResult(gameId, result) {
+  return !!result && (!["conway", "planarity", "symmetry"].includes(gameId) || result.outcome === "win");
+}
+
+export function claimableSlots(submission) {
+  return submission.requiredSlots.filter(slot => canClaimResult(submission.localGameId, submission.results[slot]));
+}
+
 export function getApiGameId(localGameId) {
   return API_GAME_IDS[localGameId] ?? null;
 }

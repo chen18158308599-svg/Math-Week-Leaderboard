@@ -12,7 +12,7 @@ import NumberSequence from "./games/NumberSequence/NumberSequence";
 import Planarity from "./games/Planarity/Planarity";
 import SymmetryGame from "./games/Symmetry/Symmetry";
 
-function HomeNavigation({ onHome }) {
+function HomeNavigation({ onHome, onSelectGame }) {
   const [expanded, setExpanded] = useState(false);
   const navigationRef = useRef(null);
 
@@ -79,6 +79,9 @@ function HomeNavigation({ onHome }) {
         </svg>
         <span>Home</span>
       </button>
+      {expanded && <nav className="home-navigation__games" aria-label="Game shortcuts">
+        {[["conway", "Conway"], ["deal", "Deal or No Deal"], ["knn", "KNN Heist"], ["sequence", "Number Sequence"], ["planarity", "Planarity Shootout"], ["symmetry", "Symmetry"]].map(([id, name]) => <button key={id} onClick={() => { onSelectGame(id); setExpanded(false); }}>{name}</button>)}
+      </nav>}
     </div>
   );
 }
@@ -94,12 +97,21 @@ export default function App() {
   const seenResultRevision = useRef(resultRevision);
 
   useEffect(() => {
+    const reset = event => {
+      if (event.source !== window.parent || event.origin !== window.location.origin || event.data?.type !== "mathweek:reset-session") return;
+      setPage("home"); setPostGameOpen(false);
+    };
+    window.addEventListener("message", reset);
+    return () => window.removeEventListener("message", reset);
+  }, []);
+
+  useEffect(() => {
     if (resultRevision === seenResultRevision.current) return;
     seenResultRevision.current = resultRevision;
     setPostGameOpen(true);
   }, [resultRevision]);
 
-  function selectGame(gameId) { setPage(gameId); }
+  function selectGame(gameId) { setPostGameOpen(false); setPage(gameId); }
   function returnHome() { setPage("home"); }
 
   function dismissPostGame() {
@@ -138,7 +150,7 @@ export default function App() {
 
   return (
     <>
-      <HomeNavigation onHome={returnHome} />
+      <HomeNavigation onHome={returnHome} onSelectGame={selectGame} />
 
       {/* =========================
           CONWAY

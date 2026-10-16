@@ -116,7 +116,7 @@ export default function Market({ onReturnHome }: { onReturnHome?: () => void } =
   };
   const openTrade = (code: Code, side: "buy" | "sell") => { submitting.current = false; setOrder({ code, side }); setQuantity("1"); setDialog("trade"); };
   return <div className={s.page} lang={zh ? "zh-CN" : "en"}>
-    <IdleRedirect seconds={30} onIdle={() => { finish(); if (onReturnHome) onReturnHome(); else router.replace("/"); }} />
+    <IdleRedirect seconds={60} onIdle={() => { finish(); if (onReturnHome) onReturnHome(); else router.replace("/"); }} />
     <header className={s.header}>
       <div className={s.terminalBrand}><span className={s.blue}>▥</span> MAT <strong>EXCHANGE</strong><small>{t("Virtual currency · $", "虚拟货币 · $")}</small></div>
       <div className={s.languages} aria-label={t("Language", "语言")}><button aria-pressed={!zh} onClick={() => setZh(false)}>EN</button><button aria-pressed={zh} onClick={() => setZh(true)}>中文</button></div>

@@ -16,7 +16,7 @@ export function WeekShell({
   return (
     <div className={kioskHome ? "week-site kiosk-home" : "week-site"}>
       <MovingBackground />
-      <IdleRedirect seconds={idleSeconds ?? 30} />
+      <IdleRedirect seconds={idleSeconds ?? 60} />
       <header className="week-header">
         <Link href="/" className="week-brand" aria-label="Math Week home">
           <Image src="/mat-logo.png" alt="MAT" width={42} height={42} />

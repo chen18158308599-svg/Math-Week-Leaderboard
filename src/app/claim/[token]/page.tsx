@@ -49,7 +49,7 @@ export default async function ClaimPage({
   if (!submission && claim.used_at) {
     return <Message title="Already claimed" body="This code has already been used." />;
   }
-  if (!submission && new Date().getTime() >= Math.min(Date.parse(claim.expires_at), claim.result_payload ? Date.parse(claim.created_at) + 60000 : Infinity)) {
+  if (!submission && new Date().getTime() >= Math.min(Date.parse(claim.expires_at), claim.result_payload ? Date.parse(claim.created_at) + 30000 : Infinity)) {
     return <Message title="Expired" body="This code expired — ask staff for a new one." />;
   }
 

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { COMPETITION_RESULT_EVENT } from "../scoring/competitionScoring.js";
-import { getLocalGameIdForResult, getPlayerSlots } from "./gameApiConfig.js";
+import { getLocalGameIdForResult, getPlayerSlots, canClaimResult, claimableSlots } from "./gameApiConfig.js";
 export const LEADERBOARD_ORIGIN = window.location.origin;
 const KEY = "mathweek:leaderboard-results:v1";
 function load() { try { const records = JSON.parse(sessionStorage.getItem(KEY) || "[]"); return Array.isArray(records) ? records.filter(item => item.localGameId !== "average") : []; } catch { return []; } }
@@ -28,6 +28,9 @@ export function useScoreRecording() {
     }
     const competition = event => accept(getLocalGameIdForResult(event.detail?.gameId), event.detail);
     const message = event => {
+      if (event.origin === LEADERBOARD_ORIGIN && event.source === window.parent && event.data?.type === "mathweek:reset-session") {
+        setSubmissions([]); setActiveAttemptId(null); return;
+      }
       if (event.origin !== LEADERBOARD_ORIGIN || event.source !== window.parent || event.data?.type !== "mathweek:claim-update") return;
       const { attemptId, playerSlot, ...update } = event.data;
       setSubmissions(current => current.map(item => item.attemptId === attemptId && item.players[playerSlot] ? {
@@ -42,12 +45,13 @@ export function useScoreRecording() {
     };
   }, []);
   const requestClaim = useCallback((submission, slot) => {
+    if (!canClaimResult(submission.localGameId, submission.results[slot])) return;
     window.parent.postMessage({ type: "mathweek:claim-result", gameKey: submission.localGameId,
       ...submission.results[slot], attemptId: submission.attemptId, playerSlot: slot }, LEADERBOARD_ORIGIN);
   }, []);
   return {
     pendingSubmission: submissions.find(item => item.attemptId === activeAttemptId) || submissions.at(-1),
-    pendingSubmissions: submissions.filter(item => item.requiredSlots.every(slot => item.results[slot]) && item.requiredSlots.some(slot => item.players[slot]?.state !== "claimed")),
+    pendingSubmissions: submissions.filter(item => item.requiredSlots.every(slot => item.results[slot]) && claimableSlots(item).some(slot => item.players[slot]?.state !== "claimed")),
     resultRevision, setActiveSubmission: setActiveAttemptId, requestClaim,
   };
 }

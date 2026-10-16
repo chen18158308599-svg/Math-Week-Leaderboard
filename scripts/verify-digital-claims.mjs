@@ -46,6 +46,7 @@ await db.exec(readFileSync(new URL('../supabase/migrations/0013_all_day_games_re
 assert.equal((await db.query("select is_active from games where digital_key='average'")).rows[0].is_active,false);
 assert.equal((await db.query("select count(*)::int as count from games where digital_key <> 'average' and type='digital' and active_from is null and active_until is null")).rows[0].count,6);
 await db.exec(readFileSync(new URL('../supabase/migrations/0014_same_origin_digital_games.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0015_winner_only_30_second_claims.sql', import.meta.url), 'utf8'));
 assert.equal((await db.query("select count(*)::int as count from games where type='digital' and digital_key <> 'average' and embed_url='/digital-play/index.html'")).rows[0].count,6);
 // Exercise the real route with its Supabase transport replaced by a PostgreSQL adapter.
 function table(name) {
@@ -98,17 +99,23 @@ assert.equal((await report({...base,finalScore:-1})).status,400);
 assert.equal((await report({...base,playerSlot:'p1'})).status,400);
 assert.equal((await report({...base,gameKey:'average',finalScore:101,outcome:'completed'})).status,400);
 for (const gameKey of Object.keys(scaling.DIGITAL_SCORE_TARGETS)) {
-  const result = await report({...base,gameKey,attemptId:`${gameKey}-all-days-test`,playerSlot:['conway','planarity'].includes(gameKey)?'p1':'single',finalScore:100000});
+  const result = await report({...base,gameKey,attemptId:`${gameKey}-all-days-test`,playerSlot:['conway','planarity'].includes(gameKey)?'p1':'single',outcome:'win',finalScore:100000});
   assert.equal(result.status,200);
   assert.equal(result.pointsAwarded,19);
 }
 const first = await report(); assert.equal(first.status,200); assert.equal(first.pointsAwarded,19);
 assert.equal((await report()).token,first.token);
+assert.equal((await report()).expiresAt,first.expiresAt, 'Retry must not extend the QR deadline');
 assert.equal((await report({...base,finalScore:8751})).status,409);
 const dual = {...base,gameKey:'conway',attemptId:'conway-12345678'};
 const p1 = await report({...dual,playerSlot:'p1',finalScore:1210,outcome:'win'});
 assert.equal(p1.pointsAwarded,19);
-const p2 = await report({...dual,playerSlot:'p2',finalScore:50});
+assert.equal((await report({...dual,playerSlot:'p2',finalScore:50})).status,403);
+assert.equal((await report({...dual,playerSlot:'p2',finalScore:50,outcome:'draw'})).status,403);
+assert.equal((await report({...base,gameKey:'symmetry'})).status,403);
+const p2Result = {...dual,attemptId:'conway-p2-wins-1234',playerSlot:'p2',finalScore:50,outcome:'win'};
+const p2 = await report(p2Result);
+assert.ok(Date.parse(p2.expiresAt)-Date.now() <= 30000);
 assert.equal(p1.status,200); assert.equal(p2.status,200); assert.notEqual(p1.token,p2.token);
 // Even an old/misconfigured high snapshot cannot bypass the database scaling.
 await db.query('update claim_tokens set points_snapshot=8750 where token=$1',[first.token]);
@@ -127,11 +134,13 @@ const expiredRetry = await report({...dual,playerSlot:'p1',finalScore:1210,outco
 assert.equal(expiredRetry.status,410);
 assert.equal(expiredRetry.code,'RESULT_EXPIRED');
 await assert.rejects(db.query('select * from claim_token($1)',[p1.token]),/expired_token/);
-// Legacy long-lived digital codes are capped at 60 seconds even if expires_at is later.
-await db.query("update claim_tokens set created_at=now()-interval '61 seconds', expires_at=now()+interval '10 minutes' where token=$1",[p2.token]);
+// Legacy long-lived digital codes are capped at 30 seconds even if expires_at is later.
+await db.query("update claim_tokens set created_at=now()-interval '31 seconds', expires_at=now()+interval '10 minutes' where token=$1",[p2.token]);
 await assert.rejects(db.query('select * from claim_token($1)',[p2.token]),/expired_token/);
-assert.equal((await report({...dual,playerSlot:'p2',finalScore:50})).status,410);
+assert.equal((await report(p2Result)).status,410);
 assert.equal((await report({...base,gameKey:'average',attemptId:'average-12345678',finalScore:37,outcome:'completed'})).status,400);
+await db.exec("insert into claim_tokens(game_id,token,attempt_id,player_slot,expires_at,result_payload,points_snapshot) select id,'loser-legacy-token','legacy-loser-1234','p2',now()+interval '1 hour','{\"gameKey\":\"conway\",\"outcome\":\"loss\",\"finalScore\":50}'::jsonb,5 from games where digital_key='conway'");
+await assert.rejects(db.query("select * from claim_token('loser-legacy-token')"),/winner_only/);
 await db.exec("insert into claim_tokens(game_id,token,expires_at) select id,'booth-token',now()+interval '1 hour' from games where type='physical'");
 assert.equal((await db.query("select * from claim_token('booth-token')")).rows[0].points_awarded,20);
 await db.exec("update games set active_until='2026-10-14' where digital_key='knn'");

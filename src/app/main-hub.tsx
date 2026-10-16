@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { WeekShell } from "@/components/week-shell";
 import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
-import { DIGITAL_DAYS, digitalDayIndex } from "@/lib/digital-games";
+import { DIGITAL_DAYS } from "@/lib/digital-games";
 import { todayInEventTimezone } from "@/lib/event-date";
 import { THEMES, ACTIVITIES } from "@/lib/event-content";
 const PANELS = ["events", "digital", "market", "ranking"] as const;
@@ -74,8 +74,7 @@ export function MainHub({ eventDate }: { eventDate: string }) {
     const timer = setInterval(() => setDate(todayInEventTimezone()), 60000);
     return () => clearInterval(timer);
   }, []);
-  const game = DIGITAL_DAYS[digitalDayIndex(date)];
-  const gameName = game.name;
+  const gameName = "Digital Games";
   function content(panel: Panel, large: boolean) {
     if (panel === "events") return <div className="hub-week-programme">
       <div className="hub-programme-heading"><span className="week-eyebrow">19–25 OCTOBER · XMUM LIBRARY</span><h3>This week at Math Week</h3></div>
@@ -88,8 +87,8 @@ export function MainHub({ eventDate }: { eventDate: string }) {
       <span className="hub-action">View activities & locations →</span>
     </div>;
     if (panel === "digital") return <>
-      <div className="hub-media"><Image src={game.image} alt={`${game.name} gameplay preview`} sizes={large ? "65vw" : "22vw"} /></div>
-      <div className="hub-detail"><span className="week-eyebrow">{game.date === date ? "TODAY'S GAME" : "GAME PREVIEW"} · {game.date.slice(8)} OCT</span><h3>{gameName}</h3>{large && <p>{game.description}</p>}<span className="hub-action">Tap to play <span className="hub-play-arrow" aria-hidden="true">→</span></span></div>
+      <div className="hub-digital-collage">{DIGITAL_DAYS.map(game => <div key={game.name}><Image src={game.image} alt={game.name} sizes={large ? "22vw" : "8vw"} /><span>{game.name}</span></div>)}</div>
+      <div className="hub-detail"><span className="week-eyebrow">SIX GAMES / ALL WEEK</span><h3>Choose your realm</h3>{large && <p>Explore all six challenges. Tap to play.</p>}<span className="hub-action">Play digital games →</span></div>
     </>;
     if (panel === "market") return <>
       <div className="hub-market-preview" aria-label="MAT Exchange preview: three stocks starting at $100">

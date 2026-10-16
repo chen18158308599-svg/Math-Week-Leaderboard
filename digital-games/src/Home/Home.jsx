@@ -1,5 +1,4 @@
 import "./Home.css";
-import { LEADERBOARD_ORIGIN } from "../integration/useScoreRecording.js";
 
 import background from "../assets/home-layers/background.png";
 import conway from "../assets/home-layers/conway.webp";
@@ -16,7 +15,6 @@ export default function Home({ onSelectGame }) {
           HOME
       ========================= */}
       <main className="home-page">
-        <a className="home-leaderboard-link" href={`${LEADERBOARD_ORIGIN}/leaderboard`} target="_blank" rel="noopener noreferrer">LEADERBOARD</a>
       {/* =========================
           MATH WEEK TITLE
       ========================= */}

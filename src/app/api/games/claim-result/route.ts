@@ -14,7 +14,7 @@ const schema = z.object({
   outcome: z.enum(["win", "loss", "draw", "completed"]),
   finalizedAt: z.iso.datetime(),
 }).strict();
-const TTL = 60;
+const TTL = 30;
 export async function POST(request: Request) {
   const reply = (body: unknown, status = 200) => NextResponse.json(body, { status, headers: { "Cache-Control": "no-store" } });
   if (request.headers.get("origin") !== new URL(request.url).origin) return reply({ error: "Invalid request origin" }, 403);
@@ -28,6 +28,7 @@ export async function POST(request: Request) {
   const result = parsed.data;
   const dual = result.gameKey === "conway" || result.gameKey === "planarity";
   if (dual === (result.playerSlot === "single")) return reply({ error: "Invalid player slot or number" }, 400);
+  if (["conway", "planarity", "symmetry"].includes(result.gameKey) && result.outcome !== "win") return reply({ error: "Only the winner can claim points" }, 403);
   const admin = createAdminClient();
   const { data: game, error: gameError } = await admin.from("games").select("*").eq("digital_key", result.gameKey).eq("type", "digital").maybeSingle().returns<Game>();
   if (gameError) return reply({ error: "Game registry unavailable. Check the database migration." }, 503);

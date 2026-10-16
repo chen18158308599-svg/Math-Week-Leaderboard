@@ -115,3 +115,5 @@
     transition: none;
   }
 }
+.home-navigation__games{position:absolute;left:40px;top:46px;width:190px;max-height:55vh;overflow:auto;pointer-events:auto;display:flex;flex-direction:column;gap:4px;padding:8px;background:rgba(6,14,36,.97);border:1px solid #ffe19688;border-radius:0 10px 10px 10px}.home-navigation__games button{padding:10px 12px;text-align:left;color:#fff0bd;background:#142243;border:1px solid #ffffff20;border-radius:5px;cursor:pointer;font:inherit;font-size:12px}.home-navigation__games button:hover,.home-navigation__games button:focus-visible{background:#293e66;outline:2px solid #ffe196}
+.home-navigation__games{max-height:calc(50dvh - 60px)}

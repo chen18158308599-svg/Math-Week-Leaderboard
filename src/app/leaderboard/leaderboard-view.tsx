@@ -1,11 +1,11 @@
-"use client";
+﻿"use client";
 import Link from "next/link";
 import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
 import { WeekShell } from "@/components/week-shell";
 export function LeaderboardView() {
   const { rows, loading } = useLeaderboard("individual", 20);
   return (
-    <WeekShell idleSeconds={30}>
+    <WeekShell idleSeconds={60}>
       <div className="page-intro">
         <p className="week-eyebrow">
           <span className="live-dot" /> LIVE LEADERBOARD
@@ -80,3 +80,4 @@ export function LeaderboardView() {
     </WeekShell>
   );
 }
+

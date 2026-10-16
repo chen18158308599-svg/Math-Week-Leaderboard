@@ -1,7 +1,7 @@
-﻿"use client";
+"use client";
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-export function IdleRedirect({ seconds = 30, enabled = true, onIdle }: {
+export function IdleRedirect({ seconds = 60, enabled = true, onIdle }: {
   seconds?: number; enabled?: boolean; onIdle?: () => void;
 }) {
   const router = useRouter();
@@ -34,6 +34,7 @@ export function IdleRedirect({ seconds = 30, enabled = true, onIdle }: {
       const left = Math.ceil((deadline - Date.now()) / 1000);
       if (left <= 0) {
         clearInterval(timer); setRemaining(null);
+        window.dispatchEvent(new Event("mathweek:before-idle"));
         if (callback.current) callback.current(); else router.replace("/");
       } else if (left <= 10) setRemaining(left);
     }, 250);
@@ -49,7 +50,7 @@ export function IdleRedirect({ seconds = 30, enabled = true, onIdle }: {
   }, [remaining]);
   if (!enabled) return null;
   return <dialog ref={notice} className="idle-notice idle-dialog" aria-label="Inactivity warning / 闲置提醒" onCancel={event => { event.preventDefault(); window.dispatchEvent(new Event("mathweek:activity")); }}>
-    <span>Returning home in <strong>{remaining ?? 0}s</strong><small>即将返回主页面</small></span>
-    <button className="week-button" onClick={() => window.dispatchEvent(new Event("mathweek:activity"))}>Stay here / 继续操作</button>
+    <span>Returning home in <strong>{remaining ?? 0}s</strong></span>
+    <button className="week-button" onClick={() => window.dispatchEvent(new Event("mathweek:activity"))}>Stay here</button>
   </dialog>;
 }
