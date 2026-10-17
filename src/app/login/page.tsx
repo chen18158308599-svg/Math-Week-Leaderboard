@@ -99,6 +99,10 @@ export default function LoginPage() {
           </p>
         )}
 
+        <p className="text-sm font-medium text-blue-600">
+          Please sign in with your school email address.
+        </p>
+
         <button
           data-provider="microsoft"
           onClick={signInWithMicrosoft}
@@ -109,9 +113,6 @@ export default function LoginPage() {
           {loading ? "Redirecting…" : "Continue with Microsoft 365"}
         </button>
 
-        <p className="text-xs text-neutral-500">
-          Only university email addresses are supported.
-        </p>
       </div>
     </main>
   );

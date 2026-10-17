@@ -1182567,3 +1182567,7 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
  GET / 200 in 43ms (next.js: 13ms, proxy.ts: 6ms, application-code: 25ms)
  POST /site-access?next=%2F 200 in 257ms (next.js: 9ms, proxy.ts: 6ms, application-code: 243ms)
   └─ ƒ unlockSite("/", {}, {}) in 179ms src/app/site-access/actions.ts
+ GET / 200 in 305ms (next.js: 9ms, proxy.ts: 10ms, application-code: 287ms)
+[browser] Image with src "/directory/exhibition.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /admin/games 200 in 492ms (next.js: 11ms, proxy.ts: 408ms, application-code: 73ms)
