@@ -44,3 +44,5 @@ next-env.d.ts
 
 # Generated from digital-games source by dev/build scripts
 /public/digital-play/
+# Back up committee-held reusable QR configuration privately.
+card_based/card_qr/committee_codes.private.json

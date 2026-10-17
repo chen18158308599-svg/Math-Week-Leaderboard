@@ -22,7 +22,7 @@ const PUBLIC_PATHS = [
 ];
 
 // Paths where a signed-in-but-nicknameless user gets bounced to onboarding first.
-const NEEDS_NICKNAME_PREFIXES = ["/claim", "/puzzle", "/puzzles", "/my-score"];
+const NEEDS_NICKNAME_PREFIXES = ["/claim", "/committee", "/puzzle", "/puzzles", "/my-score"];
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));

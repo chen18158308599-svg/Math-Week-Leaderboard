@@ -110,6 +110,10 @@ export interface Database {
       leaderboard_group: { Row: LeaderboardGroupRow; Relationships: [] };
     };
     Functions: {
+      committee_award: {
+        Args: { p_code: string; p_claim: boolean };
+        Returns: { game_name: string; tier: string; target_points: number; total_points: number; points_added: number }[];
+      };
       verify_site_pin: {
         Args: { p_digest: string; p_client_key: string };
         Returns: { authorized: boolean; retry_after: number }[];

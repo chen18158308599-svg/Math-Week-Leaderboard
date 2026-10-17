@@ -16,7 +16,7 @@ export default async function PuzzlePage({
   const { slug } = await params;
   const profile = await requireUser(`/puzzle/${slug}`); // preserve the card even if session expires
   const card = catalogue.find(item => item.slug === slug);
-  if (card?.mode === "staff") return <main className="participant-page flex min-h-screen items-center justify-center px-6"><section className="participant-card max-w-md text-center"><p>{card.label}</p><h1 className="my-4 text-2xl font-semibold">{card.title}</h1><p>Complete the challenge at this booth. A committee member will check your attempt and show you a personal claim QR.</p><p className="mt-3">Scanning this card does not award points.</p><Link className="participant-link mt-6" href="/my-score">View my points</Link></section></main>;
+  if (card?.mode === "staff") return <main className="participant-page flex min-h-screen items-center justify-center px-6"><section className="participant-card max-w-md text-center"><p>{card.label}</p><h1 className="my-4 text-2xl font-semibold">{card.title}</h1><p>Complete the challenge at this booth. A committee member will check your attempt and show you the correct claim QR. Complete the challenge for 10 points, or explain your solution for 20 points total.</p><p className="mt-3">Scanning this card does not award points.</p><Link className="participant-link mt-6" href="/my-score">View my points</Link></section></main>;
 
   const admin = createAdminClient();
   const { data: puzzle } = await admin
