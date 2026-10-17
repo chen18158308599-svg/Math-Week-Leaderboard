@@ -46,3 +46,5 @@ next-env.d.ts
 /public/digital-play/
 # Back up committee-held reusable QR configuration privately.
 card_based/card_qr/committee_codes.private.json
+# Private score-reset backups contain participant identifiers.
+output/leaderboard_backups/

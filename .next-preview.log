@@ -1182872,3 +1182872,4 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
 [browser] Image with src "/directory/committee.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
 Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
  GET /stock-market 200 in 51ms (next.js: 15ms, proxy.ts: 8ms, application-code: 28ms)
+✓ Compiled in 424ms
