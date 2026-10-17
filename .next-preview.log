@@ -1182562,3 +1182562,8 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
  GET /api/stock-market/status 200 in 19ms (next.js: 5ms, proxy.ts: 5ms, application-code: 9ms)
  GET /api/stock-market/status 200 in 26ms (next.js: 8ms, proxy.ts: 9ms, application-code: 9ms)
  GET / 200 in 54ms (next.js: 25ms, proxy.ts: 9ms, application-code: 20ms)
+ GET /admin/games 200 in 417ms (next.js: 9ms, proxy.ts: 339ms, application-code: 69ms)
+ GET /site-access?next=%2F 200 in 60ms (next.js: 10ms, proxy.ts: 7ms, application-code: 43ms)
+ GET / 200 in 43ms (next.js: 13ms, proxy.ts: 6ms, application-code: 25ms)
+ POST /site-access?next=%2F 200 in 257ms (next.js: 9ms, proxy.ts: 6ms, application-code: 243ms)
+  └─ ƒ unlockSite("/", {}, {}) in 179ms src/app/site-access/actions.ts

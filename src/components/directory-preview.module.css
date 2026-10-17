@@ -1,0 +1,33 @@
+.preview { display: flex; flex: 1; flex-direction: column; min-height: 0; background: #f6f8ff; overflow: hidden; }
+.collage { display: grid; grid-template-columns: 1.45fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; flex: 1 1 40%; min-height: 110px; }
+.tile { position: relative; overflow: hidden; background: #e9edf8; }
+.tile:first-child { grid-row: span 2; }
+.tile img { object-fit: cover; }
+.placeholder { position: absolute; top: 10px; left: 10px; padding: 4px 7px; border-radius: 20px; background: #ffffffcc; color: #66788c; font-size: 7px; letter-spacing: 1px; }
+.caption { position: absolute; inset: auto 0 0; padding: 25px 14px 10px; font-size: clamp(12px, 1.3vw, 18px); color: white; background: linear-gradient(transparent, #172b4cbb); }
+.copy { padding: clamp(15px, 2vh, 25px) clamp(18px, 2vw, 30px); }
+.eyebrow { font-size: 9px; color: #6882b0; letter-spacing: 1.5px; }
+.copy h3 { font-size: clamp(26px, 2.9vw, 43px); font-weight: 500; line-height: 1.08; color: #244773; margin: 10px 0; }
+.copy > p { color: #718199; font-size: 12px; line-height: 1.6; max-width: 550px; }
+.agenda { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; background: #e9eefb; border-radius: 10px; padding: 10px 12px; margin-top: 12px; }
+.agenda > span { color: #4d6bfe; font-size: 8px; letter-spacing: 1px; }
+.agenda > div { display: flex; align-items: center; gap: 10px; font-size: 11px; color: #405878; }
+.agenda strong { color: #405dcc; font-size: 11px; }
+.agenda small { color: #7c8ba0; font-size: 10px; }
+.experiences { display: flex; flex-wrap: wrap; gap: 5px 12px; margin-top: 12px; color: #6d7e97; font-size: 10px; }
+.action { display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 500; color: #4d6bfe; margin-top: 12px; }
+.action > span { font-size: 20px; }
+.small { flex-direction: row; }
+.small .collage { flex: 0 0 36%; min-height: 0; display: block; }
+.small .tile { display: none; height: 100%; }
+.small .tile:first-child { display: block; }
+.small .caption, .small .placeholder { display: none; }
+.small .copy { display: flex; flex-direction: column; justify-content: center; flex: 1; min-width: 0; padding: 8px 12px; }
+.small .eyebrow { font-size: 7px; letter-spacing: .7px; }
+.small .copy h3 { font-size: clamp(15px, 1.3vw, 21px); margin: 5px 0; }
+.small .agenda { margin-top: 3px; padding: 0; background: transparent; gap: 3px; }
+.small .agenda > span, .small .agenda strong { display: none; }
+.small .agenda > div { font-size: 9px; }
+.small .action { font-size: 9px; margin-top: 5px; }
+.small .action > span { font-size: 14px; }
+@media (max-height: 850px) { .large .experiences { display: none; } .large .copy > p { font-size: 11px; } .large .copy h3 { font-size: 31px; } .large .copy { padding: 14px 22px; } }

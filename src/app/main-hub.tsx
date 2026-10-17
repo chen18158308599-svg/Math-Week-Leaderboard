@@ -7,7 +7,7 @@ import { WeekShell } from "@/components/week-shell";
 import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
 import { DIGITAL_DAYS } from "@/lib/digital-games";
 import { todayInEventTimezone } from "@/lib/event-date";
-import { THEMES, ACTIVITIES } from "@/lib/event-content";
+import { DirectoryPreview } from "@/components/directory-preview";
 const PANELS = ["events", "digital", "market", "ranking"] as const;
 type Panel = typeof PANELS[number];
 const TITLES = { events: "What's on", digital: "Digital Based", market: "MAT Stock Market", ranking: "Leaderboard" };
@@ -76,16 +76,7 @@ export function MainHub({ eventDate }: { eventDate: string }) {
   }, []);
   const gameName = "Digital Games";
   function content(panel: Panel, large: boolean) {
-    if (panel === "events") return <div className="hub-week-programme">
-      <div className="hub-programme-heading"><span className="week-eyebrow">19–25 OCTOBER · XMUM LIBRARY</span><h3>This week at Math Week</h3></div>
-      <div className="hub-programme-list">{THEMES.map(theme => <div key={theme.from} className={date >= theme.from && date <= theme.to ? "is-today" : ""}>
-        <span className="hub-programme-date">{theme.from.slice(8)}–{theme.to.slice(8)} OCT<small>{theme.days}</small></span>
-        <strong>{theme.theme.replace("Mathematics in ", "")}</strong>
-        {date >= theme.from && date <= theme.to && <span className="hub-status">TODAY</span>}
-      </div>)}</div>
-      {large && <div className="hub-programme-activities"><span className="week-eyebrow">ACTIVITIES THROUGHOUT THE WEEK</span><div>{ACTIVITIES.map(activity => <span key={activity.category}>{activity.category}</span>)}</div></div>}
-      <span className="hub-action">View activities & locations →</span>
-    </div>;
+    if (panel === "events") return <DirectoryPreview date={date} large={large} />;
     if (panel === "digital") return <>
       <div className="hub-digital-collage">{DIGITAL_DAYS.map(game => <div key={game.name}><Image src={game.image} alt={game.name} sizes={large ? "22vw" : "8vw"} /><span>{game.name}</span></div>)}</div>
       <div className="hub-detail"><span className="week-eyebrow">SIX GAMES / ALL WEEK</span><h3>Choose your realm</h3>{large && <p>Explore all six challenges. Tap to play.</p>}<span className="hub-action">Play digital games →</span></div>
