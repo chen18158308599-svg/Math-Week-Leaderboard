@@ -21,3 +21,7 @@
 .terminalStatus { display:flex; justify-content:space-between; gap:16px; padding:14px 18px; border-radius:12px; background:#edf2e8; color:#176b52; font-size:12px; margin-bottom:20px; }
 
 .session { position: sticky; top: 0; z-index: 10; }
+
+.signInBanner { margin: 0 0 24px; border: 2px solid #176b52; background: #edf5ee; }
+.signInBanner h2 { font-size: 28px; }
+.signInBanner .primary { min-height: 58px; font-size: 16px; }

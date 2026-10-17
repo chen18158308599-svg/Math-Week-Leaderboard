@@ -35,6 +35,7 @@ export default function LiveMarket({ onReturnHome }: { onReturnHome?: () => void
   const [receipt, setReceipt] = useState<MarketTrade | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const sessionId = useRef<string | null>(null);
+  const pairedSession = useRef<string | null>(null);
   const inFlight = useRef(false);
   const mounted = useRef(false);
   const ready = useRef(false);
@@ -54,6 +55,12 @@ export default function LiveMarket({ onReturnHome }: { onReturnHome?: () => void
       if (!mounted.current || !ready.current) return;
       setState(value); setConnected(true);
       if (value.portfolio) {
+        if (pairedSession.current !== value.portfolio.sessionId) {
+          pairedSession.current = value.portfolio.sessionId;
+          // Scanning on a phone is not a touch on the trading screen.
+          // Give the player a full inactivity window after confirmation.
+          window.dispatchEvent(new Event("mathweek:activity"));
+        }
         sessionId.current = value.portfolio.sessionId;
         setPair(null);
         setModal(current => current === "pair" ? null : current);
@@ -93,6 +100,7 @@ export default function LiveMarket({ onReturnHome }: { onReturnHome?: () => void
     const id = sessionId.current;
     setState(current => current ? { ...current, portfolio: null, pairing: "none" } : null);
     setPair(null); setModal(null); setOrder(null); setReceipt(null); setError("");
+    pairedSession.current = null;
     try { await request({ action: "end", session_id: id }); sessionId.current = null; } catch { /* server session still expires after 15 minutes */ }
     if (returnHome.current) returnHome.current(); else router.replace("/");
   }, [request, router]);
@@ -144,6 +152,7 @@ export default function LiveMarket({ onReturnHome }: { onReturnHome?: () => void
       <div className={s.terminalTop}><span className={s.terminalBrand}>▥ MAT EXCHANGE</span><div className={s.languages}><button aria-pressed={!zh} onClick={() => setZh(false)}>EN</button><button aria-pressed={zh} onClick={() => setZh(true)}>中文</button></div><button className={s.quiet} onClick={() => setModal("guide")}>{t("How to play", "玩法说明")}</button></div>
       <div className={s.terminalStatus}><span>{status}</span><span>{t("Malaysia time · Virtual currency", "马来西亚时间 · 虚拟资金")}</span></div>
       {error && <p className={s.notice} role="alert">{error} <button className={s.quiet} onClick={() => void retryConnection()}>{t("Refresh", "刷新")}</button></p>}
+      {!portfolio && <section className={`${s.join} ${s.signInBanner}`}><div><span className={s.eyebrow}>{t("START HERE · SCHOOL EMAIL REQUIRED", "从这里开始 · 请使用学校邮箱")}</span><h2>{t("Sign in to start trading", "登录后开始交易")}</h2><p>{t("Scan the QR with your phone → sign in with your school email → confirm the connection. Then buy and sell on this screen.", "手机扫码 → 学校邮箱登录 → 确认连接，然后在本屏幕买卖股票。")}</p></div><button className={s.primary} disabled={busy || !connected || state?.phase !== "open"} onClick={() => void start()}>{busy ? t("Preparing…", "准备中…") : t("Start trading · Scan to sign in", "开始交易 · 扫码登录")}</button></section>}
       {portfolio && <div className={s.session}><strong>{portfolio.nickname}</strong><span>{t("Your library trading session", "你的现场交易会话")}</span><button className={s.exit} onClick={() => void finish()}>{t("Finish & sign out", "结束并退出")}</button></div>}
       <section className={s.summary}>
         <div><span>{t("Available cash", "可用现金")}</span><strong>{portfolio ? money(portfolio.cash) : "—"}</strong><small>{t("Starting cash: $5,000", "初始资金：$5,000")}</small></div>
@@ -167,12 +176,12 @@ export default function LiveMarket({ onReturnHome }: { onReturnHome?: () => void
             {portfolio ? <div className={s.actions}><button className={s.primary} disabled={done || state.phase !== "open" || busy} onClick={() => openOrder(stock.code, "buy")}>{done ? t("Done today", "今日已交易") : t("Buy", "买入")}</button><button disabled={done || state.phase !== "open" || busy || portfolio.holdings[stock.code] === 0} onClick={() => openOrder(stock.code, "sell")}>{t("Sell", "卖出")}</button></div> : <p className={s.visit}>{t("Scan at the library screen to trade", "在图书馆屏幕扫码后交易")}</p>}
           </article>;
         })}</section>
-        {!portfolio && <section className={s.join}><div><h2>{t("Welcome to MAT Stock Market", "欢迎参与 MAT 股票市场")}</h2><p>{t("Sign in with your school account on your phone. Scan the code on this screen, confirm the connection, and trade here.", "用手机登录学校账号，扫描现场屏幕二维码并确认配对，在本屏幕进行买卖。")}</p></div><button className={s.primary} disabled={busy || !connected || state?.phase !== "open"} onClick={() => void start()}>{busy ? t("Preparing…", "准备中…") : t("Start trading", "扫码开始交易")}</button></section>}
+
         {portfolio && <section className={s.portfolio}><h2>{t("My holdings", "我的持仓")}</h2>{Object.entries(portfolio.holdings).every(([, qty]) => qty === 0) ? <p>{t("No stocks yet. Read the clues before your first trade.", "暂无持仓，先阅读提示再决定。")}</p> : state?.stocks.filter(stock => portfolio.holdings[stock.code] > 0).map(stock => <div className={s.row} key={stock.code}><b>{stock.code}</b><span>{portfolio.holdings[stock.code]} {t("units", "单位")}</span><strong>{money(portfolio.holdings[stock.code] * stock.price)}</strong></div>)}<details className={s.details}><summary>{t("Transaction history", "交易记录")} <span>＋</span></summary>{portfolio.trades.length ? portfolio.trades.map(trade => <div className={s.row} key={trade.id}><span>{t(`Day ${trade.day}`, `第${trade.day}天`)} · {new Date(trade.created_at).toLocaleTimeString("en-GB", { timeZone: "Asia/Kuala_Lumpur" })} · {trade.code}</span><span>{trade.side === "buy" ? t("Bought", "买入") : t("Sold", "卖出")} {trade.quantity} × {money(trade.price)}</span><b>{money(trade.amount)}</b></div>) : <p>{t("No trades yet.", "暂无交易记录。")}</p>}</details></section>}
       </> : <section className={s.ranking}><h2>{t("Market leaderboard", "市场资产排行榜")}</h2><p>{t("Ranked by total assets. Equal assets share the same rank. Market assets do not add to activity points.", "按总资产排名，同资产并列。市场资产不计入活动积分。")}</p><p>{state?.lastSettlement ? t(`Last settlement: Day ${state.settledDay}`, `最近结算：第${state.settledDay}天`) : t("No daily settlement yet.", "尚未进行每日结算。")}</p><div className={s.row}><span>{t("Rank", "名次")}</span><span>{t("Player", "玩家")}</span><span>{t("Total assets", "总资产")}</span></div>{state?.leaderboard.length ? state.leaderboard.map((row, index) => <div className={s.row} key={index}><b>{row.rank}</b><span>{row.nickname}</span><strong>{money(row.assets)}</strong></div>) : <p>{t("Rankings appear as players join.", "玩家加入后将显示排名。")}</p>}<Link className={s.quiet} href="/leaderboard">{t("Activity points leaderboard", "活动积分榜")} ↗</Link></section>}
       <footer className={s.footer}><span>MAT × XMUM LIBRARY</span><span>{t("Virtual currency · Real curiosity", "虚拟投资 · 真实探索")}</span></footer>
     </main>
-    <dialog ref={dialog} className={s.modal} onCancel={event => { event.preventDefault(); if (modal === "pair") void finish(); else setModal(null); }}>
+    <dialog ref={dialog} className={s.modal} onClose={event => event.stopPropagation()} onCancel={event => { event.preventDefault(); event.stopPropagation(); if (modal === "pair") void finish(); else setModal(null); }}>
       <button className={s.close} aria-label={t("Close", "关闭")} onClick={() => modal === "pair" ? void finish() : setModal(null)}>×</button>
       {modal === "guide" && <><span className={s.eyebrow}>MAT STOCK MARKET</span><h2>{t("Start small. Think ahead.", "从观察开始。")}</h2><p>{t("Start with $5,000 virtual cash and no holdings. Read the clues, buy or sell at the library, and compare your total assets over seven days.", "每人初始$5,000、零持仓。阅读提示，在图书馆买卖，七天后按总资产排名。")}</p><ol><li>{t("One buy or sell per stock each day. Whole units only, no fees.", "每只股票每天一次买入或卖出，整数单位，无手续费。")}</li><li>{t("No borrowing, short selling or transfers. Doing nothing keeps your holdings.", "不可透支、做空或转账，不操作则继续持有。")}</li><li>{t("Weekdays 09:00–22:00; weekends 09:00–17:00, Malaysia time.", "马来西亚时间工作日09:00–22:00、周末09:00–17:00。")}</li><li>{t("Prices update after closing. Market assets are separate from activity points.", "闭馆后结算变价，市场资产与活动积分分开。")}</li><li>{t("Tap Finish & sign out before leaving the screen.", "离开屏幕前请点击结束并退出。")}</li></ol><button className={s.primary} onClick={() => setModal(null)}>{t("Got it", "明白了")}</button></>}
       {modal === "pair" && pair && <><h2>{t("Scan to connect", "扫码连接现场屏幕")}</h2><p>{t("Use your phone to sign in with your school email and confirm this screen. This code is valid for two minutes.", "用手机扫描，学校邮箱登录后确认连接；二维码两分钟内有效。")}</p><Image src={pair.qr} alt="Scan to connect your school account" width={320} height={320} unoptimized /><p>{t("Waiting for confirmation on your phone…", "等待手机确认…")}</p><button className={s.quiet} disabled={busy} onClick={() => void start()}>{t("Get a new code", "重新生成二维码")}</button></>}

@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import Market from "./stock-market/market";
 import { MarketPreview } from "@/components/market-preview";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -33,12 +32,6 @@ export function MainHub({ eventDate }: { eventDate: string }) {
   const [step, setStep] = useState(0);
   const [remaining, setRemaining] = useState(20);
   const [paused, setPaused] = useState(false);
-  const [marketOpen, setMarketOpen] = useState(false);
-  const marketDialog = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
-    if (marketOpen) marketDialog.current?.showModal();
-    else marketDialog.current?.close();
-  }, [marketOpen]);
   const [date, setDate] = useState(eventDate);
   const { rows, loading } = useLeaderboard("individual", 5);
   useLayoutEffect(() => {
@@ -57,7 +50,7 @@ export function MainHub({ eventDate }: { eventDate: string }) {
     });
   }, [step]);
   useEffect(() => {
-    if (paused || marketOpen) return;
+    if (paused) return;
     let deadline = Date.now() + 20000;
     const reset = () => { deadline = Date.now() + 20000; setRemaining(20); };
     const events = ["pointerdown", "keydown", "wheel"] as const;
@@ -70,7 +63,7 @@ export function MainHub({ eventDate }: { eventDate: string }) {
       setRemaining(Math.max(0, Math.ceil((deadline - Date.now()) / 1000)));
     }, 250);
     return () => { clearInterval(timer); events.forEach(event => window.removeEventListener(event, reset)); };
-  }, [paused, marketOpen]);
+  }, [paused]);
   useEffect(() => {
     const timer = setInterval(() => setDate(todayInEventTimezone()), 60000);
     return () => clearInterval(timer);
@@ -89,10 +82,6 @@ export function MainHub({ eventDate }: { eventDate: string }) {
     return <div className="hub-ranking"><span className="week-eyebrow"><span className="live-dot" /> LIVE SCORES</span>{large && <h3>Math Week&apos;s top players</h3>}<div className="hub-ranking-rows">{loading ? <p role="status">Loading scores…</p> : rows.length ? rows.slice(0, large ? 5 : 3).map((row, i) => <div key={row.key}><span className="hub-rank">{String(i + 1).padStart(2, "0")}</span><span className="hub-player" title={row.label}>{row.label}</span><strong><LiveScore points={row.total_points} /><small> pts</small></strong></div>) : <p>Scores will appear as students play.</p>}</div><span className="hub-action">Full leaderboard →</span></div>;
   }
   return <WeekShell kioskHome>
-    <dialog ref={marketDialog} className="market-embed-dialog" onCancel={() => setMarketOpen(false)} onClose={() => setMarketOpen(false)}>
-      <div className="market-embed-bar"><span>MAT STOCK MARKET</span><button onClick={() => setMarketOpen(false)}>Close / 关闭 ×</button></div>
-      {marketOpen && <Market onReturnHome={() => setMarketOpen(false)} />}
-    </dialog>
     <div className="hub-toolbar"><div><span className="live-dot" /> ALL OF MATH WEEK, AT A GLANCE</div><div><span>{paused ? "Paused" : `Next display in ${remaining}s`}</span><button onClick={() => setPaused(value => !value)}>{paused ? "Resume" : "Pause"}</button></div></div>
     <section ref={windows} className="hub-windows" aria-label="Math Week activities">
       {PANELS.map(panel => {
@@ -101,7 +90,7 @@ export function MainHub({ eventDate }: { eventDate: string }) {
         return <article key={panel} data-panel={panel} className={`hub-panel hub-${panel} hub-slot-${slot} ${large ? "hub-large" : "hub-small"}`}>
           <div className="hub-panel-title"><h2>{TITLES[panel]}</h2><span>{large ? "ON DISPLAY" : "EXPLORE ↗"}</span></div>
           <div key={slot} className="hub-panel-body">{content(panel, large)}</div>
-          {panel === "market" ? <button className="hub-panel-link" aria-label="Open MAT Stock Market" onClick={() => setMarketOpen(true)} /> : <Link href={LINKS[panel]} className="hub-panel-link" aria-label={panel === "digital" ? `Play ${gameName} on this screen` : `Open ${TITLES[panel]}`} />}
+          <Link href={LINKS[panel]} className="hub-panel-link" aria-label={panel === "digital" ? `Play ${gameName} on this screen` : `Open ${TITLES[panel]}`} />
         </article>;
       })}
     </section>
