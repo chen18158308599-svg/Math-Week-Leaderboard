@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./DealOrNoDeal.css";
+import { ContextHints, QuickBrief, useGuidePause } from "../../components/GameGuide.jsx";
 import {
   calculateDealScore,
   createCompetitionAttempt,
 } from "../../scoring/competitionScoring.js";
 
 import homeBackground from "../../assets/home-layers/background.png";
-import dealIsland from "../../assets/home-layers/deal.png";
+import dealIsland from "../../assets/home-layers/deal.webp";
 
-const WORLD_W = 4800;
-const WORLD_H = 3000;
+const WORLD_W = 3100;
+const WORLD_H = 1900;
 const VIEW_W = 1600;
 const VIEW_H = 900;
 
@@ -98,7 +99,7 @@ const COPY = {
     topEyebrow: "MATH WEEK 2026",
     title: "海上抉择",
     englishTitle: "DEAL OR NO DEAL",
-    badge: "四片海域",
+    badge: "两片海域 · 六艘海盗",
     intro: "开宝箱 · 击沉所有海盗",
     enter: "开始游戏",
     guide: "玩法",
@@ -168,7 +169,7 @@ const COPY = {
     topEyebrow: "MATH WEEK 2026",
     title: "High Seas",
     englishTitle: "DEAL OR NO DEAL",
-    badge: "FOUR SEAS",
+    badge: "TWO SEAS · SIX PIRATES",
     intro: "Open chests · Sink all pirates",
     enter: "PLAY NOW",
     guide: "HOW TO PLAY",
@@ -321,9 +322,8 @@ const PIRATE_LAYOUT = [
   { id: 15, regionId: "storm", type: "dreadnought", baseX: 3480, baseY: 2640, patrolRadius: 64, patrolSpeed: 0.2, phase: 4.8 },
 ];
 
-// Activate four seas and only the pirate ships located inside them.
-// The fifth predefined sea remains disabled until a future expansion.
-const ACTIVE_SEA_REGIONS = SEA_REGIONS.slice(0, 4);
+// A medium-length run activates two seas and their six pirates.
+const ACTIVE_SEA_REGIONS = SEA_REGIONS.slice(0, 2);
 const ACTIVE_PIRATE_LAYOUT = PIRATE_LAYOUT.filter((pirate) =>
   ACTIVE_SEA_REGIONS.some((region) => region.id === pirate.regionId)
 );
@@ -361,9 +361,10 @@ function randomCooldown(type) {
 function createGame() {
   return {
     status: "playing",
+    ammoPurchase: 0,
     player: {
       x: 250,
-      y: 1500,
+      y: 900,
       angle: 90,
       hp: PLAYER_MAX_HP,
       maxHp: PLAYER_MAX_HP,
@@ -372,7 +373,7 @@ function createGame() {
       shotCooldown: 0,
       invuln: 0,
     },
-    chests: CHEST_LAYOUT.map((chest) => ({
+    chests: CHEST_LAYOUT.filter(chest => chest.x < WORLD_W && chest.y < WORLD_H).map((chest) => ({
       ...chest,
       reward: chest.options[Math.floor(Math.random() * chest.options.length)],
       opened: false,
@@ -490,6 +491,7 @@ export default function DealOrNoDeal({ onBack }) {
   const competitionFinalRef = useRef(null);
 
   const t = COPY[language];
+  const guidePause = useGuidePause();
 
   useEffect(() => {
     try {
@@ -672,6 +674,7 @@ export default function DealOrNoDeal({ onBack }) {
           coins: prev.player.coins - AMMO_PACK_COST,
           ammo: prev.player.ammo + AMMO_PACK_SIZE,
         },
+        ammoPurchase: prev.ammoPurchase + 1,
         message: t.ammoBought,
         messageTone: "success",
         messageTimer: 2.2,
@@ -881,7 +884,7 @@ export default function DealOrNoDeal({ onBack }) {
       last = now;
 
       setGame((prev) => {
-        if (prev.status !== "playing") return prev;
+        if (prev.status !== "playing" || guidePause.current || document.hidden) return prev;
 
         const keys = keysRef.current;
         const keyX =
@@ -1230,7 +1233,7 @@ export default function DealOrNoDeal({ onBack }) {
                 <button type="button" onClick={() => setLanguage((value) => (value === "zh" ? "en" : "zh"))}>
                   {t.language}
                 </button>
-                <button type="button" onClick={() => setShowRules(true)} title={t.guide} aria-label={t.guide}>?</button>
+
               </nav>
             </header>
 
@@ -1240,13 +1243,13 @@ export default function DealOrNoDeal({ onBack }) {
                 <h1>{t.title}</h1>
                 <p className="hs4-entry-tagline">{t.intro}</p>
 
-                <div className="hs4-entry-stats" aria-label={language === "zh" ? "四片海域，十二艘海盗船，十二个宝箱" : "Four seas, twelve pirates, twelve chests"}>
-                  <div><i aria-hidden="true">◉</i><strong>4</strong><small>{language === "zh" ? "海域" : "SEAS"}</small></div>
+                <div className="hs4-entry-stats" aria-label={language === "zh" ? "两片海域，六艘海盗船，四个宝箱" : "Two seas, six pirates, four chests"}>
+                  <div><i aria-hidden="true">◉</i><strong>{ACTIVE_SEA_REGIONS.length}</strong><small>{language === "zh" ? "海域" : "SEA"}</small></div>
                   <div><i aria-hidden="true">☠</i><strong>{ACTIVE_PIRATE_LAYOUT.length}</strong><small>{language === "zh" ? "海盗" : "PIRATES"}</small></div>
-                  <div><i aria-hidden="true">◆</i><strong>{CHEST_LAYOUT.length}</strong><small>{language === "zh" ? "宝箱" : "CHESTS"}</small></div>
+                  <div><i aria-hidden="true">◆</i><strong>{CHEST_LAYOUT.filter(chest => chest.x < WORLD_W && chest.y < WORLD_H).length}</strong><small>{language === "zh" ? "宝箱" : "CHESTS"}</small></div>
                 </div>
 
-                <button type="button" className="hs4-entry-start" onClick={startGame}>
+                <QuickBrief lang={language} goal={language === "zh" ? "击沉全部6艘海盗船" : "Sink all 6 pirate ships"} controls={language === "zh" ? "摇杆航行；进入射程后点击FIRE，自动瞄准" : "Sail with the stick; tap FIRE in range to auto-aim"} finish={language === "zh" ? "两片海域；船体生命耗尽则失败" : "Two seas; hull reaching zero ends the run"} /><button type="button" className="hs4-entry-start" onClick={startGame}>
                   <span>{t.enter}</span><b>➜</b>
                 </button>
                 <small className="hs4-entry-record">◈ {t.best}: <strong>{bestCoins ? bestCoins.toLocaleString() : "—"}</strong></small>
@@ -1264,6 +1267,14 @@ export default function DealOrNoDeal({ onBack }) {
           </section>
         ) : (
           <section className="hs4-game">
+            <ContextHints active={!showRules && !showLeave && game.status === "playing"} key={competitionAttemptRef.current?.attemptId} lang={language} hints={[
+              { target: ".hs4-joystick", text: "Drag to sail towards the pirate marks on the map.", zh: "拖动摇杆，驶向地图上的海盗。", drag: true, pause: true },
+              { target: ".hs4-fire-button:not(.is-locked)", text: "Pirate in range! Tap FIRE; aiming is automatic.", zh: "海盗已在射程内！点击FIRE自动瞄准开炮。" },
+              { target: ".hs4-nearby-chest", text: "Chest nearby! Tap to inspect. Pay for a random reward, or skip.", zh: "附近有宝箱！点击查看；可付金币随机开箱，也可跳过。" },
+              { target: '.hs4-action-button.ammo[data-needed="true"]:not(:disabled)', text: "Low ammo: buy 5 cannonballs for 300 coins.", zh: "炮弹不足：花300金币购买5发。" },
+              { target: '.hs4-action-button.repair[data-needed="true"]:not(:disabled)', text: "Low hull: repair 35 HP for 420 coins.", zh: "船体生命不足：花420金币恢复35生命。" },
+            ]} />
+            <div className="hs4-objective">{language === "zh" ? "击沉海盗" : "Pirates defeated"} {game.sunkCount} / {ACTIVE_PIRATE_LAYOUT.length}</div>
             <div className="hs4-sea-base">
               <div className="hs4-sea-light" />
               <div className="hs4-water-lines" style={{ backgroundPosition: `${-camera.x * 0.08}px ${-camera.y * 0.06}px` }} />
@@ -1291,8 +1302,8 @@ export default function DealOrNoDeal({ onBack }) {
               </div>
 
               <div className="hs4-resource-row">
-                <div className="hs4-resource"><i>◈</i><div><span>{t.coins}</span><strong>{game.player.coins.toLocaleString()}</strong></div></div>
-                <div className={`hs4-resource ${emergencyReady ? "is-emergency" : ""}`}><i>●</i><div><span>{emergencyReady ? t.emergencyLabel : t.ammo}</span><strong>{emergencyReady ? "∞" : game.player.ammo}</strong></div></div>
+                <div key={`coins-${game.ammoPurchase}`} className={`hs4-resource hs4-coins-resource ${game.ammoPurchase ? "purchase-flash" : ""}`}><i>◈</i><div><span>{t.coins}</span><strong>{game.player.coins.toLocaleString()}</strong></div>{game.ammoPurchase > 0 && <><b className="hs4-purchase-float debit">−{AMMO_PACK_COST} ◈</b>{[0,1,2,3].map(i=><i key={i} className="hs4-coin-particle" style={{"--coin-i":i}}>◈</i>)}</>}</div>
+                <div key={`ammo-${game.ammoPurchase}`} className={`hs4-resource hs4-ammo-resource ${game.ammoPurchase ? "purchase-flash" : ""} ${emergencyReady ? "is-emergency" : ""}`}><i>●</i><div><span>{emergencyReady ? t.emergencyLabel : t.ammo}</span><strong>{emergencyReady ? "∞" : game.player.ammo}</strong></div>{game.ammoPurchase > 0 && <b className="hs4-purchase-float credit">+{AMMO_PACK_SIZE} AMMO</b>}</div>
                 <div className="hs4-resource hs4-score-resource"><i>★</i><div><span>{t.competitionScore}</span><strong>{competitionScore.toLocaleString()}</strong></div></div>
                 <button type="button" className="hs4-language-button" onClick={() => setLanguage((value) => (value === "zh" ? "en" : "zh"))}>
                   {language === "zh" ? "EN" : "中"}
@@ -1465,6 +1476,7 @@ export default function DealOrNoDeal({ onBack }) {
               <button
                 type="button"
                 className="hs4-action-button ammo"
+                data-needed={game.player.ammo <= 2}
                 onClick={buyAmmo}
                 disabled={game.status !== "playing" || game.player.coins < AMMO_PACK_COST}
                 aria-label={`${language === "zh" ? "购买" : "Buy"} ${AMMO_PACK_SIZE} ${t.ammo}, ${AMMO_PACK_COST} ${t.coins}`}
@@ -1476,6 +1488,7 @@ export default function DealOrNoDeal({ onBack }) {
               <button
                 type="button"
                 className="hs4-action-button repair"
+                data-needed={game.player.hp <= 45}
                 onClick={repairHull}
                 disabled={repairDisabled || game.player.coins < REPAIR_COST}
                 aria-label={`${language === "zh" ? "修复" : "Repair"} ${REPAIR_AMOUNT} HP, ${REPAIR_COST} ${t.coins}`}
@@ -1531,7 +1544,7 @@ export default function DealOrNoDeal({ onBack }) {
               {!chestResult ? (
                 <>
                   <h2>{t.possibleRewards}</h2>
-                  <span className="hs4-modal-kicker">{t.oneOfThree}</span>
+                  <span className="hs4-modal-kicker">{t.oneOfThree}</span><p>{language === "zh" ? "花金币获得随机奖励。可以跳过。" : "Pay coins for a random reward. Open or skip."}</p>
                   <div className="hs4-outcome-grid">
                     {selectedChest.options.map((value, index) => (
                       <article key={`${value}-${index}`}><strong>◈ {value}</strong></article>

@@ -6,8 +6,9 @@ import {
   useState,
 } from "react";
 import "./Planarity.css";
+import { GameGuide, QuickBrief } from "../../components/GameGuide.jsx";
 import hubBackground from "../../assets/home-layers/background.png";
-import planarityIsland from "../../assets/home-layers/planarity.png";
+import planarityIsland from "../../assets/home-layers/planarity.webp";
 import {
   calculatePlanarityScore,
 
@@ -35,7 +36,7 @@ const UI_TEXT = {
     targetDown: "TARGET DOWN",
     cpuNetwork: "CPU NETWORK",
     networkSuffix: "NETWORK",
-    untangle: "UNTANGLE TO ARM YOURSELF",
+    untangle: "UNTANGLE TO ATTACK",
     nextUnlock: "NEXT UNLOCK",
     loadout: "TACTICAL LOADOUT",
     loadoutHint: "Solve one board to unlock one ability",
@@ -49,13 +50,13 @@ const UI_TEXT = {
     startTitle: "PLANARITY",
     startTitleAccent: "SHOOTOUT",
     startDesc:
-      "Solve networks to earn shooting, grenades, molotovs, and healing. Defeat your opponent by reducing their HP to zero. No puzzle-count victory and no timer.",
+      "Drag nodes until no lines cross. Each solved board automatically deals 25 damage. Reduce your opponent’s 100 HP to zero.",
     soloButton: "SOLO",
     soloSub: "PLAYER VS CPU",
     versusButton: "START 2 PLAYER",
     versusSub: "",
     startFooter:
-      "NO TIMER · 4 ABILITIES · SOLVE TO ATTACK · KNOCKOUT TO WIN",
+      "SOLVE · AUTO ATTACK · 25 DAMAGE PER BOARD · KNOCKOUT TO WIN",
     matchComplete: "MATCH COMPLETE",
     targetEliminated: "A player has been knocked out.",
     draw: "DRAW",
@@ -79,7 +80,7 @@ const UI_TEXT = {
     targetDown: "目标击破",
     cpuNetwork: "电脑网络",
     networkSuffix: "网络",
-    untangle: "解开交叉网络以获得装备",
+    untangle: "解开网络，自动攻击",
     nextUnlock: "下一项解锁",
     loadout: "战术装备",
     loadoutHint: "每解开一题获得一次技能使用",
@@ -93,13 +94,13 @@ const UI_TEXT = {
     startTitle: "PLANARITY",
     startTitleAccent: "平面图对决",
     startDesc:
-      "解开网络获得射击、手榴弹、燃烧瓶与补血技能，将对手生命值降至零即可获胜。解题不会直接结束比赛，也没有时间限制。",
+      "拖动节点消除交叉，每解开一题自动造成25伤害。将对手100生命降至零即可获胜。",
     soloButton: "单人模式",
     soloSub: "玩家 VS 电脑",
     versusButton: "开始双人对战",
     versusSub: "",
     startFooter:
-      "不限时间 · 4 种技能 · 解题获取攻击 · 击倒对手获胜",
+      "解开网络 · 自动攻击 · 击倒对手获胜",
     matchComplete: "对战结束",
     targetEliminated: "一方生命值归零，比赛结束。",
     draw: "平局",
@@ -110,45 +111,7 @@ const UI_TEXT = {
   },
 };
 // A complete match ends ONLY when a fighter is knocked out. Each solved
-// board grants the next ability in this simple four-skill rotation.
-const SKILL_EN_DESC = {
-  burst: "3 shots, 9 damage each (27 total)",
-  grenade: "Explosion deals 34 damage",
-  molotov: "Burning deals 8 impact + 28 over time",
-  heal: "Restore 24 HP (up to 100)",
-};
-const SKILLS = [
-  {
-    id: "burst",
-    icon: "AR",
-    name: "SHOOT",
-    short: "射击",
-    description: "3 连发，每发 9 点伤害（共 27 点）",
-  },
-  {
-    id: "grenade",
-    icon: "HE",
-    name: "GRENADE",
-    short: "手榴弹",
-    description: "爆炸造成 34 点伤害",
-  },
-  {
-    id: "molotov",
-    icon: "FIRE",
-    name: "MOLOTOV",
-    short: "燃烧瓶",
-    description: "命中造成 8 点伤害，后续燃烧造成 28 点伤害",
-  },
-  {
-    id: "heal",
-    icon: "+",
-    name: "MED KIT",
-    short: "补血",
-    description: "恢复 24 HP（上限 100）",
-  },
-];
-const REWARD_ORDER = ["burst", "grenade", "molotov", "heal"];
-const EMPTY_SKILLS = Object.fromEntries(SKILLS.map((skill) => [skill.id, 0]));
+// board automatically deals 25 damage; there is no separate skill action.
 const INITIAL_FIGHTER = {
   hp: MAX_HP,
   shieldHP: 0,
@@ -157,20 +120,6 @@ const INITIAL_FIGHTER = {
   hitFlash: false,
   burning: false,
   downed: false,
-};
-const WEAPON_CONFIG = {
-  burst: {
-    shots: 3,
-    gap: 68,
-    damage: 9,
-    projectileType: "burst",
-  },
-  grenade: {
-    shots: 1,
-    gap: 0,
-    damage: 34,
-    projectileType: "grenade",
-  },
 };
 function seededRandom(seed) {
   let value = seed >>> 0;
@@ -230,7 +179,7 @@ function analyzeCrossings(nodes, edges) {
 }
 function createPuzzle(round, nonce = 0) {
   // 难度增长故意放慢，让技能轮转更快。
-  const outerCount = Math.min(5 + Math.floor((round - 1) / 4), 8);
+  const outerCount = Math.min(4 + Math.floor((round - 1) / 8), 6);
   const targetNodes = [];
   for (let i = 0; i < outerCount; i++) {
     const angle = -Math.PI / 2 + (Math.PI * 2 * i) / outerCount;
@@ -261,19 +210,26 @@ function createPuzzle(round, nonce = 0) {
   }
   const random = seededRandom(91827 + round * 7919 + nonce * 131);
   let scrambledNodes = targetNodes.map((node) => ({ ...node }));
+  let bestCrossings = -1;
   for (let attempt = 0; attempt < 60; attempt++) {
     const positions = targetNodes.map(({ x, y }) => ({ x, y }));
     for (let i = positions.length - 1; i > 0; i--) {
       const j = Math.floor(random() * (i + 1));
       [positions[i], positions[j]] = [positions[j], positions[i]];
     }
-    scrambledNodes = targetNodes.map((node, index) => ({
+    const candidate = targetNodes.map((node, index) => ({
       id: node.id,
       x: positions[index].x,
       y: positions[index].y,
     }));
-    const crossings = analyzeCrossings(scrambledNodes, edges).count;
-    const targetCrossings = Math.min(3 + Math.floor(round / 4), 7);
+    const crossings = analyzeCrossings(candidate, edges).count;
+    // A small board may never reach the preferred crossing count. Keep the
+    // most tangled candidate instead of accidentally starting with a solved one.
+    if (crossings > bestCrossings) {
+      scrambledNodes = candidate;
+      bestCrossings = crossings;
+    }
+    const targetCrossings = Math.min(2 + Math.floor(round / 8), 4);
     if (crossings >= targetCrossings) break;
   }
   return {
@@ -283,9 +239,6 @@ function createPuzzle(round, nonce = 0) {
     targetNodes,
     edges,
   };
-}
-function getSkill(id) {
-  return SKILLS.find((skill) => skill.id === id);
 }
 function Shooter({ side, fighter, name }) {
   const armorId = `armor-${side}`;
@@ -315,7 +268,7 @@ function Shooter({ side, fighter, name }) {
             <div className="health-track">
               <div
                 className={`health-fill side-${side}`}
-                style={{ width: `${Math.max(0, fighter.hp)}%` }}
+                style={{ width: `${Math.max(0, fighter.hp) / MAX_HP * 100}%` }}
               />
               <div className="health-shine" />
             </div>
@@ -494,6 +447,7 @@ function ImpactLayer({ impacts }) {
         >
           <div className="impact-core" />
           <div className="impact-ring" />
+          {impact.type === "bullet" && <strong className="impact-damage">−25</strong>}
           <span className="spark s1" />
           <span className="spark s2" />
           <span className="spark s3" />
@@ -502,44 +456,6 @@ function ImpactLayer({ impacts }) {
           <span className="spark s6" />
         </div>
       ))}
-    </div>
-  );
-}
-function SkillBar({ side, charges, onUse, disabled, isAI, lang }) {
-  const t = UI_TEXT[lang];
-  const keys =
-    side === "p1"
-      ? ["1", "2", "3", "4"]
-      : ["7", "8", "9", "0"];
-  return (
-    <div className="skill-grid">
-      {SKILLS.map((skill, index) => {
-        const charge = charges[skill.id];
-        return (
-          <button
-            key={skill.id}
-            type="button"
-            disabled={disabled || isAI || charge <= 0}
-            className={`skill-card skill-${skill.id} ${charge > 0 ? "available" : ""}`}
-            onPointerDown={(event) => {
-              event.stopPropagation();
-              if (disabled || isAI || charge <= 0) {
-                return;
-              }
-              onUse(side, skill.id);
-            }}
-            title={lang === "zh" ? skill.description : SKILL_EN_DESC[skill.id]}
-          >
-            <span className="skill-hotkey">{keys[index]}</span>
-            <div className="skill-emblem">{skill.icon}</div>
-            <div className="skill-info">
-              <strong>{lang === "zh" ? skill.short : skill.name}</strong>
-              <small>{lang === "zh" ? skill.name : t.tacticalSkill}</small>
-            </div>
-            <div className={`skill-ammo ${charge > 0 ? "loaded" : ""}`}>×{charge}</div>
-          </button>
-        );
-      })}
     </div>
   );
 }
@@ -706,12 +622,8 @@ function PuzzlePanel({
   side,
   name,
   puzzle,
-  reward,
   onSolved,
   isAI,
-  charges,
-  onUseSkill,
-  gameEnded,
   lang,
 }) {
   const t = UI_TEXT[lang];
@@ -722,31 +634,12 @@ function PuzzlePanel({
           <span className="board-label">{isAI ? t.cpuNetwork : `${name} ${t.networkSuffix}`}</span>
           <h2>{t.untangle}</h2>
         </div>
-        <div className="reward-display">
-          <span>{t.nextUnlock}</span>
-          <strong>
-            <i>{reward.icon}</i>
-            {lang === "zh" ? reward.short : reward.name}
-          </strong>
-        </div>
       </div>
       <PlanarityBoard
         key={puzzle.id}
         puzzle={puzzle}
         side={side}
         onSolved={onSolved}
-        isAI={isAI}
-        lang={lang}
-      />
-      <div className="loadout-label">
-        <span>{t.loadout}</span>
-        <small>{t.loadoutHint}</small>
-      </div>
-      <SkillBar
-        side={side}
-        charges={charges}
-        onUse={onUseSkill}
-        disabled={gameEnded}
         isAI={isAI}
         lang={lang}
       />
@@ -773,7 +666,7 @@ function StartScreen({ onStart, lang }) {
             <br />
             <span>{t.startTitleAccent}</span>
           </h1>
-          <p>{t.startDesc}</p>
+          <p>{t.startDesc}</p><QuickBrief lang={lang} goal={lang === "zh" ? "把对手100生命降到0" : "Reduce your opponent’s 100 HP to zero"} controls={lang === "zh" ? "拖动节点消除交叉；点击技能攻击" : "Drag nodes to remove crossings; each solved board attacks automatically"} finish={lang === "zh" ? "击倒对手；仅赢家领取" : "4 solved boards deal 100 damage; winner claims"} />
           <div className="start-actions single-action">
             <button className="primary-btn versus-only" onClick={onStart}>
               <span>{t.versusButton}</span>
@@ -832,10 +725,6 @@ export default function Planarity({ onHome }) {
   const [fighters, setFighters] = useState({
     p1: { ...INITIAL_FIGHTER },
     p2: { ...INITIAL_FIGHTER },
-  });
-  const [skills, setSkills] = useState({
-    p1: { ...EMPTY_SKILLS },
-    p2: { ...EMPTY_SKILLS },
   });
   const [projectiles, setProjectiles] = useState([]);
   const [impacts, setImpacts] = useState([]);
@@ -916,10 +805,7 @@ useEffect(() => {
     () => createPuzzle(p2Round, gameNonce),
     [p2Round, gameNonce]
   );
-  const p1RewardId = REWARD_ORDER[(p1Round - 1) % REWARD_ORDER.length];
-  const p2RewardId = REWARD_ORDER[(p2Round - 1) % REWARD_ORDER.length];
-  const p1Reward = getSkill(p1RewardId);
-  const p2Reward = getSkill(p2RewardId);
+
   const t = UI_TEXT[lang];
   const playerOneName = t.player1;
   const playerTwoName = t.player2;
@@ -963,10 +849,7 @@ useEffect(() => {
       p1: { ...INITIAL_FIGHTER },
       p2: { ...INITIAL_FIGHTER },
     });
-    setSkills({
-      p1: { ...EMPTY_SKILLS },
-      p2: { ...EMPTY_SKILLS },
-    });
+
   }, [clearAllScheduled]);
   const triggerShake = useCallback(
     (heavy = false) => {
@@ -1064,7 +947,7 @@ useEffect(() => {
                 hitFlash: false,
               },
             }));
-          }, 130);
+          }, 360);
         }
         return {
           ...current,
@@ -1082,98 +965,15 @@ useEffect(() => {
     },
     [registerTimeout, spawnImpact, triggerShake]
   );
-  const applyBurn = useCallback(
-    (target) => {
-      setFighters((current) => ({
-        ...current,
-        [target]: {
-          ...current[target],
-          burning: true,
-        },
-      }));
-      for (let i = 0; i < 4; i++) {
-        registerTimeout(() => {
-          if (statusRef.current !== "playing") return;
-          dealDamage(target, 7, "fire");
-        }, 420 + i * 430);
-      }
-      registerTimeout(() => {
-        setFighters((current) => ({
-          ...current,
-          [target]: {
-            ...current[target],
-            burning: false,
-          },
-        }));
-      }, 2200);
-    },
-    [dealDamage, registerTimeout]
-  );
-  const activateSkill = useCallback(
-    (side, skillId) => {
-      if (statusRef.current !== "playing") return;
-      if ((skills[side]?.[skillId] || 0) <= 0) return;
-      if (fighters[side].downed) return;
-      const opponent = side === "p1" ? "p2" : "p1";
-      setSkills((current) => ({
-        ...current,
-        [side]: {
-          ...current[side],
-          [skillId]: Math.max(0, current[side][skillId] - 1),
-        },
-      }));
-      if (skillId === "heal") {
-        setFighters((current) => ({
-          ...current,
-          [side]: {
-            ...current[side],
-            hp: Math.min(MAX_HP, current[side].hp + 24),
-            recentWeapon: "heal",
-          },
-        }));
-        spawnImpact(side, "heal");
-        return;
-      }
-      if (skillId === "molotov") {
-        setFiringState(side, "molotov");
-        spawnProjectile(side, "molotov");
-        registerTimeout(() => {
-          if (statusRef.current !== "playing") return;
-          dealDamage(opponent, 8, "fire");
-          applyBurn(opponent);
-        }, 560);
-        return;
-      }
-      const config = WEAPON_CONFIG[skillId];
-      if (!config) return;
-      setFiringState(side, skillId);
-      for (let i = 0; i < config.shots; i++) {
-        registerTimeout(() => {
-          if (statusRef.current !== "playing") return;
-          spawnProjectile(side, config.projectileType);
-          const travelDelay = config.projectileType === "grenade" ? 520 : 190;
-          registerTimeout(() => {
-            if (statusRef.current !== "playing") return;
-            dealDamage(
-              opponent,
-              config.damage,
-              config.projectileType
-            );
-          }, travelDelay);
-        }, i * config.gap);
-      }
-    },
-    [
-      applyBurn,
-      dealDamage,
-      fighters,
-      registerTimeout,
-      setFiringState,
-      skills,
-      spawnImpact,
-      spawnProjectile,
-    ]
-  );
+  const fireSolvedAttack = useCallback((side) => {
+    const opponent = side === "p1" ? "p2" : "p1";
+    setFiringState(side, "burst");
+    spawnProjectile(side, "bullet");
+    registerTimeout(() => {
+      if (statusRef.current !== "playing" || endingStartedRef.current) return;
+      dealDamage(opponent, 25, "bullet");
+    }, 190);
+  }, [dealDamage, registerTimeout, setFiringState, spawnProjectile]);
   const finishMatch = useCallback(
 
     (result, finalFighters, finalSolvedCounts, showKnockoutAnimation) => {
@@ -1284,54 +1084,12 @@ useEffect(() => {
       };
       solvedCountsRef.current = nextSolvedCounts;
       setSolvedCounts(nextSolvedCounts);
-      if (side === "p1") {
-        const rewardId = REWARD_ORDER[(p1Round - 1) % REWARD_ORDER.length];
-        setSkills((current) => ({
-          ...current,
-          p1: {
-            ...current.p1,
-            [rewardId]: current.p1[rewardId] + 1,
-          },
-        }));
-        setP1Round((value) => value + 1);
-      }
-      if (side === "p2") {
-        const rewardId = REWARD_ORDER[(p2Round - 1) % REWARD_ORDER.length];
-        setSkills((current) => ({
-          ...current,
-          p2: {
-            ...current.p2,
-            [rewardId]: current.p2[rewardId] + 1,
-          },
-        }));
-        setP2Round((value) => value + 1);
-      }
-      // Solving a board never ends the match. It only grants a skill use.
-      // Victory is decided exclusively by the existing HP knockout effect.
+      if (side === "p1") setP1Round(value => value + 1);
+      if (side === "p2") setP2Round(value => value + 1);
+      fireSolvedAttack(side);
     },
-
-    [p1Round, p2Round]
+    [fireSolvedAttack]
   );
-  useEffect(() => {
-    if (status !== "playing") return;
-    const controls = {
-      "1": ["p1", "burst"],
-      "2": ["p1", "grenade"],
-      "3": ["p1", "molotov"],
-      "4": ["p1", "heal"],
-      "7": ["p2", "burst"],
-      "8": ["p2", "grenade"],
-      "9": ["p2", "molotov"],
-      "0": ["p2", "heal"],
-    };
-    const handleKey = (event) => {
-      const action = controls[event.key.toLowerCase()];
-      if (!action) return;
-      activateSkill(action[0], action[1]);
-    };
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [activateSkill, status]);
   return (
     <main
       className={`planarity-app ${screenShake ? "screen-shake" : ""}`}
@@ -1436,17 +1194,16 @@ useEffect(() => {
             </div>
           )}
         </section>
+        {status === "playing" && <GameGuide key={gameNonce} lang={lang} steps={[
+          { target: ".side-p1 .graph-svg, .side-p2 .graph-svg", advanceTarget: ".graph-node", drag: true, text: "Drag the nodes until no lines cross (crossings = 0). P1 uses the left board; P2 uses the right.", zh: "拖动节点，直到没有交叉（交叉数为0）。P1用左边棋盘，P2用右边。", highlightAll: true },
+        ]} />}
         <section className="puzzle-zone">
           <PuzzlePanel
             side="p1"
             name={playerOneName}
             puzzle={p1Puzzle}
-            reward={p1Reward}
             onSolved={handlePuzzleSolved}
             isAI={false}
-            charges={skills.p1}
-            onUseSkill={activateSkill}
-            gameEnded={status !== "playing"}
             lang={lang}
           />
           <div className="vertical-divider" />
@@ -1454,12 +1211,8 @@ useEffect(() => {
             side="p2"
             name={playerTwoName}
             puzzle={p2Puzzle}
-            reward={p2Reward}
             onSolved={handlePuzzleSolved}
             isAI={false}
-            charges={skills.p2}
-            onUseSkill={activateSkill}
-            gameEnded={status !== "playing"}
             lang={lang}
           />
         </section>

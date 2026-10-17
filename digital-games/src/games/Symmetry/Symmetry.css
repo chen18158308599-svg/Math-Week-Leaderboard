@@ -812,3 +812,20 @@ button { font: inherit; }
 @keyframes orbEnergy { from { opacity: .78; transform: scale(.98); } to { opacity: 1; transform: scale(1.02); } }
 @keyframes orbThrust { from { transform: translateY(1px); } to { transform: translateY(-4px); } }
 @keyframes hoverTrail { from { transform: translateX(9px) scaleX(.65); opacity: .8; } to { transform: translateX(-27px) scaleX(1.25); opacity: .07; } }
+.mirror-game-root .symmetry-countdown { position:absolute; z-index:80; top:74px; left:50%; transform:translateX(-50%); border:2px solid #ffec8a; border-radius:14px; background:#101827ed; padding:8px 28px; color:#fff; text-align:center; pointer-events:none; }
+.symmetry-countdown small { display:block; font:700 17px system-ui; }
+.symmetry-countdown strong { font:900 36px/1.2 system-ui; font-variant-numeric:tabular-nums; }
+.symmetry-countdown.urgent { border-color:#ff6380; color:#ffb4c0; }
+.symmetry-question-timer { padding:8px 16px; border:2px solid #ffec8a; border-radius:10px; color:#ffec8a; font:800 24px system-ui; }
+.mirror-game-root .mirror-intro { align-items:start; padding:3% 5%; overflow-y:auto; }
+.mirror-game-root .mirror-intro-copy { padding-top:8px; }
+.mirror-game-root .mirror-intro-copy h1 strong { font-size:clamp(42px,4.5vw,68px); }
+.mirror-game-root .mirror-intro-copy .launch-button { margin:16px 0; min-height:58px; }
+.mirror-game-root .mirror-intro-copy .launch-button span { font-size:17px; }
+.mirror-game-root .mirror-intro-copy .game-quick-brief { font-size:16px; margin:12px 0; }
+.mirror-game-root .intro-data, .mirror-game-root .intro-tip { display:none; }
+.symmetry-modal-run-clock { min-width:102px; padding:6px 10px; border:1px solid #ffec8a; border-radius:10px; text-align:center; color:#fff; background:#101827; }
+.symmetry-modal-run-clock small,.symmetry-question-timer small { display:block; font:700 13px system-ui; white-space:nowrap; }
+.symmetry-modal-run-clock strong { font:900 26px system-ui; font-variant-numeric:tabular-nums; }
+.mirror-game-root .mirror-intro-copy h1 strong { font-size:clamp(36px,3.5vw,54px); white-space:nowrap; }
+.mirror-game-root .mirror-intro-copy .facility-label { display:none; }

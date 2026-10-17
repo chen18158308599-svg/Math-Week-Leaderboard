@@ -1548,3 +1548,27 @@
 @media (prefers-reduced-motion: reduce) {
   .hs4-entry-island img, .hs4-entry-bg { animation: none; }
 }
+.hs4-game .hs4-joystick { width:160px; height:160px; left:28px; bottom:30px; }
+.hs4-game .hs4-joystick-knob { width:72px; height:72px; }
+.hs4-game .hs4-minimap { width:260px; right:20px; top:110px; }
+.hs4-game .hs4-minimap-body { height:180px; }
+.hs4-game .hs4-combat-panel { right:28px; bottom:30px; gap:16px; }
+.hs4-game .hs4-action-button { min-width:112px; min-height:90px; font-size:17px; }
+.hs4-game .hs4-fire-button { width:180px; min-height:100px; font-size:22px; }
+.hs4-game .hs4-fire-button strong { font-size:20px; }
+.hs4-game .hs4-action-button strong { font-size:18px; }
+.hs4-game .hs4-action-button small { font-size:14px; }
+.hs4-game .hs4-nearby-chest { min-width:160px; min-height:80px; font-size:20px; border:3px solid #fff250; }
+.hs4-objective { position:absolute; z-index:30; top:105px; left:50%; transform:translateX(-50%); padding:10px 20px; border:2px solid #ffe552; background:#101827ed; border-radius:12px; color:#fff; font:800 22px system-ui; pointer-events:none; }
+.hs4-chest-modal .hs4-modal-actions button { min-width:140px; min-height:72px; font-size:20px; }
+.hs4-resource-row .hs4-resource { position:relative; overflow:visible; }
+.hs4-resource.purchase-flash { animation:hs4-ammo-shake .45s ease-out; }
+.hs4-purchase-float { position:absolute; top:100%; left:0; width:100%; text-align:center; font:900 19px system-ui; white-space:nowrap; pointer-events:none; animation:hs4-purchase-float 1.4s ease-out forwards; z-index:50; }
+.hs4-purchase-float.credit { color:#82ffd0; }
+.hs4-purchase-float.debit { color:#ffe58c; }
+.hs4-coin-particle { position:absolute; left:50%; top:30%; color:#ffe58c; font-size:22px; pointer-events:none; animation:hs4-coin-scatter 1s ease-out forwards; animation-delay:calc(var(--coin-i) * 40ms); opacity:0; }
+@keyframes hs4-ammo-shake { 0%,100% { transform:translateX(0); } 20%,60% { transform:translateX(-6px); border-color:#fff19c; } 40%,80% { transform:translateX(6px); } }
+@keyframes hs4-purchase-float { 0%,20% { opacity:1; transform:translateY(3px); } 100% { opacity:0; transform:translateY(45px); } }
+@keyframes hs4-coin-scatter { 0% { opacity:1; transform:translate(0,0); } 100% { opacity:0; transform:translate(calc((var(--coin-i) - 1.5) * 25px),55px) rotate(90deg); } }
+@media(prefers-reduced-motion:reduce) { .hs4-resource.purchase-flash { animation:none; } .hs4-coin-particle { display:none; } .hs4-purchase-float { animation:hs4-purchase-fade 1.4s forwards; } }
+@keyframes hs4-purchase-fade { to { opacity:0; } }

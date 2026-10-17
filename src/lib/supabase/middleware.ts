@@ -33,6 +33,9 @@ function isPublic(pathname: string) {
 // and redirects signed-in students who haven't set a nickname yet to /onboarding/nickname
 // before they can reach anything that needs one (claiming a win, the profile page, etc).
 export async function updateSession(request: NextRequest) {
+  // This kiosk endpoint checks the display credential itself. A student OAuth
+  // refresh/profile lookup on the QR-creation path adds unrelated network work.
+  if (request.nextUrl.pathname === "/api/games/claim-result") return NextResponse.next({ request });
   // Public display routes neither read a session nor require onboarding. Keep
   // remote authentication off their navigation path, including signed-in visits.
   const displayPaths = ["/", "/directory", "/games", "/leaderboard", "/stock-market", "/kiosk"];

@@ -41,7 +41,7 @@ listeners.get('message')({origin,source:parent,data:{...update,playerSlot:'p2',p
 assert.equal(render().pendingSubmissions.length,0);
 assert.equal(listeners.has('mathweek:average-result'),false);
 assert.ok(storage.size);
-assert.equal(canClaimResult('symmetry',{outcome:'loss'}),false);
+assert.equal(canClaimResult('symmetry',{outcome:'loss'}),true);
 assert.equal(canClaimResult('symmetry',{outcome:'win'}),true);
 assert.equal(canClaimResult('planarity',{outcome:'draw'}),false);
 listeners.get('message')({origin,source:parent,data:{type:'mathweek:reset-session'}});

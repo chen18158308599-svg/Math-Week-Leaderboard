@@ -1,7 +1,9 @@
+import { GameGuide, QuickBrief } from "../../components/GameGuide.jsx";
+import { uniqueSequenceDeck, sequenceQuestionKey } from "../../scoring/shortGameRules.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./NumberSequence.css";
 import hubBackground from "../../assets/home-layers/background.png";
-import sequenceIsland from "../../assets/home-layers/sequence.png";
+import sequenceIsland from "../../assets/home-layers/sequence.webp";
 import {
   calculateNumberSequenceScore,
   createCompetitionAttempt,
@@ -1318,18 +1320,18 @@ const WAVE_META = [
     "tutorial": {
       "zh": [
         "左右护卫存活时，魔王免疫伤害",
-        "护卫被击败 3 回合后复活",
+        "先击败两名护卫；护卫不会复活",
         "必须掌握攻击顺序与技能 CD"
       ],
       "en": [
         "The boss is immune while either guard lives",
-        "Guards revive after 3 turns",
+        "Defeat both guards first; they do not revive",
         "Manage target order and skill cooldowns"
       ]
     },
     "lore": {
-      "zh": "序列守卫是无尽王座的核心意识。左右两名封印妖并非真正生命，而是王座不断重构的数学投影，因此会反复复活。",
-      "en": "The Sequence Warden is the consciousness of the Infinite Throne. Its two Seal Imps are mathematical projections that the throne continually rebuilds."
+      "zh": "两名封印护卫保护着序列守卫。先击败护卫，再攻击首领；护卫不会复活。",
+      "en": "Two Seal Guards protect the Sequence Warden. Defeat them first, then attack the boss. Guards stay defeated."
     },
     "drop": null,
     "minions": [
@@ -1357,7 +1359,16 @@ const WAVE_META = [
   }
 ];
 
-const ACTIVE_WAVE_INDICES = [0, 1, WAVES.length - 1];
+// Two encounters; guards stay defeated. The run-wide deck never cycles.
+WAVES[0].enemy.hp = 3;
+WAVE_META[0].minions = [
+  { id:"grove-l", zh:"符文幼芽", en:"Rune Sprout", hp:1, el:"wood", icon:"◆", slot:"left" },
+  { id:"grove-r", zh:"符文幼芽", en:"Rune Sprout", hp:1, el:"wood", icon:"◆", slot:"right" },
+];
+WAVES[WAVES.length - 1].enemy.hp = 2;
+WAVE_META[WAVES.length - 1].minions.forEach(unit => { unit.hp = 1; unit.revive = null; });
+const RUN_PUZZLES = uniqueSequenceDeck(WAVES);
+const ACTIVE_WAVE_INDICES = [0, WAVES.length - 1];
 const ACTIVE_WAVE_COUNT = ACTIVE_WAVE_INDICES.length;
 const FINAL_WAVE_INDEX = ACTIVE_WAVE_INDICES[ACTIVE_WAVE_COUNT - 1];
 
@@ -1499,7 +1510,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
   const t = I18N[lang];
   const wave = WAVES[waveIndex];
   const enemy = wave.enemy;
-  const puzzle = wave.puzzles[puzzleIndex % wave.puzzles.length];
+  const puzzle = RUN_PUZZLES[Math.min(puzzleIndex, RUN_PUZZLES.length - 1)];
   const routeIndex = ACTIVE_WAVE_INDICES.indexOf(waveIndex);
   const isFinalWave = waveIndex === FINAL_WAVE_INDEX;
   const waveMeta = WAVE_META[waveIndex];
@@ -1507,8 +1518,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
   const bossShielded = isFinalWave && aliveMinions.length > 0;
   const showMainEnemy = enemyHp > 0 || enemyDying;
   const showMainHud = enemyHp > 0;
-  const questionDefinitionIndex = wave.puzzles.indexOf(puzzle);
-  const currentQuestionId = `wave-${waveIndex}-question-${questionDefinitionIndex}`;
+  const currentQuestionId = sequenceQuestionKey(puzzle);
   const liveCompetitionScore = calculateNumberSequenceScore({
     ...competitionStats,
     victory: false,
@@ -2407,7 +2417,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
       const nextWave = WAVES[index];
 
       setWaveIndex(index);
-      setPuzzleIndex(0);
+
       setEnemyHp(nextWave.enemy.hp);
       setHearts(MAX_HEARTS);
       setMinions(
@@ -2792,19 +2802,20 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
     }, 940);
   }
 
-  function goToNextPuzzle(newHp) {
-    setEnemyHp(newHp);
-    setPuzzleIndex((value) => (value + 1) % wave.puzzles.length);
-    setSelected(null);
-    setStatus("playing");
-
-    // Life persists inside the same encounter.
-    // Insight never carries over to the next sequence.
-    setSealedOptions([]);
+  function advancePuzzle() {
+    if (puzzleIndex + 1 >= RUN_PUZZLES.length) {
+      // A finite deck cannot loop or leave an unanswerable battle.
+      finalizeCompetitionRun(false);
+      setStatus("lost");
+      return false;
+    }
+    setPuzzleIndex(puzzleIndex + 1);
+    return true;
   }
 
   function finishWave() {
     recordCompletedEncounter();
+    if (!isFinalWave && !advancePuzzle()) return;
     setEnemyDying(true);
     showDialogue(enemy.defeat[lang], "defeat", 3600);
 
@@ -2841,7 +2852,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
 
       later(() => {
         setWaveIndex(nextIndex);
-        setPuzzleIndex(0);
+
         setEnemyHp(nextWave.enemy.hp);
         // Hearts intentionally persist across every wave.
         setMinions(
@@ -3072,8 +3083,8 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
           showDialogue(
             defeated
               ? (lang === "zh"
-                  ? `${target.zh} 被击破！${isFinalWave ? ` ${target.revive} 回合后王座会尝试重构它。` : ""}`
-                  : `${target.en} defeated!${isFinalWave ? ` The throne will rebuild it in ${target.revive} turns.` : ""}`)
+                  ? `${target.zh} 被击破！${target.revive ? ` ${target.revive} 回合后会复活。` : ""}`
+                  : `${target.en} defeated!${target.revive ? ` Revives in ${target.revive} turns.` : ""}`)
               : (lang === "zh" ? `${target.zh} 的防御正在崩解。` : `${target.en}'s defense is breaking.`),
             "hit",
             3300,
@@ -3102,9 +3113,9 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
           return;
         }
 
-        setPuzzleIndex((value) => (value + 1) % wave.puzzles.length);
+        const hasNext = advancePuzzle();
         setSelected(null);
-        setStatus("playing");
+        if (hasNext) setStatus("playing");
         setSealedOptions([]);
       }, 1080);
 
@@ -3160,8 +3171,9 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
         return;
       }
 
+      const hasNext = advancePuzzle();
       setSelected(null);
-      setStatus("playing");
+      if (hasNext) setStatus("playing");
     });
   }
 
@@ -3200,6 +3212,14 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
 
   return (
     <div className="ns-shell" ref={shellRef}>
+            <GameGuide key={`${competitionAttemptRef.current?.attemptId}-${waveIndex}`} corner autoStart={waveIndex === 0} lang={lang} active={gameMode === "game" && phase === "battle" && !["won","lost"].includes(status)} defer={status !== "playing" || enemyDying || enemyHit || !!minionHitId || shake || !!dialogue} steps={waveIndex === 0 ? [
+              { target: ".ns-sequence, .ns-runes", highlightAll:true, text: "Find the pattern, then tap one of the four answers below to attack.", zh: "找出数列规律，再点击下方四个答案之一发动攻击。", advanceTarget: ".ns-runes button:not(:disabled)" },
+              { target: ".ns-skill--insight:not(:disabled)", text: "Try Insight: tap here to remove two wrong answers.", zh: "试试洞察：点击这里排除两个错误答案。" },
+              { target: ".ns-minion:not(.is-down), .ns-enemy", highlightAll:true, text: "Tap an enemy to choose your target, then answer. Clear every enemy to continue.", zh: "点击敌人选择目标，再作答。清除全部敌人后进入下一阶段。", advanceTarget: ".ns-minion:not(.is-down):not(:disabled), .ns-enemy" },
+            ] : [
+              { target: ".ns-minion:not(.is-down)", text: "Defeat both guards first, then the boss. Guards do not revive.", zh: "先击败两名护卫，再攻击首领。护卫不会复活。", manual:true },
+              { target: ".ns-sequence, .ns-runes", highlightAll:true, text: "Read the sequence and tap the correct answer to attack.", zh: "观察数列，点击正确答案攻击。", advanceTarget: ".ns-runes button:not(:disabled)" },
+            ]} />
       <div
         className={`ns-canvas ${gameMode === "game" ? "is-game" : "is-cover"}`}
         ref={canvasRef}
@@ -3267,7 +3287,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
               <div className="ns-home-copy">
                 <span className="ns-home-kicker">{t.homeSubtitle}</span>
                 <h1>Number<br />Sequence Rush</h1>
-                <p>{t.homeStory}</p>
+                <p>{t.homeStory}</p><QuickBrief lang={lang} goal={lang === "zh" ? "击败两场战斗的守卫" : "Defeat the guardians in 2 encounters"} controls={lang === "zh" ? "看数列，点击正确答案发动攻击" : "Read the sequence; tap the correct rune to attack"} finish={lang === "zh" ? "先打护卫再打首领；三颗心耗尽失败" : "Clear the final guards, then the boss; lose all 3 hearts to fail"} />
 
                 <button type="button" className="ns-home-start" onClick={startGame}>
                   <span>{t.startJourney}</span>
@@ -3497,7 +3517,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
 
                 <span className="ns-enemy-shadow" />
                 {selectedTarget === "main" && <span className="ns-target-lock">TARGET</span>}
-                {bossShielded && <span className="ns-boss-shield">封印</span>}
+                {bossShielded && <span className="ns-boss-shield">SHIELDED</span>}
               </button>
             </div>
           )}
@@ -3612,6 +3632,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
 
         {phase === "battle" && status !== "won" && status !== "lost" && (
           <section className="ns-puzzle-card">
+
             <div className="ns-card-head">
               <div className="ns-head-copy">
                 <span className="ns-puzzle-badge">{puzzle.badge[lang]}</span>

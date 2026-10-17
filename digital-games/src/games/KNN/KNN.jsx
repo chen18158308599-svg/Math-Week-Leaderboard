@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./KNN.css";
-import knnIslandImg from "../../assets/home-layers/knn.png";
+import { GameGuide, QuickBrief, useGuidePause } from "../../components/GameGuide.jsx";
+import knnIslandImg from "../../assets/home-layers/knn.webp";
 import backgroundImg from "../../assets/home-layers/background.png";
 import {
   calculateKnnCompetitionScore,
@@ -37,8 +38,8 @@ const HH = 38;
 const WALK = 8, RUN = 14;
 const RUN_DUR = 3500, RUN_CD = 3000;
 const MAX_ARMOR = 5, VIS_R = 14.5, VIS_A = Math.PI / 2.5;
-const NOISE_R = 9; 
-const COMPETITION_LEVEL_COUNT = 3;
+const NOISE_R = 9;
+const COMPETITION_LEVEL_COUNT = 2;
 
 // 地图构建助手，精确计算带缺口的墙壁和门，彻底杜绝交叉穿模
 const uid = () => Math.random().toString(36).slice(2, 7);
@@ -126,7 +127,7 @@ puzzleN: 10,
     walls: [
       ...OUTER_WALLS,
       W(-20, -20, -25, 25), W(10, 10, -25, 25), // 垂直长货架
-      W(-5, -5, -38, -15), W(-5, -5, -5, 38), 
+      W(-5, -5, -38, -15), W(-5, -5, -5, 38),
       W(25, 25, -38, 15), W(25, 25, 25, 38),
       W(-38, -28, 0, 0), W(-12, -5, 0, 0), W(10, 25, 0, 0) // 横向隔断
     ],
@@ -1209,7 +1210,7 @@ function MiniMap({ guards, walls, doors, player, safe, hasKey, t, onClick }) {
   const mp = v => `${clamp(((v + 42) / 84) * 100, 0, 100)}%`;
 
   return (
-    <div className="mini-map" onClick={onClick}>
+    <div className="mini-map" role="button" tabIndex={0} aria-label="Map — tap to enlarge" onClick={onClick} onKeyDown={event => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onClick(); } }}>
       <div className="mm-floor">
         {walls.map((w, i) => (
           <div key={i} className="mm-wall" style={{ left: mp(w.x), top: mp(w.z), width: `${(w.w / 84) * 100}%`, height: `${(w.h / 84) * 100}%` }} />
@@ -1255,7 +1256,7 @@ function MiniMap({ guards, walls, doors, player, safe, hasKey, t, onClick }) {
           }}
         />
       </div>
-      <div className="mm-label">{t.map} <b>{hasKey ? "KEY ✓" : "VAULT"}</b></div>
+      <div className="mm-label">{t.map} <b>{hasKey ? "KEY ✓" : "VAULT"}</b> · Tap to enlarge</div>
     </div>
   );
 }
@@ -1340,6 +1341,7 @@ function BigMap({ guards, walls, doors, player, safe, hasKey, target, k, lang, t
 export default function KNN({ onHome }) {
   const [lang, setLang] = useState("en");
   const t = T[lang];
+  const guidePause = useGuidePause();
   const [screen, setScreen] = useState("start");
   const [showBigMap, setShowBigMap] = useState(false);
   const [siteIdx, setSiteIdx] = useState(0);
@@ -1349,6 +1351,12 @@ export default function KNN({ onHome }) {
   const [showPuzzle, setShowPuzzle] = useState(false);
   const [puzzleData, setPuzzleData] = useState(null);
   const [selected, setSelected] = useState([]);
+  const [wrongSelection, setWrongSelection] = useState([]);
+  useEffect(() => {
+    if (!wrongSelection.length) return;
+    const timer = window.setTimeout(() => setWrongSelection([]), 850);
+    return () => window.clearTimeout(timer);
+  }, [wrongSelection]);
   const [inspectedId, setInspectedId] = useState(null);
   const [attempts, setAttempts] = useState(3);
   const [score, setScore] = useState(0);
@@ -1623,21 +1631,20 @@ export default function KNN({ onHome }) {
 
   const togglePuzzlePoint = useCallback(id => {
     const lv = levelRef.current;
-    if (!lv) return;
+    if (!lv || wrongSelection.length) return;
 
     // Always measure the tapped dot, even when the answer already has K selections.
     // Measuring is free: only CONFIRM consumes an attempt if the answer is wrong.
-    setInspectedId(id);
-    setSelected(prev => {
-      if (prev.includes(id)) return prev.filter(x => x !== id);
-      if (prev.length >= lv.k) return prev;
-      return [...prev, id];
-    });
-  }, []);
+    const removing = selected.includes(id);
+    setInspectedId(removing ? null : id);
+    if (removing) setSelected(selected.filter(x => x !== id));
+    else if (selected.length < lv.k) setSelected([...selected, id]);
+    else show(lang === "zh" ? "已选满，先取消一个点再替换。" : "Selection full. Deselect a dot before replacing it.", "info", 2000);
+  }, [selected, lang, show, wrongSelection]);
 
   const submitPuzzle = useCallback(() => {
     const lv = levelRef.current;
-    if (!lv || !puzzleData || hasKeyRef.current || competitionFinalRef.current) return;
+    if (!lv || !puzzleData || hasKeyRef.current || competitionFinalRef.current || wrongSelection.length) return;
 
     const answer = [...selected].sort().join(",");
     const correct = [...puzzleData.correct].sort().join(",");
@@ -1670,6 +1677,8 @@ export default function KNN({ onHome }) {
       return;
     }
 
+    setWrongSelection([...selected]);
+    sfx("hit");
     const left = attempts - 1;
     setAttempts(left);
     setSelected([]);
@@ -1693,7 +1702,7 @@ export default function KNN({ onHome }) {
       "warn",
       1200
     );
-  }, [attempts, finalizeCompetition, lang, puzzleData, selected, sfx, show, siteIdx]);
+  }, [attempts, finalizeCompetition, lang, puzzleData, selected, sfx, show, siteIdx, wrongSelection]);
 
   useEffect(() => { moveRef.current = move; }, [move]);
   useEffect(() => { pausedRef.current = paused; }, [paused]);
@@ -1817,7 +1826,7 @@ export default function KNN({ onHome }) {
 
       // 暂停、看地图、或正在切关时：保留画面但不推进计时/AI。
       if (
-  pausedRef.current ||
+  pausedRef.current || guidePause.current || document.hidden ||
   bigMapRef.current ||
   puzzleRef.current ||
   doneRef.current
@@ -2016,7 +2025,7 @@ export default function KNN({ onHome }) {
 
       hurtRef.current = Math.max(0, hurtRef.current - dt);
 
-  
+
 
       if (
         hasKeyRef.current &&
@@ -2119,20 +2128,20 @@ export default function KNN({ onHome }) {
             </h1>
 
             <h2>{t.sub}</h2>
-            <p>{t.intro}</p>
-
             <button className="knn-start-btn" onClick={startGame}>
               <span>{t.start}</span>
               <b>✦</b>
             </button>
 
+            <QuickBrief lang={lang} goal={lang === "zh" ? "破解两张地图的保险箱，拿钥匙到出口" : "Crack the vault and reach the exit on both maps"} controls={lang === "zh" ? "摇杆移动；靠近后点击互动；选指定颜色最近的K个点" : "Move with the stick; tap Interact; choose the K nearest dots of the required colour"} finish={lang === "zh" ? "两张地图；护甲或3次答题机会耗尽则失败" : "Two maps; lose if armor or 3 answer attempts run out"} />
+
             <div className="knn-mission-strip-start">
               <div>
-                <b>5</b>
+                <b>{COMPETITION_LEVEL_COUNT}</b>
                 <span>{lang === "zh" ? "关卡" : "LEVELS"}</span>
               </div>
               <div>
-                <b>K 3→7</b>
+                <b>K 3</b>
                 <span>{lang === "zh" ? "逐关提升" : "PROGRESSION"}</span>
               </div>
               <div>
@@ -2207,6 +2216,14 @@ export default function KNN({ onHome }) {
   return (
     <main className={`game ${hurt ? "hurt" : ""}`}>
       <section className="stage" ref={stRef}>
+        <GameGuide active={!showBigMap && !paused} key={competitionAttemptRef.current?.attemptId} lang={lang} steps={[
+          { target: ".stick", text: "Drag the stick to move. Find the vault marked on your map.", zh: "拖动摇杆移动，寻找地图上的保险箱。", drag: true, pause: true },
+          { target: ".interact-btn", text: "Tap to open the vault or door.", zh: "点击打开保险箱或门。" },
+          { target: ".knn-puzzle-head", anywhere: true, text: "Check the required colour and K. Measure from the central lock, then tap a dot.", zh: "看清指定颜色与K值，距离从中央锁开始计算，然后点击一个点。", advanceTarget: ".knn-point" },
+          { target: ".knn-point", text: "Select the K nearest dots of that colour. Tap again to deselect.", zh: "选该颜色最近的K个点；再次点击取消。" },
+          { target: ".knn-puzzle-bottom button:not(:disabled)", text: "Check your selection, then confirm. Only a wrong confirmation uses an attempt.", zh: "检查后确认。只有确认错误才扣答题机会。" },
+        ]} />
+
         <div className="stage-sky" aria-hidden="true" />
         <div className="stage-nebula" aria-hidden="true" />
         <div className="stage-clouds" aria-hidden="true" />
@@ -2326,7 +2343,7 @@ export default function KNN({ onHome }) {
                   : "Tap any dot to measure its distance from the central 🔐. Tap again to deselect. Measuring costs no attempts."}
               </p>
 
-              <div className="knn-puzzle-board">
+              <div className={`knn-puzzle-board ${wrongSelection.length ? "has-wrong-answer" : ""}`}>
                 <div className="knn-board-orbit orbit-one" />
                 <div className="knn-board-orbit orbit-two" />
                 {inspectedPoint && (
@@ -2346,14 +2363,15 @@ export default function KNN({ onHome }) {
                     type="button"
                     aria-label={`${lang === "zh" ? "点" : "Point"} ${i + 1}, ${lang === "zh" ? C[p.cls].zh : C[p.cls].en}`}
                     aria-pressed={selected.includes(p.id)}
-                    className={`knn-point ${selected.includes(p.id) ? "selected" : ""} ${inspectedId === p.id ? "inspected" : ""}`}
+                    disabled={wrongSelection.length > 0}
+                    className={`knn-point ${wrongSelection.includes(p.id) ? "is-wrong" : ""} ${selected.includes(p.id) ? "selected" : ""} ${selected.includes(p.id) ? "answer-selected" : ""}`}
                     style={{
                       left: `${p.x}%`,
                       top: `${p.y}%`,
                       background: C[p.cls].hex
                     }}
                     onClick={() => togglePuzzlePoint(p.id)}
-                  />
+                  >{selected.includes(p.id) && <span className="knn-selected-check">✓</span>}</button>
                 ))}
                 {inspectedPoint && (
                   <div
@@ -2411,6 +2429,7 @@ export default function KNN({ onHome }) {
                 </div>
               </div>
 
+              {wrongSelection.length > 0 && <p className="knn-wrong-feedback" role="alert">{lang === "zh" ? "答案不对，请重新选择" : "Not quite! Choose your dots again."}</p>}
               <div className="knn-puzzle-bottom">
                 <span>
                   {lang === "zh"
@@ -2419,7 +2438,7 @@ export default function KNN({ onHome }) {
                 </span>
                 <button
                   type="button"
-                  disabled={selected.length !== lv.k}
+                  disabled={selected.length !== lv.k || wrongSelection.length > 0}
                   onClick={submitPuzzle}
                 >
                   {lang === "zh" ? "确认答案" : "CONFIRM"}

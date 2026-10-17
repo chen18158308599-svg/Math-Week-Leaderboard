@@ -8,14 +8,16 @@ export function WeekShell({
   children,
   idleSeconds,
   kioskHome = false,
+  animatedBackground = true,
 }: {
   children: React.ReactNode;
   idleSeconds?: number;
   kioskHome?: boolean;
+  animatedBackground?: boolean;
 }) {
   return (
     <div className={kioskHome ? "week-site kiosk-home" : "week-site"}>
-      <MovingBackground />
+      {animatedBackground && <MovingBackground />}
       <IdleRedirect seconds={idleSeconds ?? 60} />
       <header className="week-header">
         <Link href="/" className="week-brand" aria-label="Math Week home">

@@ -79,11 +79,11 @@ export function createCompetitionAttempt(gameId) {
 }
 
 export function calculateConwayScore(playerPoints, opponentPoints, won) {
-  const points = Math.min(12, nonNegativeInteger(playerPoints));
-  const opponent = Math.min(12, nonNegativeInteger(opponentPoints));
-  return Math.min(1210, Math.max(
+  const points = Math.min(2, nonNegativeInteger(playerPoints));
+  const opponent = Math.min(2, nonNegativeInteger(opponentPoints));
+  return Math.min(1060, Math.max(
     0,
-    10 * points + (won ? 1000 + 10 * (12 - opponent) : 0)
+    15 * points + (won ? 1000 + 15 * (2 - opponent) : 0)
   ));
 }
 
@@ -92,12 +92,7 @@ export function isConwayMatchWon(player1Points, player2Points) {
     nonNegativeInteger(player1Points),
     nonNegativeInteger(player2Points)
   );
-  const low = Math.min(
-    nonNegativeInteger(player1Points),
-    nonNegativeInteger(player2Points)
-  );
-
-  return high >= 12 || (high >= 9 && high - low >= 2);
+  return high >= 2;
 }
 
 export function calculateDealScore({ piratesSunk, coins, hp, victory }) {
@@ -130,7 +125,7 @@ export function calculateNumberSequenceScore({
   return (
     100 * nonNegativeInteger(uniqueCorrect) +
     50 * nonNegativeInteger(firstTryCorrect) +
-    250 * Math.min(3, nonNegativeInteger(completedEncounters)) +
+    250 * Math.min(2, nonNegativeInteger(completedEncounters)) +
     (victory ? 5000 : 0)
   );
 }
@@ -163,13 +158,4 @@ export function getPlanarityKnockoutResult(p1Hp, p2Hp) {
   return p1Dead ? "p2" : "p1";
 }
 
-export function calculateSymmetryScore({ progress, coins, questionsSolved }) {
-  const safeProgress = Number.isFinite(Number(progress))
-    ? Math.max(0, Math.floor(Number(progress)))
-    : 0;
-  return (
-    safeProgress +
-    6 * nonNegativeInteger(coins) +
-    160 * nonNegativeInteger(questionsSolved)
-  );
-}
+export { symmetryShortScore as calculateSymmetryScore } from "./shortGameRules.js";

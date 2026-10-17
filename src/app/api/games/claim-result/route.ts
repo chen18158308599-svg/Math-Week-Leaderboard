@@ -28,7 +28,11 @@ export async function POST(request: Request) {
   const result = parsed.data;
   const dual = result.gameKey === "conway" || result.gameKey === "planarity";
   if (dual === (result.playerSlot === "single")) return reply({ error: "Invalid player slot or number" }, 400);
-  if (["conway", "planarity", "symmetry"].includes(result.gameKey) && result.outcome !== "win") return reply({ error: "Only the winner can claim points" }, 403);
+  if (["conway", "planarity"].includes(result.gameKey) && result.outcome !== "win") return reply({ error: "Only the winner can claim points" }, 403);
+  if (result.gameKey === "symmetry" && !(
+    (result.outcome === "win" && result.finalScore >= 10 && result.finalScore <= 19) ||
+    (result.outcome === "loss" && result.finalScore >= 1 && result.finalScore <= 9)
+  )) return reply({ error: "Invalid survival result" }, 400);
   const admin = createAdminClient();
   const { data: game, error: gameError } = await admin.from("games").select("*").eq("digital_key", result.gameKey).eq("type", "digital").maybeSingle().returns<Game>();
   if (gameError) return reply({ error: "Game registry unavailable. Check the database migration." }, 503);
@@ -47,9 +51,12 @@ export async function POST(request: Request) {
     const values = { game_id: game.id, attempt_id: result.attemptId, player_slot: result.playerSlot,
       result_payload: result, points_snapshot: points, token: randomBytes(32).toString("base64url"), expires_at: new Date(Date.now() + TTL * 1000).toISOString() };
     // @ts-expect-error Supabase hand-written Database input generic gap.
-    const inserted = await admin.from("claim_tokens").insert(values);
+    const inserted = await admin.from("claim_tokens").insert(values).select("*").maybeSingle().returns<ClaimToken>();
     if (inserted.error && inserted.error.code !== "23505") return reply({ error: "Unable to retain result" }, 503);
-    ({ data: claim, error } = await lookup());
+    // Return the inserted row in the same round-trip. Only a concurrent insert
+    // needs a second lookup; the normal path avoids re-reading its own write.
+    if (inserted.error?.code === "23505") ({ data: claim, error } = await lookup());
+    else { claim = inserted.data; error = null; }
   }
   if (!claim || error) return reply({ error: "Unable to load result" }, 503);
   if (!sameResult(claim)) return reply({ error: "Result conflict" }, 409);

@@ -4485,3 +4485,36 @@
   .conway-page .cw-match.cw-layout-v6 {grid-template-rows:auto minmax(160px,1fr) auto;overflow-y:auto;}
   .conway-page .cw-conway.cw-layout-v6 {grid-template-rows:auto minmax(185px,1fr);overflow-y:auto;}
 }
+.life-rules { color:#fff; padding:16px; background:#101827; border-radius:12px; text-align:left; }
+.life-rules h3 { margin:0 0 8px; font-size:24px; }
+.life-rules p { font-size:17px; line-height:1.45; }
+.life-rule-examples { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+.life-rule-examples article { padding:10px; border:1px solid #ffffff40; border-radius:8px; }
+.life-rule-examples strong { font-size:17px; }
+.life-rule-pair { display:flex; align-items:center; gap:14px; margin-top:8px; }
+.life-rule-state:nth-child(2) { order:3; }
+.life-rule-state small { display:block; margin-bottom:4px; }
+.life-mini-grid { display:grid; grid-template-columns:repeat(5,17px); gap:2px; }
+.life-mini-grid i { width:17px; height:17px; background:#475569; }
+.life-mini-grid i.alive { background:#fff250; }
+.life-mini-grid i.observed { outline:2px solid white; outline-offset:-2px; }
+.conway-page .cw-rules-modal { max-height:94vh; overflow:auto; width:min(960px,94vw); }
+.conway-page .cw-serve-button { border:4px solid #fff250; box-shadow:0 0 25px #ffe552aa; }
+.conway-page .cw-serve-arrow { position:absolute; bottom:100%; left:calc(50% - 24px); font-size:48px; color:#fff250; pointer-events:none; }
+.conway-page .cw-auto-confirm { font-size:18px; font-weight:800; color:#fff250; }
+
+/* Each generation has feedback even when a pattern stops changing. */
+.conway-page .cw-summary-play-hint { margin:10px 0 0; color:#fff250; font:700 16px/1.3 system-ui,sans-serif; }
+.conway-page .cw-cell.is-evolving { animation:cw-generation-tick .32s ease-out; }
+@keyframes cw-generation-tick {
+  0%,100% { transform:translate(0,0); }
+  20% { transform:translate(-1px,1px); box-shadow:inset 0 0 0 2px #fff6; }
+  45% { transform:translate(1px,-1px); }
+  70% { transform:translate(-1px,0); }
+}
+@media(prefers-reduced-motion:reduce) {
+  .conway-page .cw-cell.is-evolving { animation:cw-generation-glow .32s ease-out !important; }
+  @keyframes cw-generation-glow { 30% { box-shadow:inset 0 0 0 2px #fff9; } }
+}
+.conway-page .cw-match.cw-layout-v6 > .cw-controls-v6 { display:flex; justify-content:center; }
+.conway-page .cw-next-conway { color:#fff250; font-weight:900; font-size:18px; }

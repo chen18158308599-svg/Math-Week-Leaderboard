@@ -21,7 +21,15 @@ export function useDigitalClaims(frame: RefObject<HTMLIFrameElement | null>, pla
       if (typeof attemptId !== "string" || typeof playerSlot !== "string") return;
       const key = `${attemptId}:${playerSlot}`;
       if (busy.has(key)) return;
+      const cached = pending.get(key);
+      if (cached && Date.parse(cached.expiresAt) > Date.now()) {
+        send({ ...cached, token: undefined, state: "ready" });
+        return;
+      }
       busy.add(key);
+      send({ attemptId, playerSlot, state: "loading" });
+      holdUntil = Math.max(holdUntil, Date.now() + 15000);
+      hold();
       try {
         const response = await fetch("/api/games/claim-result", {
           method: "POST", headers: { "Content-Type": "application/json" },
@@ -64,7 +72,7 @@ export function useDigitalClaims(frame: RefObject<HTMLIFrameElement | null>, pla
             else if (status.expired) { pending.delete(key); send({ attemptId: item.attemptId, playerSlot: item.playerSlot, state: "expired", error: "This result expired and cannot be claimed again." }); }
           } catch { /* Temporary failure: retain the QR and retry the next poll. */ }
         }
-      } finally { polling = false; if (!pending.size) { holdUntil = 0; hold(); } }
+      } finally { polling = false; if (!pending.size && !busy.size) { holdUntil = 0; hold(); } }
     }, 2000);
     return () => { disposed = true; clearInterval(timer); window.removeEventListener("message", onMessage); window.dispatchEvent(new CustomEvent("mathweek:claim-hold", { detail: false })); };
   }, [frame, playing]);

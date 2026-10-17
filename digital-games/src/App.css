@@ -3,6 +3,15 @@
   min-height: 100vh;
 }
 
+.game-module-loading {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  background: #09172e;
+  color: #fff0bd;
+  font-size: 20px;
+}
+
 .home-navigation {
   --home-tab-width: 40px;
   --home-action-width: 100px;

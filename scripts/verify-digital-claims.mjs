@@ -21,11 +21,27 @@ await db.exec(readFileSync(new URL('../supabase/migrations/0010_digital_result_c
 await db.exec(readFileSync(new URL('../supabase/migrations/0011_digital_claim_hard_expiry.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0012_digital_points_scaling.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0013_all_day_games_remove_average.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0021_digital_short_games.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0022_digital_medium_rounds.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0023_knn_two_maps.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0024_digital_claim_points_boost.sql', import.meta.url), 'utf8'));
 for (const [key, target] of Object.entries(scaling.DIGITAL_SCORE_TARGETS)) {
   assert.equal(scaling.digitalClaimPoints(key,target),19);
   assert.equal((await db.query('select digital_claim_points($1,$2) as points',[key,target])).rows[0].points,19);
-  assert.equal(scaling.digitalClaimPoints(key,target-1),18);
+  assert.equal(scaling.digitalClaimPoints(key,target-1),19);
 }
+for (const [key,target] of Object.entries(scaling.DIGITAL_SCORE_TARGETS)) {
+  for (let base=1;base<=19;base++) {
+    const raw=Math.ceil(base*target/19);
+    const ceiling=key==='symmetry' && raw<=9 ? 9 : 19;
+    const expected=Math.min(ceiling,Math.ceil(base*1.2));
+    assert.equal(scaling.digitalClaimPoints(key,raw),expected);
+    assert.equal((await db.query('select digital_claim_points($1,$2) as points',[key,raw])).rows[0].points,expected);
+  }
+}
+assert.equal(scaling.digitalClaimPoints('sequence',Math.ceil(5*6850/19)),6);
+assert.equal(scaling.digitalClaimPoints('sequence',Math.ceil(10*6850/19)),12);
+assert.equal(scaling.digitalClaimPoints('sequence',Math.ceil(15*6850/19)),18);
 for (const key of [...Object.keys(scaling.DIGITAL_SCORE_TARGETS), 'average']) {
   let previous = 0;
   for (const raw of [0, 1, 50, 215, 1394, 5000, 10000, 100000]) {
@@ -48,6 +64,10 @@ assert.equal((await db.query("select count(*)::int as count from games where dig
 await db.exec(readFileSync(new URL('../supabase/migrations/0014_same_origin_digital_games.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0015_winner_only_30_second_claims.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0016_restore_60_second_claims.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0021_digital_short_games.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0022_digital_medium_rounds.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0023_knn_two_maps.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0024_digital_claim_points_boost.sql', import.meta.url), 'utf8'));
 assert.equal((await db.query("select count(*)::int as count from games where type='digital' and digital_key <> 'average' and embed_url='/digital-play/index.html'")).rows[0].count,6);
 // Exercise the real route with its Supabase transport replaced by a PostgreSQL adapter.
 function table(name) {
@@ -100,7 +120,7 @@ assert.equal((await report({...base,finalScore:-1})).status,400);
 assert.equal((await report({...base,playerSlot:'p1'})).status,400);
 assert.equal((await report({...base,gameKey:'average',finalScore:101,outcome:'completed'})).status,400);
 for (const gameKey of Object.keys(scaling.DIGITAL_SCORE_TARGETS)) {
-  const result = await report({...base,gameKey,attemptId:`${gameKey}-all-days-test`,playerSlot:['conway','planarity'].includes(gameKey)?'p1':'single',outcome:'win',finalScore:100000});
+  const result = await report({...base,gameKey,attemptId:`${gameKey}-all-days-test`,playerSlot:['conway','planarity'].includes(gameKey)?'p1':'single',outcome:'win',finalScore:gameKey==='symmetry'?19:100000});
   assert.equal(result.status,200);
   assert.equal(result.pointsAwarded,19);
 }
@@ -113,7 +133,16 @@ const p1 = await report({...dual,playerSlot:'p1',finalScore:1210,outcome:'win'})
 assert.equal(p1.pointsAwarded,19);
 assert.equal((await report({...dual,playerSlot:'p2',finalScore:50})).status,403);
 assert.equal((await report({...dual,playerSlot:'p2',finalScore:50,outcome:'draw'})).status,403);
-assert.equal((await report({...base,gameKey:'symmetry'})).status,403);
+assert.equal((await report({...base,gameKey:'symmetry'})).status,400);
+for (const [outcome,score] of [['loss',1],['loss',9],['win',10],['win',19]]) {
+  const claim = await report({...base,gameKey:'symmetry',attemptId:`symmetry-band-${outcome}-${score}`,outcome,finalScore:score});
+  assert.equal(claim.status,200);
+  assert.equal(claim.pointsAwarded,scaling.digitalClaimPoints('symmetry',score));
+}
+for (const [outcome,score] of [['loss',0],['loss',10],['win',9],['win',20],['completed',5]]) {
+  assert.equal((await report({...base,gameKey:'symmetry',outcome,finalScore:score})).status,400);
+}
+
 const p2Result = {...dual,attemptId:'conway-p2-wins-1234',playerSlot:'p2',finalScore:50,outcome:'win'};
 const p2 = await report(p2Result);
 assert.ok(Date.parse(p2.expiresAt)-Date.now() <= 60000);
@@ -156,5 +185,13 @@ assert.equal((await report(withinMinute)).status, 200, 'A claim remains valid af
 assert.equal((await db.query('select * from claim_token($1)', [minuteClaim.token])).rows[0].game_name, 'Planarity');
 await db.query("select set_config('test.uid','',false)");
 await assert.rejects(db.query('select * from claim_token($1)',[p2.token]),/not_authenticated/);
+await db.query("select set_config('test.uid',$1,false)",[user1]);
+const lossToken = (await db.query("select token from claim_tokens where attempt_id='symmetry-band-loss-9'")).rows[0].token;
+assert.equal((await db.query('select * from claim_token($1)',[lossToken])).rows[0].points_awarded,9);
+const winToken = (await db.query("select token from claim_tokens where attempt_id='symmetry-band-win-19'")).rows[0].token;
+await assert.rejects(db.query('select * from claim_token($1)',[winToken]),/already_scored/,'A natural-loss claim still consumes the one activity claim');
+await db.query("select set_config('test.uid',$1,false)",[user2]);
+await db.exec("insert into claim_tokens(game_id,token,attempt_id,player_slot,points_snapshot,expires_at,result_payload) select id,'invalid-survival-band','invalid-band-attempt','single',10,now()+interval '1 minute','{\"gameKey\":\"symmetry\",\"outcome\":\"loss\",\"finalScore\":10}'::jsonb from games where digital_key='symmetry'");
+await assert.rejects(db.query("select * from claim_token('invalid-survival-band')"),/invalid_survival_result/);
 await db.close();
 console.log('Digital claims verified: variable scores, metadata, two seats, retired Average, six all-day games, idempotency, permanent expiry, authentication and legacy awards.');

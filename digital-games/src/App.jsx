@@ -1,16 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import "./App.css";
 
 import Home from "./Home/Home";
 import PostGameSubmission from "./components/PostGameSubmission";
 import { useScoreRecording } from "./integration/useScoreRecording.js";
 
-import Conway from "./games/Conway/Conway";
-import DealOrNoDeal from "./games/DealOrNoDeal/DealOrNoDeal";
-import KNN from "./games/KNN/KNN";
-import NumberSequence from "./games/NumberSequence/NumberSequence";
-import Planarity from "./games/Planarity/Planarity";
-import SymmetryGame from "./games/Symmetry/Symmetry";
+const Conway = lazy(() => import("./games/Conway/Conway"));
+const DealOrNoDeal = lazy(() => import("./games/DealOrNoDeal/DealOrNoDeal"));
+const KNN = lazy(() => import("./games/KNN/KNN"));
+const NumberSequence = lazy(() => import("./games/NumberSequence/NumberSequence"));
+const Planarity = lazy(() => import("./games/Planarity/Planarity"));
+const SymmetryGame = lazy(() => import("./games/Symmetry/Symmetry"));
 
 function HomeNavigation({ onHome, onSelectGame }) {
   const [expanded, setExpanded] = useState(false);
@@ -131,6 +131,10 @@ export default function App() {
     />
   ) : null;
 
+  // The result screen replaces the game, releasing its RAF loops and effects
+  // instead of rendering a full running game underneath the QR overlay.
+  if (postGameSubmission) return postGameSubmission;
+
   /* =====================================================
      HOME
      ===================================================== */
@@ -152,6 +156,7 @@ export default function App() {
     <>
       <HomeNavigation onHome={returnHome} onSelectGame={selectGame} />
 
+      <Suspense fallback={<div className="game-module-loading" role="status">Loading game…</div>}>
       {/* =========================
           CONWAY
       ========================= */}
@@ -202,6 +207,7 @@ export default function App() {
         <SymmetryGame onBack={returnHome} />
       )}
       {postGameSubmission}
+      </Suspense>
     </>
   );
 }

@@ -4400,3 +4400,9 @@ position: relative;
   line-height: 1;
   text-shadow: 0 0 16px rgba(255, 213, 105, 0.2);
 }
+.planarity-app .impact-damage { position:absolute; left:50%; top:15%; color:#fff; font:900 52px/1 system-ui,sans-serif; -webkit-text-stroke:2px #bd192c; text-shadow:0 3px 0 #701021,0 0 18px #ff3b45; animation:damage-pop .65s ease-out forwards; }
+.planarity-app .impact-bullet .impact-ring { border:5px solid #fff1a8; box-shadow:0 0 30px 12px #ff6d4280; }
+.planarity-app .shooter-card.hit .gunner { animation:hit-recoil .36s ease-out; filter:brightness(1.7) drop-shadow(0 0 20px #ff524c); }
+@keyframes damage-pop { from { opacity:1; transform:translate(-50%,0) scale(.7); } 25% { transform:translate(-50%,-12px) scale(1.15); } to { opacity:0; transform:translate(-50%,-65px) scale(1); } }
+@keyframes hit-recoil { 20% { translate:12px 0; } 45% { translate:-8px 0; } 70% { translate:4px 0; } to { translate:0 0; } }
+@media(prefers-reduced-motion:reduce) { .planarity-app .shooter-card.hit .gunner { animation:none; } .planarity-app .impact-damage { animation:none; transform:translateX(-50%); } }

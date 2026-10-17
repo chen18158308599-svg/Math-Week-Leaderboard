@@ -9,7 +9,7 @@
     "lint": "eslint",
     "test:digital-claims": "node scripts/verify-digital-claims.mjs",
     "build:digital-games": "node scripts/build-digital-games.mjs",
-    "test:digital-games": "node digital-games/scripts/verify-scoring.mjs && node digital-games/scripts/verify-leaderboard.mjs && node digital-games/scripts/verify-host-activity.mjs"
+    "test:digital-games": "node digital-games/scripts/verify-scoring.mjs && node digital-games/scripts/verify-short-games.mjs && node digital-games/scripts/verify-leaderboard.mjs && node digital-games/scripts/verify-host-activity.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",

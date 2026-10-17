@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import symmetryIsland from "../../assets/home-layers/symmetry.png";
+import symmetryIsland from "../../assets/home-layers/symmetry.webp";
 
 import "./Symmetry.css";
+import { QuickBrief } from "../../components/GameGuide.jsx";
+import { SYMMETRY_RUN_SECONDS, SYMMETRY_QUESTION_SECONDS, symmetryShortScore, advanceSurvivalClock } from "../../scoring/shortGameRules.js";
 
 import {
 
-  calculateSymmetryScore,
 
   createCompetitionAttempt,
 
@@ -28,7 +29,7 @@ const WORLD_SCALE = 0.46;
 
 const SEGMENT_LEN = 460;
 
-const TARGET_DISTANCE = 6000;
+// Distance is an auxiliary statistic; only the active 90-second clock ends a run.
 
 const MAX_VITALITY = 3;
 
@@ -104,11 +105,11 @@ const COPY = {
 
     introTitle: "镜界疾驰",
 
-    introSub: "SYMMETRY · 6000 M FIRE ORB RUSH",
+    introSub: "SYMMETRY · 90 SECOND SURVIVAL",
 
     intro:
 
-      "穿越镜像实验隧道，抵达 6000 米终点。按住屏幕让球体底部喷火上升，松开后自然下降；闪避障碍与导弹，并完成简单的对称题。",
+      "在镜像隧道中生存90秒。按住屏幕让球体底部喷火上升，松开后自然下降；闪避障碍与导弹，并完成简单的对称题。",
 
     launch: "开始快速挑战",
 
@@ -154,11 +155,11 @@ const COPY = {
 
     failTitle: "推进单元失效",
 
-    failText: "在抵达 6000 米终点前，三点生命已全部耗尽。",
+    failText: "三点生命已耗尽。仍可领取本局积分，或重新挑战。",
 
     victoryTitle: "挑战完成",
 
-    victoryText: "成功抵达 6000 米终点！",
+    victoryText: "成功生存90秒！",
 
     restart: "重新挑战",
 
@@ -172,7 +173,7 @@ const COPY = {
 
     guide3: "每次答错对称题都会直接失去 1 点生命；途中收集绿色 REPAIR 核心可以恢复 1 点生命。",
 
-    guide4: "跑得越远，速度越快、障碍越密、导弹越频繁。抵达 6000 米即可完成挑战。",
+    guide4: "跑得越远，速度越快、障碍越密、导弹越频繁。生存90秒完成挑战。每题限时10秒，计入总时长。",
 
     close: "继续",
 
@@ -186,13 +187,13 @@ const COPY = {
 
     introTitle: "Mirror Rush",
 
-    introSub: "SYMMETRY · 6000 M FIRE ORB RUSH",
+    introSub: "SYMMETRY · 90 SECOND SURVIVAL",
 
     intro:
 
-      "Race through the mirror tunnel to the 6000 m finish. Hold to fire the jet beneath the glowing orb and rise; release to descend. Dodge hazards and answer simple symmetry questions.",
+      "Survive the mirror tunnel for 90 seconds. Hold to fire the jet beneath the glowing orb and rise; release to descend. Dodge hazards and answer simple symmetry questions.",
 
-    launch: "START QUICK CHALLENGE",
+    launch: "START RUN",
 
     hold: "Hold / Space to fire the orb jet",
 
@@ -236,11 +237,11 @@ const COPY = {
 
     failTitle: "PROPULSION UNIT OFFLINE",
 
-    failText: "All three vitality points were lost before reaching the 6000 m finish.",
+    failText: "All three vitality points were lost. Claim this result or try again.",
 
     victoryTitle: "CHALLENGE COMPLETE",
 
-    victoryText: "You reached the 6000 m finish!",
+    victoryText: "You survived for 90 seconds!",
 
     restart: "RUN AGAIN",
 
@@ -254,7 +255,7 @@ const COPY = {
 
     guide3: "Every wrong symmetry answer directly costs 1 vitality. Collect green REPAIR cores along the route to restore 1 vitality.",
 
-    guide4: "The farther you run, the faster the tunnel scrolls, the denser the hazards become, and the more often missiles appear. Reach 6000 m to complete the challenge.",
+    guide4: "The farther you run, the faster the tunnel scrolls, the denser the hazards become, and the more often missiles appear. Survive for 90 seconds. Each question has 10 seconds and counts towards the run clock.",
 
     close: "CONTINUE",
 
@@ -1314,7 +1315,7 @@ export default function SymmetryGame({ onBack }) {
 
   const lastFrameRef = useRef(null);
 
-  const nextQuestionAtRef = useRef(620);
+  const nextQuestionAtRef = useRef(380);
 
   const questionIndexRef = useRef(0);
 
@@ -1354,6 +1355,13 @@ export default function SymmetryGame({ onBack }) {
 
 
 
+  const [secondsLeft, setSecondsLeft] = useState(SYMMETRY_RUN_SECONDS);
+  const [questionSecondsLeft, setQuestionSecondsLeft] = useState(SYMMETRY_QUESTION_SECONDS);
+  const clockStateRef = useRef(null);
+  clockStateRef.current = { activePuzzle, answerState };
+  const runClockText = `${String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:${String(secondsLeft % 60).padStart(2, "0")}`;
+  const elapsedSecondsRef = useRef(0);
+  const questionSecondsRef = useRef(SYMMETRY_QUESTION_SECONDS);
   const paused = screen !== "play" || showRules || activePuzzle !== null;
 
   const skillType = activeSkill?.type;
@@ -1474,6 +1482,8 @@ export default function SymmetryGame({ onBack }) {
 
     const metrics = {
 
+      elapsedSeconds: elapsedSecondsRef.current,
+      outcome,
       distance: Math.floor(finalProgress),
 
       progress: finalProgress,
@@ -1484,7 +1494,7 @@ export default function SymmetryGame({ onBack }) {
 
     };
 
-    const finalScore = calculateSymmetryScore(metrics);
+    const finalScore = symmetryShortScore(metrics);
 
     const result = competitionAttemptRef.current.finalize({
 
@@ -1622,6 +1632,10 @@ export default function SymmetryGame({ onBack }) {
 
 
 
+    elapsedSecondsRef.current = 0;
+    questionSecondsRef.current = SYMMETRY_QUESTION_SECONDS;
+    setSecondsLeft(SYMMETRY_RUN_SECONDS);
+    setQuestionSecondsLeft(SYMMETRY_QUESTION_SECONDS);
     progressRef.current = 0;
 
     playerYRef.current = 50;
@@ -1646,7 +1660,7 @@ export default function SymmetryGame({ onBack }) {
 
     lastFrameRef.current = null;
 
-    nextQuestionAtRef.current = 620;
+    nextQuestionAtRef.current = 380;
 
     questionIndexRef.current = 0;
 
@@ -1887,10 +1901,11 @@ export default function SymmetryGame({ onBack }) {
     function frame(time) {
 
       if (terminalSnapshotRef.current) return;
+      if (document.hidden) { lastFrameRef.current = null; raf = requestAnimationFrame(frame); return; }
 
       if (lastFrameRef.current === null) lastFrameRef.current = time;
 
-      const dt = Math.min((time - lastFrameRef.current) / 1000, 0.034);
+      const dt = Math.max(0, Math.min((time - lastFrameRef.current) / 1000, 0.034));
 
       lastFrameRef.current = time;
 
@@ -1920,13 +1935,7 @@ export default function SymmetryGame({ onBack }) {
 
 
 
-      const nextProgress = Math.min(
-
-        TARGET_DISTANCE,
-
-        currentProgress + speed * dt
-
-      );
+      const nextProgress = currentProgress + speed * dt;
 
       progressRef.current = nextProgress;
 
@@ -1934,15 +1943,7 @@ export default function SymmetryGame({ onBack }) {
 
 
 
-      if (nextProgress >= TARGET_DISTANCE) {
 
-        finalizeRun("win", TARGET_DISTANCE);
-
-        setScreen("win");
-
-        return;
-
-      }
 
 
 
@@ -2328,77 +2329,80 @@ export default function SymmetryGame({ onBack }) {
 
     setAnswerState("idle");
 
-    setActivePuzzle(makeQuestion(questionIndexRef.current));
+    questionSecondsRef.current = SYMMETRY_QUESTION_SECONDS;
+    setQuestionSecondsLeft(SYMMETRY_QUESTION_SECONDS);
+    const puzzle = makeQuestion(questionIndexRef.current);
+    clockStateRef.current = { activePuzzle:puzzle, answerState:"idle" };
+    setActivePuzzle(puzzle);
 
   }, [progress, activePuzzle, screen, showRules]);
 
 
 
-  function chooseAnswer(option) {
-
-    if (
-
-      terminalSnapshotRef.current ||
-
-      !activePuzzle ||
-
-      answerState === "correct" ||
-
-      wrongChoices.includes(option)
-
-    ) return;
-
-    setSelected(option);
-
-
-
-    if (option !== activePuzzle.answer) {
-
-      setWrongChoices((values) => [...values, option]);
-
-      setAnswerState("wrong");
-
-      damageFromWrongAnswer();
-
-      return;
-
-    }
-
-
-
-    setAnswerState("correct");
-
-    showNotice(t.correct);
-
-    clearTimeout(puzzleTimerRef.current);
-
-    puzzleTimerRef.current = setTimeout(() => {
-
-      if (terminalSnapshotRef.current) return;
-
-      questionIndexRef.current += 1;
-
-      questionsSolvedRef.current = questionIndexRef.current;
-
-      setQuestionsSolved(questionIndexRef.current);
-
-      const interval = Math.max(540, 900 - difficultyRef.current * 26);
-
-      nextQuestionAtRef.current = progressRef.current + interval;
-
-      setActivePuzzle(null);
-
-      setSelected(null);
-
-      setWrongChoices([]);
-
-      setAnswerState("idle");
-
-      velocityRef.current = -5;
-
-    }, 720);
-
+  function clearQuestion() {
+    clockStateRef.current = { activePuzzle:null, answerState:"idle" };
+    questionIndexRef.current += 1;
+    nextQuestionAtRef.current = progressRef.current + 650;
+    setActivePuzzle(null);
+    setSelected(null);
+    setWrongChoices([]);
+    setAnswerState("idle");
+    velocityRef.current = -5;
   }
+
+  function chooseAnswer(option) {
+    if (terminalSnapshotRef.current || !activePuzzle || answerState !== "idle") return;
+    setSelected(option);
+    const correct = option === activePuzzle.answer;
+    clockStateRef.current = { activePuzzle, answerState:correct ? "correct" : "wrong" };
+    setAnswerState(correct ? "correct" : "wrong");
+    if (correct) {
+      questionsSolvedRef.current += 1;
+      setQuestionsSolved(questionsSolvedRef.current);
+      showNotice(t.correct);
+    } else damageFromWrongAnswer();
+    clearTimeout(puzzleTimerRef.current);
+    puzzleTimerRef.current = setTimeout(() => {
+      if (!terminalSnapshotRef.current) clearQuestion();
+    }, 500);
+  }
+
+  // One active clock includes question time, excludes rules and hidden tabs.
+  // Use elapsed wall time between ticks, independent of animation frame rate.
+  useEffect(() => {
+    if (screen !== "play" || showRules || terminalSnapshotRef.current) return;
+    let last = performance.now();
+    const sync = () => { last = performance.now(); thrustRef.current = false; };
+    document.addEventListener("visibilitychange", sync);
+    const timer = setInterval(() => {
+      const now = performance.now();
+      const dt = (now - last) / 1000;
+      last = now;
+      if (document.hidden || terminalSnapshotRef.current) return;
+      const { activePuzzle: puzzle, answerState: answer } = clockStateRef.current;
+      const tick = advanceSurvivalClock({ elapsed: elapsedSecondsRef.current, questionSeconds: questionSecondsRef.current,
+        questionActive: !!puzzle && answer === "idle", vitality: vitalityRef.current, dt });
+      elapsedSecondsRef.current = tick.elapsed;
+      const remaining = Math.max(0, Math.ceil(SYMMETRY_RUN_SECONDS - elapsedSecondsRef.current));
+      setSecondsLeft(remaining);
+      if (puzzle && answer === "idle") {
+        questionSecondsRef.current = tick.questionSeconds;
+        setQuestionSecondsLeft(Math.ceil(questionSecondsRef.current));
+      }
+      if (tick.questionExpired) {
+        damageFromWrongAnswer();
+        clearTimeout(puzzleTimerRef.current);
+        clearQuestion();
+      }
+      if (tick.outcome && !terminalSnapshotRef.current) {
+        const outcome = tick.outcome;
+        finalizeRun(outcome);
+        setScreen(outcome === "win" ? "win" : "fail");
+      }
+    }, 50);
+    return () => { clearInterval(timer); document.removeEventListener("visibilitychange", sync); };
+  }, [screen, showRules]);
+
 
 
 
@@ -2450,7 +2454,8 @@ export default function SymmetryGame({ onBack }) {
 
   const distanceDisplay = Math.floor(progress);
 
-  const liveScore = calculateSymmetryScore({
+  const liveScore = symmetryShortScore({
+    elapsedSeconds: elapsedSecondsRef.current, outcome: "playing",
 
     progress,
 
@@ -2524,7 +2529,6 @@ export default function SymmetryGame({ onBack }) {
 
             )}
 
-            <button type="button" className="header-help" onClick={() => setShowRules(true)}>?</button>
 
             <button type="button" className="header-lang" onClick={() => setLang((value) => (value === "zh" ? "en" : "zh"))}>
 
@@ -2564,19 +2568,19 @@ export default function SymmetryGame({ onBack }) {
 
               <h2>{t.introSub}</h2>
 
-              <p>{t.intro}</p>
+              <button type="button" className="launch-button" onClick={startGame}><span>{t.launch}</span><i>▶</i></button><QuickBrief lang={lang} goal={lang === "zh" ? "生存90秒" : "Survive 90 seconds"} controls={lang === "zh" ? "按住上升，松开下降" : "Hold to rise. Release to fall."} finish={lang === "zh" ? "3点生命，每题10秒；失败也可领分" : "3 lives. 10s per question. Losses also earn points."} />
 
               <div className="intro-data">
 
                 <div><b>3</b><span>{t.vitality.toUpperCase()}</span></div>
 
-                <div><b>6000</b><span>METRE TARGET</span></div>
+                <div><b>{SYMMETRY_RUN_SECONDS}</b><span>SECONDS TO SURVIVE</span></div>
 
                 <div><b>▲</b><span>RISING DIFFICULTY</span></div>
 
               </div>
 
-              <button type="button" className="launch-button" onClick={startGame}><span>{t.launch}</span><i>▶</i></button>
+
 
               <small className="intro-tip">{t.hold} · {t.release}</small>
 
@@ -2590,7 +2594,7 @@ export default function SymmetryGame({ onBack }) {
 
               <img src={symmetryIsland} className="intro-symmetry-island" alt="Symmetry island" />
 
-              <div className="intro-island-plate"><strong>FIRE ORB CHALLENGE</strong><span>6000 M · ADAPTIVE DIFFICULTY</span></div>
+              <div className="intro-island-plate"><strong>FIRE ORB CHALLENGE</strong><span>90 SECONDS · ADAPTIVE DIFFICULTY</span></div>
 
             </div>
 
@@ -2682,7 +2686,8 @@ export default function SymmetryGame({ onBack }) {
 
 
 
-            <div className="game-hud-panel">
+            <div className={`symmetry-countdown ${secondsLeft <= 10 ? "urgent" : ""}`} role="timer"><small>{lang === "zh" ? "本局剩余" : "Run time left"}</small><strong>{runClockText}</strong></div>
+<div className="game-hud-panel">
 
               <div className="vitality-panel">
 
@@ -2751,6 +2756,8 @@ export default function SymmetryGame({ onBack }) {
                   <header className="console-header">
 
                     <div className="console-number">{activePuzzle.number}</div>
+                    <div className="symmetry-modal-run-clock" role="timer"><small>{lang === "zh" ? "本局剩余" : "Run time left"}</small><strong>{runClockText}</strong></div>
+                    <div className="symmetry-question-timer" role="timer"><small>{lang === "zh" ? "本题限时" : "Answer time"}</small>{questionSecondsLeft}s</div>
 
                     <div className="console-title">
 
@@ -2836,7 +2843,7 @@ export default function SymmetryGame({ onBack }) {
 
                   </div>
 
-                  <footer className="console-footer"><span>RUN PAUSED · PROPULSION STANDBY</span><b>{tr("答错会直接损失生命", "WRONG ANSWERS COST VITALITY")}</b></footer>
+                  <footer className="console-footer"><span>SCENE PAUSED · RUN TIMER CONTINUES</span><b>{tr("答错或超时扣生命", "WRONG / TIMEOUT: VITALITY −1")}</b></footer>
 
                 </div>
 
@@ -2914,7 +2921,7 @@ export default function SymmetryGame({ onBack }) {
 
                   <b>{["↑", "⚠", "+", "6K"][index]}</b>
 
-                  <div><strong>{["FIRE ORB", "MISSILES", "VITALITY", "6000 M TARGET"][index]}</strong><p>{item}</p></div>
+                  <div><strong>{["FIRE ORB", "MISSILES", "VITALITY", "90 SECOND SURVIVAL"][index]}</strong><p>{item}</p></div>
 
                 </div>
 
