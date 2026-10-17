@@ -10,7 +10,7 @@ export function authDestination(value: string | null | undefined): string {
     const url = new URL(value, "https://mathweek.invalid");
     const path = decodeURIComponent(url.pathname);
     if (url.origin !== "https://mathweek.invalid" || /[\\\u0000-\u001f]/.test(path)) return DEFAULT_AUTH_DESTINATION;
-    const allowed = /^(?:\/puzzles|\/profile|\/my-score|\/staff\/claim|\/puzzle\/[a-z0-9-]+|\/claim\/[A-Za-z0-9_-]+|\/committee\/[A-Za-z0-9_-]+|\/digital\/pair\/[A-Za-z0-9_-]+|\/admin(?:\/[a-z0-9-]+)*)$/;
+    const allowed = /^(?:\/puzzles|\/profile|\/my-score|\/market-account|\/staff\/claim|\/puzzle\/[a-z0-9-]+|\/claim\/[A-Za-z0-9_-]+|\/committee\/[A-Za-z0-9_-]+|\/market-pair\/[A-Za-z0-9_-]+|\/digital\/pair\/[A-Za-z0-9_-]+|\/admin(?:\/[a-z0-9-]+)*)$/;
     if (!allowed.test(path)) return DEFAULT_AUTH_DESTINATION;
     return `${url.pathname}${url.search}${url.hash}`;
   } catch {

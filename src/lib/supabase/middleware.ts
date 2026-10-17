@@ -19,10 +19,11 @@ const PUBLIC_PATHS = [
   "/stock-market",
   "/api/games",
   "/api/claim",
+  "/api/stock-market",
 ];
 
 // Paths where a signed-in-but-nicknameless user gets bounced to onboarding first.
-const NEEDS_NICKNAME_PREFIXES = ["/claim", "/committee", "/puzzle", "/puzzles", "/my-score"];
+const NEEDS_NICKNAME_PREFIXES = ["/claim", "/committee", "/market-pair", "/market-account", "/puzzle", "/puzzles", "/my-score"];
 
 function isPublic(pathname: string) {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
@@ -35,7 +36,7 @@ export async function updateSession(request: NextRequest) {
   // Public display routes neither read a session nor require onboarding. Keep
   // remote authentication off their navigation path, including signed-in visits.
   const displayPaths = ["/", "/directory", "/games", "/leaderboard", "/stock-market", "/kiosk"];
-  if (displayPaths.includes(request.nextUrl.pathname) || request.nextUrl.pathname === "/site-access" || request.nextUrl.pathname === "/api/stock-market/status" || request.nextUrl.pathname === "/api/stock-market/demo-settlement") {
+  if (displayPaths.includes(request.nextUrl.pathname) || request.nextUrl.pathname === "/site-access" || request.nextUrl.pathname === "/api/stock-market" || request.nextUrl.pathname.startsWith("/api/stock-market/")) {
     return NextResponse.next({ request });
   }
 

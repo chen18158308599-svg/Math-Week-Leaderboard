@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth";
 export const dynamic = "force-dynamic";
 
 const NAV = [
+  { href: "/admin/stock-market", label: "Stock Market" },
   { href: "/admin/games", label: "Schedule" },
   { href: "/admin/features", label: "Daily Features" },
   { href: "/admin/stations", label: "Stations" },

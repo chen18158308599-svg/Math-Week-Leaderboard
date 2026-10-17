@@ -1,0 +1,183 @@
+"use client";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { IdleRedirect } from "@/components/idle-redirect";
+import type { Code, MarketState, MarketTrade } from "@/lib/stock-market/types";
+import s from "./market.module.css";
+
+const names: Record<Code, [string, string]> = { LIB: ["Library Footfall", "图书馆人流"], BOOK: ["Book Borrowing", "图书借阅"], DONA: ["Book Donations", "图书捐赠"] };
+const about: Record<Code, [string, string]> = {
+  LIB: ["Follow how library visits change. Prices follow a historical data path, not players' orders.", "关注图书馆人流变化。价格根据历史数据生成，不受玩家买卖影响。"],
+  BOOK: ["Follow changes in book borrowing. Read the published history before making a decision.", "关注图书借阅变化，先观察已公布的历史走势，再作决定。"],
+  DONA: ["Follow the size of book donations. Larger and smaller batches can create changing patterns.", "关注图书捐赠规模，不同批次数量带来变化。"],
+};
+const money = (value: number) => `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+type Order = { code: Code; side: "buy" | "sell"; price: number; day: number; request_id: string };
+
+export default function LiveMarket({ onReturnHome }: { onReturnHome?: () => void }) {
+  const router = useRouter();
+  const returnHome = useRef(onReturnHome);
+  useEffect(() => { returnHome.current = onReturnHome; }, [onReturnHome]);
+  const [zh, setZh] = useState(false);
+  const t = (en: string, cn: string) => zh ? cn : en;
+  const [state, setState] = useState<MarketState | null>(null);
+  const [error, setError] = useState("");
+  const [connected, setConnected] = useState(false);
+  const [tab, setTab] = useState("market");
+  const [busy, setBusy] = useState(false);
+  const [pair, setPair] = useState<{ qr: string; expiresAt: string; sessionId: string } | null>(null);
+  const [modal, setModal] = useState<"guide" | "pair" | "trade" | "result" | null>(null);
+  const [order, setOrder] = useState<Order | null>(null);
+  const [quantity, setQuantity] = useState("1");
+  const [receipt, setReceipt] = useState<MarketTrade | null>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const sessionId = useRef<string | null>(null);
+  const inFlight = useRef(false);
+  const mounted = useRef(false);
+  const ready = useRef(false);
+  const bootstrap = useRef<Promise<unknown> | null>(null);
+  const request = useCallback(async (body: Record<string, unknown>) => {
+    const response = await fetch("/api/stock-market", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), cache: "no-store", signal: AbortSignal.timeout(10000) });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Request failed. Please retry.");
+    return result;
+  }, []);
+  const refresh = useCallback(async () => {
+    if (!ready.current) return;
+    try {
+      const response = await fetch("/api/stock-market", { cache: "no-store", signal: AbortSignal.timeout(8000) });
+      const value = await response.json();
+      if (!response.ok) throw new Error(value.error || "Market unavailable.");
+      if (!mounted.current || !ready.current) return;
+      setState(value); setConnected(true);
+      if (value.portfolio) {
+        sessionId.current = value.portfolio.sessionId;
+        setPair(null);
+        setModal(current => current === "pair" ? null : current);
+      } else if (value.pairing !== "waiting") {
+        setPair(null);
+        setModal(current => current === "pair" || current === "trade" || current === "result" ? null : current);
+      }
+    } catch (e) {
+      if (mounted.current) { setConnected(false); setError(e instanceof Error ? e.message : "Connection lost. Please retry."); }
+    }
+  }, []);
+  useEffect(() => {
+    mounted.current = true;
+    // Never restore a previous visitor's account after refresh/reopening.
+    if (!bootstrap.current) bootstrap.current = request({ action: "end" });
+    void bootstrap.current.then(() => { if (mounted.current) { ready.current = true; void refresh(); } }).catch(() => {
+      if (mounted.current) setError("Unable to prepare a private trading session. Check the connection and reopen the market.");
+    });
+    const timer = setInterval(() => void refresh(), 3000);
+    return () => {
+      mounted.current = false; clearInterval(timer);
+      if (sessionId.current) void fetch("/api/stock-market", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "end", session_id: sessionId.current }), keepalive: true }).catch(() => {});
+    };
+  }, [refresh, request]);
+  useEffect(() => {
+    if (modal && !dialog.current?.open) dialog.current?.showModal();
+    else if (!modal) dialog.current?.close();
+  }, [modal]);
+  useEffect(() => {
+    if (modal !== "pair") return;
+    window.dispatchEvent(new CustomEvent("mathweek:claim-hold", { detail: true }));
+    return () => { window.dispatchEvent(new CustomEvent("mathweek:claim-hold", { detail: false })); };
+  }, [modal]);
+  const finish = useCallback(async () => {
+    // Remove personal information immediately even if the network is unavailable.
+    ready.current = false;
+    const id = sessionId.current;
+    setState(current => current ? { ...current, portfolio: null, pairing: "none" } : null);
+    setPair(null); setModal(null); setOrder(null); setReceipt(null); setError("");
+    try { await request({ action: "end", session_id: id }); sessionId.current = null; } catch { /* server session still expires after 15 minutes */ }
+    if (returnHome.current) returnHome.current(); else router.replace("/");
+  }, [request, router]);
+  const portfolio = connected ? state?.portfolio : null;
+  const used = portfolio?.trades.filter(trade => trade.day === state?.day).map(trade => trade.code) ?? [];
+  useEffect(() => {
+    if (modal !== "result" || used.length < 3) return;
+    const timer = setTimeout(() => void finish(), 10000);
+    return () => clearTimeout(timer);
+  }, [modal, used.length, finish]);
+  const start = async () => {
+    if (inFlight.current) return;
+    inFlight.current = true; setBusy(true); setError("");
+    try { const result = await request({ action: "pair" }); sessionId.current = result.sessionId; setPair(result); setModal("pair"); }
+    catch (e) { setError((e as Error).message); }
+    finally { inFlight.current = false; setBusy(false); }
+  };
+  const openOrder = (code: Code, side: "buy" | "sell") => {
+    const stock = state?.stocks.find(stock => stock.code === code);
+    if (!stock || !state || !portfolio) return;
+    setOrder({ code, side, price: stock.price, day: state.day, request_id: crypto.randomUUID() });
+    setQuantity("1"); setError(""); setModal("trade");
+  };
+  const units = Number(quantity);
+  const valid = /^\d+$/.test(quantity) && Number.isSafeInteger(units) && units >= 1 && units <= 1000000;
+  const total = order && valid ? Math.round(order.price * units * 100) / 100 : 0;
+  const canTrade = !!(order && valid && portfolio && connected && state?.phase === "open" && state.day === order.day && !used.includes(order.code) && (order.side === "buy" ? total <= portfolio.cash : units <= portfolio.holdings[order.code]));
+  const submit = async () => {
+    if (!order || !canTrade || inFlight.current) return;
+    inFlight.current = true; setBusy(true); setError("");
+    try {
+      const result = await request({ action: "trade", code: order.code, side: order.side, day: order.day, expected_price: order.price, request_id: order.request_id, quantity: units });
+      setReceipt(result); setModal("result"); await refresh();
+    } catch (e) { setError((e as Error).message); await refresh(); }
+    finally { inFlight.current = false; setBusy(false); }
+  };
+  const retryConnection = async () => {
+    setError("");
+    if (!ready.current) {
+      try { await request({ action: "end" }); ready.current = true; }
+      catch (e) { setError((e as Error).message); return; }
+    }
+    await refresh();
+  };
+  const status = !connected ? t("Connecting to market…", "正在连接市场…") : state?.phase === "open" ? t(`Trading open · Closes ${state.close}`, `交易中 · ${state.close}截止`) : state?.phase === "ended" ? t("Market closed · Final standings", "活动结束 · 最终排名") : state?.phase === "paused" ? t("Trading temporarily paused", "交易暂时暂停") : state?.phase === "upcoming" ? t("Trading opens at 09:00", "09:00开始交易") : t("Trading closed · Prices settled", "今日交易结束 · 已结算");
+  return <div className={`${s.page} ${s.embedded}`}>
+    <IdleRedirect seconds={60} onIdle={() => void finish()} />
+    <main className={s.main}>
+      <div className={s.terminalTop}><span className={s.terminalBrand}>▥ MAT EXCHANGE</span><div className={s.languages}><button aria-pressed={!zh} onClick={() => setZh(false)}>EN</button><button aria-pressed={zh} onClick={() => setZh(true)}>中文</button></div><button className={s.quiet} onClick={() => setModal("guide")}>{t("How to play", "玩法说明")}</button></div>
+      <div className={s.terminalStatus}><span>{status}</span><span>{t("Malaysia time · Virtual currency", "马来西亚时间 · 虚拟资金")}</span></div>
+      {error && <p className={s.notice} role="alert">{error} <button className={s.quiet} onClick={() => void retryConnection()}>{t("Refresh", "刷新")}</button></p>}
+      {portfolio && <div className={s.session}><strong>{portfolio.nickname}</strong><span>{t("Your library trading session", "你的现场交易会话")}</span><button className={s.exit} onClick={() => void finish()}>{t("Finish & sign out", "结束并退出")}</button></div>}
+      <section className={s.summary}>
+        <div><span>{t("Available cash", "可用现金")}</span><strong>{portfolio ? money(portfolio.cash) : "—"}</strong><small>{t("Starting cash: $5,000", "初始资金：$5,000")}</small></div>
+        <div><span>{t("Total assets", "总资产")}</span><strong>{portfolio ? money(portfolio.assets) : "—"}</strong><small>{t("Cash + current value of holdings", "现金＋持仓当前市值")}</small></div>
+        <div className={s.schedule}><span>{t("Trading day", "游戏日")}</span><strong>{state ? `${state.day} / 7` : "—"}</strong><small>{state ? t(`Settled through Day ${state.settledDay}`, `已结算至第${state.settledDay}天`) : status}</small></div>
+      </section>
+      <div className={s.toolbar}><div className={s.tabs}><button aria-pressed={tab === "market"} onClick={() => setTab("market")}>{t("Market", "市场")}</button><button aria-pressed={tab === "ranking"} onClick={() => setTab("ranking")}>{t("Asset leaderboard", "资产排行榜")}</button></div></div>
+      {tab === "market" ? <>
+        <div className={s.sectionTitle}><h2>{t("Explore the market", "看看市场")}</h2><span>{t("One buy or sell per stock each day · No fees", "每只股票每天一次买入或卖出 · 无手续费")}</span></div>
+        <section className={s.grid}>{state?.stocks.map(stock => {
+          const done = used.includes(stock.code);
+          const low = Math.min(...stock.prices) - 1; const high = Math.max(...stock.prices) + 1;
+          const path = stock.prices.map((p, i) => `${i ? "L" : "M"}${(i * 292 / Math.max(1, stock.prices.length - 1) + 4).toFixed(1)} ${(52 - (p - low) / (high - low) * 44).toFixed(1)}`).join(" ");
+          const up = stock.change > 0; const down = stock.change < 0;
+          return <article className={s.stock} key={stock.code}><div className={s.stockTop}><span className={s.symbol}>{stock.code === "LIB" ? "↗" : stock.code === "BOOK" ? "▤" : "◇"}</span><span className={s.tag}>{stock.code}</span></div>
+            <h3>{names[stock.code][zh ? 1 : 0]}</h3><div className={s.price}>{money(stock.price)}<span className={up ? s.marketUp : down ? s.marketDown : undefined}>{up ? "↑ +" : down ? "↓ " : ""}{stock.change.toFixed(2)}% · {state.settledDay ? t("Latest published return", "最近公布涨跌") : t("Initialization return", "初始化涨跌")}</span></div>
+            <svg viewBox="0 0 300 58" className={s.chart} role="img" aria-label={`${stock.code} ${t("published price history", "已公布价格走势")}`}><path d="M0 12H300 M0 48H300" stroke="#e0e6d8" strokeDasharray="4 5" /><path d={path} stroke={up ? "#15803d" : down ? "#c73643" : "#64748b"} strokeWidth="2.2" fill="none" /></svg>
+            <div className={s.chartLabels}><span>{t("Initialization history", "初始化历史")}</span><span>{t(`Published through Day ${Math.max(state.day - 1, state.settledDay)}`, `已公布至第${Math.max(state.day - 1, state.settledDay)}天`)}</span></div>
+            <div className={s.hint}><span>✧ {t("TODAY'S CLUE", "今日提示")}</span><p>{zh ? stock.clue_zh : stock.clue_en}</p></div>
+            <details className={s.details}><summary>{t("About this stock", "了解这只股票")} <span>＋</span></summary><p>{about[stock.code][zh ? 1 : 0]}</p><small>{t("Prices remain fixed during trading and update after daily settlement.", "交易期间报价固定，每日结算后更新。")}</small></details>
+            {portfolio ? <div className={s.actions}><button className={s.primary} disabled={done || state.phase !== "open" || busy} onClick={() => openOrder(stock.code, "buy")}>{done ? t("Done today", "今日已交易") : t("Buy", "买入")}</button><button disabled={done || state.phase !== "open" || busy || portfolio.holdings[stock.code] === 0} onClick={() => openOrder(stock.code, "sell")}>{t("Sell", "卖出")}</button></div> : <p className={s.visit}>{t("Scan at the library screen to trade", "在图书馆屏幕扫码后交易")}</p>}
+          </article>;
+        })}</section>
+        {!portfolio && <section className={s.join}><div><h2>{t("Welcome to MAT Stock Market", "欢迎参与 MAT 股票市场")}</h2><p>{t("Sign in with your school account on your phone. Scan the code on this screen, confirm the connection, and trade here.", "用手机登录学校账号，扫描现场屏幕二维码并确认配对，在本屏幕进行买卖。")}</p></div><button className={s.primary} disabled={busy || !connected || state?.phase !== "open"} onClick={() => void start()}>{busy ? t("Preparing…", "准备中…") : t("Start trading", "扫码开始交易")}</button></section>}
+        {portfolio && <section className={s.portfolio}><h2>{t("My holdings", "我的持仓")}</h2>{Object.entries(portfolio.holdings).every(([, qty]) => qty === 0) ? <p>{t("No stocks yet. Read the clues before your first trade.", "暂无持仓，先阅读提示再决定。")}</p> : state?.stocks.filter(stock => portfolio.holdings[stock.code] > 0).map(stock => <div className={s.row} key={stock.code}><b>{stock.code}</b><span>{portfolio.holdings[stock.code]} {t("units", "单位")}</span><strong>{money(portfolio.holdings[stock.code] * stock.price)}</strong></div>)}<details className={s.details}><summary>{t("Transaction history", "交易记录")} <span>＋</span></summary>{portfolio.trades.length ? portfolio.trades.map(trade => <div className={s.row} key={trade.id}><span>{t(`Day ${trade.day}`, `第${trade.day}天`)} · {new Date(trade.created_at).toLocaleTimeString("en-GB", { timeZone: "Asia/Kuala_Lumpur" })} · {trade.code}</span><span>{trade.side === "buy" ? t("Bought", "买入") : t("Sold", "卖出")} {trade.quantity} × {money(trade.price)}</span><b>{money(trade.amount)}</b></div>) : <p>{t("No trades yet.", "暂无交易记录。")}</p>}</details></section>}
+      </> : <section className={s.ranking}><h2>{t("Market leaderboard", "市场资产排行榜")}</h2><p>{t("Ranked by total assets. Equal assets share the same rank. Market assets do not add to activity points.", "按总资产排名，同资产并列。市场资产不计入活动积分。")}</p><p>{state?.lastSettlement ? t(`Last settlement: Day ${state.settledDay}`, `最近结算：第${state.settledDay}天`) : t("No daily settlement yet.", "尚未进行每日结算。")}</p><div className={s.row}><span>{t("Rank", "名次")}</span><span>{t("Player", "玩家")}</span><span>{t("Total assets", "总资产")}</span></div>{state?.leaderboard.length ? state.leaderboard.map((row, index) => <div className={s.row} key={index}><b>{row.rank}</b><span>{row.nickname}</span><strong>{money(row.assets)}</strong></div>) : <p>{t("Rankings appear as players join.", "玩家加入后将显示排名。")}</p>}<Link className={s.quiet} href="/leaderboard">{t("Activity points leaderboard", "活动积分榜")} ↗</Link></section>}
+      <footer className={s.footer}><span>MAT × XMUM LIBRARY</span><span>{t("Virtual currency · Real curiosity", "虚拟投资 · 真实探索")}</span></footer>
+    </main>
+    <dialog ref={dialog} className={s.modal} onCancel={event => { event.preventDefault(); if (modal === "pair") void finish(); else setModal(null); }}>
+      <button className={s.close} aria-label={t("Close", "关闭")} onClick={() => modal === "pair" ? void finish() : setModal(null)}>×</button>
+      {modal === "guide" && <><span className={s.eyebrow}>MAT STOCK MARKET</span><h2>{t("Start small. Think ahead.", "从观察开始。")}</h2><p>{t("Start with $5,000 virtual cash and no holdings. Read the clues, buy or sell at the library, and compare your total assets over seven days.", "每人初始$5,000、零持仓。阅读提示，在图书馆买卖，七天后按总资产排名。")}</p><ol><li>{t("One buy or sell per stock each day. Whole units only, no fees.", "每只股票每天一次买入或卖出，整数单位，无手续费。")}</li><li>{t("No borrowing, short selling or transfers. Doing nothing keeps your holdings.", "不可透支、做空或转账，不操作则继续持有。")}</li><li>{t("Weekdays 09:00–22:00; weekends 09:00–17:00, Malaysia time.", "马来西亚时间工作日09:00–22:00、周末09:00–17:00。")}</li><li>{t("Prices update after closing. Market assets are separate from activity points.", "闭馆后结算变价，市场资产与活动积分分开。")}</li><li>{t("Tap Finish & sign out before leaving the screen.", "离开屏幕前请点击结束并退出。")}</li></ol><button className={s.primary} onClick={() => setModal(null)}>{t("Got it", "明白了")}</button></>}
+      {modal === "pair" && pair && <><h2>{t("Scan to connect", "扫码连接现场屏幕")}</h2><p>{t("Use your phone to sign in with your school email and confirm this screen. This code is valid for two minutes.", "用手机扫描，学校邮箱登录后确认连接；二维码两分钟内有效。")}</p><Image src={pair.qr} alt="Scan to connect your school account" width={320} height={320} unoptimized /><p>{t("Waiting for confirmation on your phone…", "等待手机确认…")}</p><button className={s.quiet} disabled={busy} onClick={() => void start()}>{t("Get a new code", "重新生成二维码")}</button></>}
+      {modal === "trade" && order && <><span className={s.eyebrow}>{t("CONFIRM YOUR ORDER", "确认交易")}</span><h2>{order.side === "buy" ? t("Buy", "买入") : t("Sell", "卖出")} {order.code}</h2><label className={s.quantity}>{t("Quantity (whole units)", "数量（整数）")}<input autoFocus type="number" min="1" step="1" disabled={busy} value={quantity} onChange={e => { setQuantity(e.target.value); if (order) setOrder({ ...order, request_id: crypto.randomUUID() }); }} /></label><div className={s.row}><span>{t("Price per unit", "每单位价格")}</span><b>{money(order.price)}</b></div><div className={s.row}><span>{t("Total · No fees", "总金额 · 无手续费")}</span><b>{money(total)}</b></div><div className={s.row}><span>{t("Cash after trade", "交易后现金")}</span><b>{portfolio ? money(portfolio.cash + (order.side === "buy" ? -total : total)) : "—"}</b></div><div className={s.row}><span>{t("Units after trade", "交易后持仓")}</span><b>{portfolio && valid ? portfolio.holdings[order.code] + (order.side === "buy" ? units : -units) : "—"}</b></div><p className={s.notice}>{error || (!valid ? t("Enter a whole number of at least 1.", "请输入至少1的整数。") : !canTrade ? t("Trading is unavailable, or cash / holdings are insufficient.", "当前不可交易，或现金／持仓不足。") : t("Once confirmed, you cannot trade this stock again today.", "确认后，今天不能再买卖这只股票。"))}</p><button className={s.primary} disabled={!canTrade || busy} onClick={() => void submit()}>{busy ? t("Submitting…", "提交中…") : t("Confirm trade", "确认成交")}</button><button className={s.quiet} disabled={busy} onClick={() => setModal(null)}>{t("Cancel", "取消")}</button></>}
+      {modal === "result" && receipt && <><span className={s.eyebrow}>{t("TRADE CONFIRMED", "交易成功")}</span><h2>{t("Your move is made.", "你的交易已成交。")}</h2><p>{receipt.code} · {receipt.side === "buy" ? t("Bought", "买入") : t("Sold", "卖出")} {receipt.quantity} · {money(receipt.amount)}</p><button className={s.primary} onClick={() => void finish()}>{t("Finish & sign out", "结束并退出")}</button><button className={s.quiet} onClick={() => setModal(null)}>{t("Continue with other stocks", "继续交易其他股票")}</button>{used.length === 3 && <p>{t("All daily trades used. Signing out in 10 seconds.", "今日机会已用完，10秒后自动退出。")}</p>}</>}
+    </dialog>
+  </div>;
+}
