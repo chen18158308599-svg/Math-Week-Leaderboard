@@ -11,9 +11,6 @@ export function CompletedGame() {
       <Link href="/my-score" className="mt-4 inline-flex min-h-11 items-center text-blue-300">
         View my points &amp; rank
       </Link>
-      <Link href="/puzzles" className="inline-flex min-h-11 items-center text-sm text-neutral-400">
-        Choose another card
-      </Link>
     </div>
   );
 }

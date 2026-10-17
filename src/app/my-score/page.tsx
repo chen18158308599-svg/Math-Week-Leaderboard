@@ -18,7 +18,6 @@ export default async function MyScorePage() {
       </div>}
       <p className="mt-4 text-sm text-neutral-400">Card and activity points are linked to your school account. Equal totals share the same rank.</p>
       <nav className="mt-6 flex flex-col gap-3">
-        <Link href="/puzzles" className="participant-link">Puzzle cards →</Link>
         <Link href="/profile" className="participant-link">Edit nickname & account →</Link>
       </nav>
     </div>

@@ -1182532,3 +1182532,33 @@ Creating turbopack project {
  GET /admin/games 200 in 170ms (next.js: 8ms, proxy.ts: 89ms, application-code: 73ms)
  GET /admin/games 200 in 146ms (next.js: 9ms, proxy.ts: 72ms, application-code: 66ms)
  GET /admin/games 200 in 495ms (next.js: 13ms, proxy.ts: 380ms, application-code: 102ms)
+ GET /admin/games 200 in 396ms (next.js: 11ms, proxy.ts: 316ms, application-code: 70ms)
+ GET /admin/games 200 in 189ms (next.js: 10ms, proxy.ts: 108ms, application-code: 72ms)
+ GET /admin/games 200 in 583ms (next.js: 9ms, proxy.ts: 501ms, application-code: 73ms)
+ GET /admin/games 200 in 237ms (next.js: 11ms, proxy.ts: 152ms, application-code: 75ms)
+ GET /site-access?next=%2Fdirectory 200 in 766ms (next.js: 284ms, proxy.ts: 8ms, application-code: 473ms)
+ GET /directory 200 in 249ms (next.js: 101ms, proxy.ts: 10ms, application-code: 139ms)
+ GET / 200 in 193ms (next.js: 162ms, proxy.ts: 6ms, application-code: 25ms)
+ GET /leaderboard 200 in 212ms (next.js: 148ms, proxy.ts: 9ms, application-code: 55ms)
+ GET /directory 200 in 55ms (next.js: 12ms, proxy.ts: 8ms, application-code: 35ms)
+ GET / 200 in 35ms (next.js: 10ms, proxy.ts: 5ms, application-code: 20ms)
+ GET / 200 in 38ms (next.js: 10ms, proxy.ts: 5ms, application-code: 23ms)
+✓ Compiled in 140ms
+ GET /admin/games 200 in 549ms (next.js: 11ms, proxy.ts: 369ms, application-code: 169ms)
+ GET / 200 in 42ms (next.js: 10ms, proxy.ts: 10ms, application-code: 22ms)
+✓ Compiled in 154ms
+ GET /admin/games 200 in 221ms (next.js: 8ms, proxy.ts: 145ms, application-code: 68ms)
+ GET / 200 in 43ms (next.js: 9ms, proxy.ts: 11ms, application-code: 23ms)
+✓ Compiled in 158ms
+ GET /admin/games 200 in 258ms (next.js: 17ms, proxy.ts: 164ms, application-code: 77ms)
+ GET /directory 200 in 97ms (next.js: 18ms, proxy.ts: 8ms, application-code: 71ms)
+[browser] Image with src "/directory/exhibition.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /stock-market 200 in 284ms (next.js: 212ms, proxy.ts: 10ms, application-code: 62ms)
+ GET /api/stock-market/status 200 in 259ms (next.js: 202ms, proxy.ts: 12ms, application-code: 45ms)
+ GET /api/stock-market/status 200 in 274ms (next.js: 249ms, proxy.ts: 13ms, application-code: 12ms)
+ GET /api/stock-market/status 200 in 24ms (next.js: 7ms, proxy.ts: 7ms, application-code: 10ms)
+ GET /api/stock-market/status 200 in 20ms (next.js: 5ms, proxy.ts: 7ms, application-code: 8ms)
+ GET /api/stock-market/status 200 in 19ms (next.js: 5ms, proxy.ts: 5ms, application-code: 9ms)
+ GET /api/stock-market/status 200 in 26ms (next.js: 8ms, proxy.ts: 9ms, application-code: 9ms)
+ GET / 200 in 54ms (next.js: 25ms, proxy.ts: 9ms, application-code: 20ms)
