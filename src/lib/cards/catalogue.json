@@ -1,0 +1,358 @@
+[
+  {
+    "label": "No. 01",
+    "slug": "age-difference",
+    "title": "Age Difference Puzzle",
+    "mode": "answer",
+    "fields": [
+      "His brother will be ____ years old."
+    ],
+    "hint": "",
+    "sourceRow": 5
+  },
+  {
+    "label": "No. 02",
+    "slug": "two-child-probability",
+    "title": "Two-Child Probability Puzzle",
+    "mode": "answer",
+    "fields": [
+      "The probability is ____ (fraction)."
+    ],
+    "hint": "",
+    "sourceRow": 6
+  },
+  {
+    "label": "No. 03",
+    "slug": "six-matchsticks",
+    "title": "Six-Matchstick Triangle Challenge",
+    "mode": "answer",
+    "fields": [
+      "The maximum is ____ triangles."
+    ],
+    "hint": "",
+    "sourceRow": 7
+  },
+  {
+    "label": "No. 04",
+    "slug": "lattice-areas",
+    "title": "Pick's Theorem Area Challenge",
+    "mode": "answer",
+    "fields": [
+      "The total area is ____ square units."
+    ],
+    "hint": "",
+    "sourceRow": 8
+  },
+  {
+    "label": "No. 05",
+    "slug": "falling-tree",
+    "title": "Will the Boy Be Safe?",
+    "mode": "answer",
+    "fields": [
+      "The treetop reaches ____ ft (1 decimal place)."
+    ],
+    "hint": "",
+    "sourceRow": 9
+  },
+  {
+    "label": "No. 06",
+    "slug": "nested-radicals",
+    "title": "Infinite Radical Challenge",
+    "mode": "answer",
+    "fields": [
+      "(a) = ____ (fraction).",
+      "(b) = ____ (3 decimal places).",
+      "(c) = ____ (whole number)."
+    ],
+    "hint": "",
+    "sourceRow": 10
+  },
+  {
+    "label": "No. 07",
+    "slug": "reversed-terms",
+    "title": "Mirror Symmetry Challenge",
+    "mode": "answer",
+    "fields": [
+      "Select all words that stay the same in the mirror."
+    ],
+    "hint": "",
+    "sourceRow": 11,
+    "options": [
+      "MATH",
+      "WOW",
+      "NOON",
+      "TOOT",
+      "LEVEL",
+      "AHA",
+      "RADAR",
+      "MUM"
+    ]
+  },
+  {
+    "label": "No. 08",
+    "slug": "sin-squared-sums",
+    "title": "Patterned Sum Challenge",
+    "mode": "answer",
+    "fields": [
+      "The first sum is ____ .",
+      "The second sum is ____ ."
+    ],
+    "hint": "",
+    "sourceRow": 12
+  },
+  {
+    "label": "No. 09",
+    "slug": "find-the-fallacy",
+    "title": "Find the Fallacy",
+    "mode": "answer",
+    "fields": [
+      "The line numbers are ____ (A, B, C; 3 digits)."
+    ],
+    "hint": "",
+    "sourceRow": 13
+  },
+  {
+    "label": "No. 10",
+    "slug": "fake-coin",
+    "title": "The Fake Coin",
+    "mode": "answer",
+    "fields": [
+      "At least ____ weighings are needed."
+    ],
+    "hint": "",
+    "sourceRow": 14
+  },
+  {
+    "label": "No. 11",
+    "slug": "palindrome-combinations",
+    "title": "Palindrome Pattern",
+    "mode": "answer",
+    "fields": [
+      "There are ____ combinations."
+    ],
+    "hint": "",
+    "sourceRow": 15
+  },
+  {
+    "label": "No. 12",
+    "slug": "passcode-birthday",
+    "title": "Passcode Collision",
+    "mode": "answer",
+    "fields": [
+      "The probability is ____ % (nearest whole number)."
+    ],
+    "hint": "",
+    "sourceRow": 16
+  },
+  {
+    "label": "No. 13",
+    "slug": "mean-vs-median",
+    "title": "Mean vs. Median",
+    "mode": "answer",
+    "fields": [
+      "The mean is RM ____ .",
+      "The median is RM ____ ."
+    ],
+    "hint": "",
+    "sourceRow": 17
+  },
+  {
+    "label": "No. 14",
+    "slug": "false-positive",
+    "title": "Rare Disease and False Positives",
+    "mode": "answer",
+    "fields": [
+      "The probability is ____ % (nearest whole number)."
+    ],
+    "hint": "",
+    "sourceRow": 18
+  },
+  {
+    "label": "No. 15",
+    "slug": "shortest-path",
+    "title": "Shortest Path for a Delivery Robot",
+    "mode": "answer",
+    "fields": [
+      "The shortest time is ____ minutes."
+    ],
+    "hint": "",
+    "sourceRow": 19
+  },
+  {
+    "label": "No. 16",
+    "slug": "mondrian-art",
+    "title": "Mondrian Art Problem",
+    "mode": "answer",
+    "fields": [
+      "The lowest score is ____ ."
+    ],
+    "hint": "",
+    "sourceRow": 20
+  },
+  {
+    "label": "No. 17",
+    "slug": "equation-to-45",
+    "title": "Equation to 45",
+    "mode": "answer",
+    "fields": [
+      "There are ____ equations."
+    ],
+    "hint": "",
+    "sourceRow": 21
+  },
+  {
+    "label": "No. 18",
+    "slug": "target-24",
+    "title": "Target 24",
+    "mode": "answer",
+    "fields": [
+      "My expression is ____ (use 1, 10, 12, 6 once; +, −, ×, ÷ and brackets)."
+    ],
+    "hint": "",
+    "sourceRow": 22
+  },
+  {
+    "label": "No. 19",
+    "slug": "cryptogram",
+    "title": "Cryptogram Puzzle",
+    "mode": "answer",
+    "fields": [
+      "The message is ____ ."
+    ],
+    "hint": "",
+    "sourceRow": 23
+  },
+  {
+    "label": "No. 20",
+    "slug": "monty-hall",
+    "title": "The Monty Hall Problem",
+    "mode": "answer",
+    "fields": [
+      "The probability after switching is ____ (fraction)."
+    ],
+    "hint": "",
+    "sourceRow": 24
+  },
+  {
+    "label": "No. 21",
+    "slug": "kissing-circles",
+    "title": "Kissing Circles",
+    "mode": "answer",
+    "fields": [
+      "The radius is ____ cm (nearest whole number)."
+    ],
+    "hint": "",
+    "sourceRow": 25
+  },
+  {
+    "label": "No. 22",
+    "slug": "josephus",
+    "title": "The Josephus Problem",
+    "mode": "answer",
+    "fields": [
+      "The surviving seat is number ____ ."
+    ],
+    "hint": "",
+    "sourceRow": 26
+  },
+  {
+    "label": "FINAL",
+    "slug": "mystery-chest",
+    "title": "Mystery Chest Decode Card",
+    "mode": "answer",
+    "fields": [
+      "The password is ____ (4 digits)."
+    ],
+    "hint": "",
+    "sourceRow": 27
+  },
+  {
+    "label": "INT 01",
+    "slug": "kanoodle",
+    "title": "Kanoodle, Floor Edition",
+    "mode": "answer",
+    "fields": [
+      "The passcode is ____ (5 letters, in reading order)."
+    ],
+    "hint": "",
+    "sourceRow": 28
+  },
+  {
+    "label": "INT 02",
+    "slug": "tower-of-hanoi",
+    "title": "Tower of Hanoi",
+    "mode": "answer",
+    "fields": [
+      "The move is ____ (disk number + peg letter, e.g. 4B)."
+    ],
+    "hint": "",
+    "sourceRow": 29
+  },
+  {
+    "label": "INT 03",
+    "slug": "bagua",
+    "title": "Bagua: The Round Table of Eight",
+    "mode": "answer",
+    "fields": [
+      "The passcode is ____ (3 digits, clockwise)."
+    ],
+    "hint": "",
+    "sourceRow": 30
+  },
+  {
+    "label": "INT 04",
+    "slug": "liar-dialogue",
+    "title": "Liar Dialogue",
+    "mode": "answer",
+    "fields": [
+      "The hidden number is ____ (2 digits)."
+    ],
+    "hint": "",
+    "sourceRow": 31
+  },
+  {
+    "label": "COM 01",
+    "slug": "com-01",
+    "title": "Conway's Soldiers",
+    "mode": "staff",
+    "fields": [],
+    "hint": "Complete the challenge. Ask the committee to verify it and show you a claim QR.",
+    "sourceRow": 32
+  },
+  {
+    "label": "COM 02",
+    "slug": "com-02",
+    "title": "The Knight's Tour",
+    "mode": "staff",
+    "fields": [],
+    "hint": "Complete the challenge. Ask the committee to verify it and show you a claim QR.",
+    "sourceRow": 33
+  },
+  {
+    "label": "COM 03",
+    "slug": "com-03",
+    "title": "A Blind, A Deaf, A Mute",
+    "mode": "staff",
+    "fields": [],
+    "hint": "Complete the challenge. Ask the committee to verify it and show you a claim QR.",
+    "sourceRow": 34
+  },
+  {
+    "label": "COM 04",
+    "slug": "com-04",
+    "title": "Rubik Mini Booth",
+    "mode": "staff",
+    "fields": [],
+    "hint": "Complete the challenge. Ask the committee to verify it and show you a claim QR.",
+    "sourceRow": 35
+  },
+  {
+    "label": "COM 05",
+    "slug": "com-05",
+    "title": "Luban Lock & Rope Puzzle Challenge",
+    "mode": "staff",
+    "fields": [],
+    "hint": "Complete the challenge. Ask the committee to verify it and show you a claim QR.",
+    "sourceRow": 36
+  }
+]

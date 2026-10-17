@@ -2,6 +2,9 @@ import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { CardPuzzle, Game } from "@/lib/supabase/types";
 import { AnswerForm } from "./answer-form";
+import { CardAnswerForm } from "./card-answer-form";
+import catalogue from "@/lib/cards/catalogue.json";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +15,8 @@ export default async function PuzzlePage({
 }) {
   const { slug } = await params;
   const profile = await requireUser(`/puzzle/${slug}`); // preserve the card even if session expires
+  const card = catalogue.find(item => item.slug === slug);
+  if (card?.mode === "staff") return <main className="participant-page flex min-h-screen items-center justify-center px-6"><section className="participant-card max-w-md text-center"><p>{card.label}</p><h1 className="my-4 text-2xl font-semibold">{card.title}</h1><p>Complete the challenge at this booth. A committee member will check your attempt and show you a personal claim QR.</p><p className="mt-3">Scanning this card does not award points.</p><Link className="participant-link mt-6" href="/my-score">View my points</Link></section></main>;
 
   const admin = createAdminClient();
   const { data: puzzle } = await admin
@@ -51,14 +56,14 @@ export default async function PuzzlePage({
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 participant-page px-6">
       <p className="text-sm font-semibold tracking-widest text-neutral-500">MATH WEEK</p>
       <div className="participant-card w-full max-w-sm text-center">
-        <p className="text-xs text-neutral-500">{game.name}</p>
+        <p className="text-xs text-neutral-500">{card?.label ?? game.name}</p>
         {/* Deliberately short — the full question/context lives on the printed card,
             never here. See website_prompt.md's "Questions Module Changes". */}
         <p className="font-display mt-1 text-xl font-semibold">
-          {puzzle.prompt ?? "Enter the answer from the card."}
+          {card?.title ?? puzzle.prompt ?? "Enter the answer from the card."}
         </p>
         <div className="mt-6">
-          <AnswerForm slug={slug} gameName={game.name} completed={!!submission} />
+          {card ? <CardAnswerForm slug={slug} fields={card.fields} hint={card.hint} options={"options" in card ? card.options : undefined} completed={!!submission} /> : <AnswerForm slug={slug} gameName={game.name} completed={!!submission} />}
         </div>
       </div>
     </main>

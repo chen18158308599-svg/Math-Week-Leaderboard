@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { gradeCard } from "@/lib/cards/grading";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export type PuzzleAnswerResult =
   | { status: "idle" }
@@ -27,16 +29,23 @@ type PuzzleRpcRow = {
 
 export async function submitPuzzleAnswerAction(
   slug: string,
-  answer: string
+  answer: string | string[]
 ): Promise<PuzzleAnswerResult> {
   const supabase = await createClient();
+  const grade = gradeCard(slug, answer);
+  if (grade?.formatError) return { status: "error", message: grade.formatError };
+  if (grade) {
+    const { data: puzzle } = await createAdminClient().from("card_puzzles").select("correct_answer").eq("slug", slug).maybeSingle().returns<{ correct_answer: string }>();
+    if (!puzzle || puzzle.correct_answer !== grade.canonical) return { status: "error", message: "This card is awaiting its updated answer configuration. Ask staff for help. No attempt was used." };
+  }
+  const submitted = grade ? grade.correct ? grade.canonical : "__incorrect_card_answer__" : typeof answer === "string" ? answer : answer.join(",");
 
   // @ts-expect-error — same upstream RPC input-type gap noted in
   // onboarding/nickname/actions.ts; runtime shape matches submit_puzzle_answer() in
   // supabase/migrations/0003_claim_and_puzzle_rpcs.sql.
   const rpcResult = await supabase.rpc("submit_puzzle_answer", {
     p_slug: slug,
-    p_answer: answer,
+    p_answer: submitted,
   });
   const { data, error } = rpcResult as unknown as {
     data: PuzzleRpcRow[] | null;

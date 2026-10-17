@@ -1,0 +1,137 @@
+{
+  "age-difference": {
+    "rule": "integer",
+    "canonical": "48",
+    "workbookAnswer": "48"
+  },
+  "two-child-probability": {
+    "rule": "probability",
+    "canonical": "1/3",
+    "workbookAnswer": "1/3"
+  },
+  "six-matchsticks": {
+    "rule": "integer",
+    "canonical": "4",
+    "workbookAnswer": "4"
+  },
+  "lattice-areas": {
+    "rule": "integer",
+    "canonical": "20",
+    "workbookAnswer": "20  (A1=4, A2=3, A3=6, A4=7)"
+  },
+  "falling-tree": {
+    "rule": "distance",
+    "canonical": "6.9",
+    "workbookAnswer": "6.9 ft  (so: not safe)"
+  },
+  "nested-radicals": {
+    "rule": "radicals",
+    "canonical": "4/3,1.618,4",
+    "workbookAnswer": "(a) 4/3   (b) 1.618   (c) 4"
+  },
+  "reversed-terms": {
+    "rule": "wordset",
+    "canonical": "WOW,TOOT,AHA,MUM",
+    "workbookAnswer": "WOW, TOOT, AHA, MUM"
+  },
+  "sin-squared-sums": {
+    "rule": "sums",
+    "canonical": "45.5,50",
+    "workbookAnswer": "First: 45.5 (= 91/2).   Second: 50"
+  },
+  "find-the-fallacy": {
+    "rule": "digits",
+    "canonical": "762",
+    "workbookAnswer": "762"
+  },
+  "fake-coin": {
+    "rule": "integer",
+    "canonical": "3",
+    "workbookAnswer": "3"
+  },
+  "palindrome-combinations": {
+    "rule": "integer",
+    "canonical": "456976",
+    "workbookAnswer": "456,976  (= 26^4)"
+  },
+  "passcode-birthday": {
+    "rule": "percent",
+    "canonical": "99",
+    "workbookAnswer": "99"
+  },
+  "mean-vs-median": {
+    "rule": "salary",
+    "canonical": "1254000,60000",
+    "workbookAnswer": "Mean 1,254,000   Median 60,000"
+  },
+  "false-positive": {
+    "rule": "percent",
+    "canonical": "9",
+    "workbookAnswer": "9"
+  },
+  "shortest-path": {
+    "rule": "integer",
+    "canonical": "3",
+    "workbookAnswer": "3"
+  },
+  "mondrian-art": {
+    "rule": "integer",
+    "canonical": "5",
+    "workbookAnswer": "5"
+  },
+  "equation-to-45": {
+    "rule": "integer",
+    "canonical": "24",
+    "workbookAnswer": "24"
+  },
+  "target-24": {
+    "rule": "target24",
+    "canonical": "10*12/(6-1)",
+    "workbookAnswer": "10 x 12 / (6 - 1) = 24"
+  },
+  "cryptogram": {
+    "rule": "sentence",
+    "canonical": "MATHEMATICS IS THE QUEEN OF THE SCIENCES",
+    "workbookAnswer": "MATHEMATICS IS THE QUEEN OF THE SCIENCES"
+  },
+  "monty-hall": {
+    "rule": "probability",
+    "canonical": "2/3",
+    "workbookAnswer": "2/3"
+  },
+  "kissing-circles": {
+    "rule": "radius",
+    "canonical": "22",
+    "workbookAnswer": "22"
+  },
+  "josephus": {
+    "rule": "integer",
+    "canonical": "3",
+    "workbookAnswer": "3"
+  },
+  "mystery-chest": {
+    "rule": "digits",
+    "canonical": "4693",
+    "workbookAnswer": "Password: 4693"
+  },
+  "kanoodle": {
+    "rule": "letters",
+    "canonical": "CLBHG",
+    "workbookAnswer": "CLBHG"
+  },
+  "tower-of-hanoi": {
+    "rule": "hanoi",
+    "canonical": "1A",
+    "workbookAnswer": "1A  (disk 1 onto peg A)"
+  },
+  "bagua": {
+    "rule": "digits",
+    "canonical": "813",
+    "workbookAnswer": "813"
+  },
+  "liar-dialogue": {
+    "rule": "integer",
+    "canonical": "91",
+    "workbookAnswer": "91"
+  }
+}

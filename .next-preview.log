@@ -1182435,3 +1182435,11 @@ Creating turbopack project {
  GET /admin/games 200 in 321ms (next.js: 9ms, proxy.ts: 227ms, application-code: 85ms)
  GET / 200 in 35ms (next.js: 8ms, proxy.ts: 6ms, application-code: 20ms)
  GET /admin/games 200 in 960ms (next.js: 183ms, proxy.ts: 393ms, application-code: 385ms)
+✓ Compiled in 519ms
+ GET /admin/games 200 in 610ms (next.js: 12ms, proxy.ts: 421ms, application-code: 177ms)
+ GET /admin/games 200 in 220ms (next.js: 10ms, proxy.ts: 145ms, application-code: 65ms)
+ GET /admin/games 200 in 330ms (next.js: 9ms, proxy.ts: 257ms, application-code: 64ms)
+ GET /admin/games 200 in 250ms (next.js: 10ms, proxy.ts: 174ms, application-code: 66ms)
+✓ Compiled in 186ms
+ GET /admin/games 200 in 762ms (next.js: 10ms, proxy.ts: 544ms, application-code: 208ms)
+ GET /admin/games 200 in 180ms (next.js: 9ms, proxy.ts: 103ms, application-code: 68ms)
