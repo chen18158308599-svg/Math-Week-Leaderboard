@@ -40,8 +40,14 @@ try {
   const banner=await page.getByRole("heading",{name:"Sign in to start trading"}).boundingBox();
   const cash=await page.getByText("Available cash",{exact:true}).boundingBox();
   assert.ok(banner.y<cash.y,"Sign-in banner must precede the cash summary");
+  await page.getByRole("button",{name:"Asset leaderboard",exact:true}).click();
+  assert.equal(await page.locator('a[href="/leaderboard"]').count(),0);
+  await page.getByRole("button",{name:"Market",exact:true}).click();
   await start.click();
   await page.getByRole("heading",{name:"Scan to connect",exact:true}).waitFor();
+  const qrBox=await page.getByRole("img",{name:"Scan to connect your school account",exact:true}).boundingBox();
+  const dialogBox=await page.locator('dialog[open]').boundingBox();
+  assert.ok(Math.abs((qrBox.x+qrBox.width/2)-(dialogBox.x+dialogBox.width/2))<2,"QR must be centered in the dialog");
   paired=true;waiting=false;
   await page.getByText("Browser test investor",{exact:true}).waitFor({timeout:15000});
   await page.waitForFunction(()=>![...document.querySelectorAll('dialog[open]')].some(d=>d.textContent.includes('Scan to connect')));

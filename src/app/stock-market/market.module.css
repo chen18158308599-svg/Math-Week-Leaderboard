@@ -25,3 +25,7 @@
 .signInBanner { margin: 0 0 24px; border: 2px solid #176b52; background: #edf5ee; }
 .signInBanner h2 { font-size: 28px; }
 .signInBanner .primary { min-height: 58px; font-size: 16px; }
+.pairModal { position: fixed; text-align: center; }
+.pairModal .close { position: absolute; top: 12px; right: 12px; float: none; }
+.pairModal h2 { padding-inline: 24px; }
+.pairModal img { display: block; width: 320px; max-width: 100%; height: auto; margin: 22px auto; }

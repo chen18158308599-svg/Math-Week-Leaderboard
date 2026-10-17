@@ -1182867,3 +1182867,8 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
  GET /admin/games 200 in 237ms (next.js: 9ms, proxy.ts: 155ms, application-code: 72ms)
  GET / 200 in 1426ms (next.js: 581ms, proxy.ts: 6ms, application-code: 839ms)
  GET /stock-market 200 in 353ms (next.js: 123ms, proxy.ts: 7ms, application-code: 223ms)
+ GET /admin/games 200 in 1597ms (next.js: 67ms, proxy.ts: 513ms, application-code: 1016ms)
+ GET / 200 in 12.5s (next.js: 1172ms, proxy.ts: 1782ms, application-code: 9.6s)
+[browser] Image with src "/directory/committee.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /stock-market 200 in 51ms (next.js: 15ms, proxy.ts: 8ms, application-code: 28ms)
