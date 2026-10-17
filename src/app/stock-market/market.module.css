@@ -29,3 +29,12 @@
 .pairModal .close { position: absolute; top: 12px; right: 12px; float: none; }
 .pairModal h2 { padding-inline: 24px; }
 .pairModal img { display: block; width: 320px; max-width: 100%; height: auto; margin: 22px auto; }
+
+.signInBanner { position:sticky; top:10px; z-index:20; gap:24px; padding:22px 26px; background:#fff5d8; border:3px solid #be8b29; box-shadow:0 6px 24px #74531518; }
+.signInBanner h2 { margin:6px 0; color:#3f391d; font-size:30px; }
+.signInBanner p { color:#615832; }
+.page .loginButton { flex-shrink:0; min-width:260px; min-height:72px; padding:16px 24px; background:#176b52; color:#fff; border:3px solid #fff; outline:2px solid #176b52; font-size:20px; font-weight:800; box-shadow:0 4px 14px #176b5233; }
+.tradeSaved { display:flex; flex-wrap:wrap; gap:8px 18px; padding:14px 18px; margin-bottom:18px; background:#e5f4e8; border:2px solid #3d8d58; border-radius:8px; color:#215a33; }
+.successIcon { display:grid; place-items:center; width:64px; height:64px; margin:0 auto 12px; border-radius:50%; color:#fff; background:#218653; font-size:40px; font-weight:800; }
+.nextStep { padding:14px; background:#eff5e9; border-radius:8px; font-weight:600; }
+@media(max-width:760px) { .signInBanner { position:relative; top:auto; flex-direction:column; align-items:stretch; padding:18px; } .page .loginButton { min-width:0; width:100%; } }
