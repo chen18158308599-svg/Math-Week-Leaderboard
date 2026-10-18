@@ -1,4 +1,5 @@
 "use client";
+import { MarketPriceLine } from "@/components/market-price-line";
 import { useEffect, useState } from "react";
 import type { MarketState } from "@/lib/stock-market/types";
 
@@ -25,9 +26,7 @@ export function MarketPreview() {
     <div className="market-preview-stocks">{["LIB", "BOOK", "DONA"].map(code => {
       const stock = state?.stocks.find(item => item.code === code);
       const prices = stock?.prices ?? [];
-      const low = Math.min(...prices) - 1, high = Math.max(...prices) + 1;
-      const path = prices.map((price, i) => `${i ? "L" : "M"}${(i * 140 / Math.max(1, prices.length - 1)).toFixed(1)} ${(27 - (price - low) / (high - low) * 24).toFixed(1)}`).join(" ");
-      return <div key={code}><span className="market-preview-symbol">{code === "LIB" ? "↗" : code === "BOOK" ? "▤" : "◇"}</span><b>{code}</b><small>{code === "LIB" ? "Library Footfall" : code === "BOOK" ? "Book Borrowing" : "Book Donations"}</small><strong>{stock && !unavailable ? `$${stock.price.toFixed(2)}` : "—"}</strong><span className="market-preview-initial">{stock && !unavailable ? `${stock.change >= 0 ? "+" : ""}${stock.change.toFixed(2)}%` : "Published quotes"}</span><svg viewBox="0 0 140 30" aria-hidden="true">{!unavailable && <path d={path} stroke={stock && stock.change < 0 ? "#c73643" : "#15803d"} fill="none" strokeWidth="2" />}</svg></div>;
+      return <div key={code}><span className="market-preview-symbol">{code === "LIB" ? "↗" : code === "BOOK" ? "▤" : "◇"}</span><b>{code}</b><small>{code === "LIB" ? "Library Footfall" : code === "BOOK" ? "Book Borrowing" : "Book Donations"}</small><strong>{stock && !unavailable ? `$${stock.price.toFixed(2)}` : "—"}</strong><span className="market-preview-initial">{stock && !unavailable ? `${stock.change >= 0 ? "+" : ""}${stock.change.toFixed(2)}%` : "Published quotes"}</span><svg viewBox="0 0 140 30" aria-hidden="true">{!unavailable && <MarketPriceLine prices={prices} width={140} height={30} insetX={0} insetY={3} strokeWidth={2} />}</svg></div>;
     })}</div>
   </div>;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { MarketPriceLine } from "@/components/market-price-line";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -228,12 +229,10 @@ export default function LiveMarket({ onReturnHome }: { onReturnHome?: () => void
         <div className={s.sectionTitle}><h2>{t("Explore the market", "看看市场")}</h2><span>{t("One buy or sell per stock each day · No fees", "每只股票每天一次买入或卖出 · 无手续费")}</span></div>
         <section className={s.grid}>{state?.stocks.map(stock => {
           const done = used.includes(stock.code);
-          const low = Math.min(...stock.prices) - 1; const high = Math.max(...stock.prices) + 1;
-          const path = stock.prices.map((p, i) => `${i ? "L" : "M"}${(i * 292 / Math.max(1, stock.prices.length - 1) + 4).toFixed(1)} ${(52 - (p - low) / (high - low) * 44).toFixed(1)}`).join(" ");
           const up = stock.change > 0; const down = stock.change < 0;
           return <article className={s.stock} key={stock.code}><div className={s.stockTop}><span className={s.symbol}>{stock.code === "LIB" ? "↗" : stock.code === "BOOK" ? "▤" : "◇"}</span><span className={s.tag}>{stock.code}</span></div>
             <h3>{names[stock.code][zh ? 1 : 0]}</h3><div className={s.price}>{money(stock.price)}<span className={up ? s.marketUp : down ? s.marketDown : undefined}>{up ? "↑ +" : down ? "↓ " : ""}{stock.change.toFixed(2)}% · {state.settledDay ? t("Latest published return", "最近公布涨跌") : t("Initialization return", "初始化涨跌")}</span></div>
-            <svg viewBox="0 0 300 58" className={s.chart} role="img" aria-label={`${stock.code} ${t("published price history", "已公布价格走势")}`}><path d="M0 12H300 M0 48H300" stroke="#e0e6d8" strokeDasharray="4 5" /><path d={path} stroke={up ? "#15803d" : down ? "#c73643" : "#64748b"} strokeWidth="2.2" fill="none" /></svg>
+            <svg viewBox="0 0 300 58" className={s.chart} role="img" aria-label={`${stock.code} ${t("published price history", "已公布价格走势")}`}><path d="M0 12H300 M0 48H300" stroke="#e0e6d8" strokeDasharray="4 5" /><MarketPriceLine prices={stock.prices} /></svg>
             <div className={s.chartLabels}><span>{t("Initialization history", "初始化历史")}</span><span>{t(`Published through Day ${Math.max(state.day - 1, state.settledDay)}`, `已公布至第${Math.max(state.day - 1, state.settledDay)}天`)}</span></div>
             <div className={s.hint}><span>✧ {t("TODAY'S CLUE", "今日提示")}</span><p>{zh ? stock.clue_zh : stock.clue_en}</p></div>
             <details className={s.details}><summary>{t("About this stock", "了解这只股票")} <span>＋</span></summary><p>{about[stock.code][zh ? 1 : 0]}</p><small>{t("Prices remain fixed during trading and update after daily settlement.", "交易期间报价固定，每日结算后更新。")}</small></details>
