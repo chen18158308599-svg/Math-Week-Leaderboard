@@ -4,6 +4,7 @@ import { MarketPreview } from "@/components/market-preview";
 import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { WeekShell } from "@/components/week-shell";
+import { IdleRedirect } from "@/components/idle-redirect";
 import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
 import { DIGITAL_DAYS } from "@/lib/digital-games";
 import { todayInEventTimezone } from "@/lib/event-date";
@@ -82,6 +83,7 @@ export function MainHub({ eventDate }: { eventDate: string }) {
     return <div className="hub-ranking"><span className="week-eyebrow"><span className="live-dot" /> LIVE SCORES</span>{large && <h3>Math Week&apos;s top players</h3>}<div className="hub-ranking-rows">{loading ? <p role="status">Loading scores…</p> : rows.length ? rows.slice(0, large ? 5 : 3).map((row, i) => <div key={row.key}><span className="hub-rank">{String(i + 1).padStart(2, "0")}</span><span className="hub-player" title={row.label}>{row.label}</span><strong><LiveScore points={row.total_points} /><small> pts</small></strong></div>) : <p>Scores will appear as students play.</p>}</div><span className="hub-action">Full leaderboard →</span></div>;
   }
   return <WeekShell kioskHome>
+    <IdleRedirect seconds={60} enabled={paused} onIdle={() => setPaused(false)} />
     <div className="hub-toolbar"><div><span className="live-dot" /> ALL OF MATH WEEK, AT A GLANCE</div><div><span>{paused ? "Paused" : `Next display in ${remaining}s`}</span><button onClick={() => setPaused(value => !value)}>{paused ? "Resume" : "Pause"}</button></div></div>
     <section ref={windows} className="hub-windows" aria-label="Math Week activities">
       {PANELS.map(panel => {

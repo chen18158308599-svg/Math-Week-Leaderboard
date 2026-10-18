@@ -85,13 +85,15 @@ try {
   await start.click();
   await page.getByRole('img',{name:'Scan to connect your school account',exact:true}).waitFor();
   await page.clock.install();
-  offset+=105000;
-  await page.clock.runFor(105000);
+  offset+=35000;
+  await page.clock.runFor(35000);
   assert.ok(page.url().endsWith('/stock-market'),'Valid QR must not be interrupted by idle navigation');
   await page.getByRole('button',{name:'Get a new code',exact:true}).click();
   await page.getByRole('img',{name:'Scan to connect your school account',exact:true}).waitFor();
-  offset+=70000;
-  await page.clock.runFor(70000);
+  await page.waitForFunction(()=>[...document.querySelectorAll('button')].some(b=>b.textContent==='Get a new code'&&!b.disabled));
+  assert.match(await page.getByRole('timer').textContent(), /Returning home in (60|59)s/);
+  offset+=35000;
+  await page.clock.runFor(35000);
   assert.ok(page.url().endsWith('/stock-market'),'Renewed QR gets its own complete waiting window');
   assert.equal(await page.locator('dialog[open]').count(),1);
   paired=true;waiting=false;
@@ -121,7 +123,29 @@ try {
       await page.waitForURL(origin+'/');
     }
   }
+  // An unattended login QR must eventually return to the main website.
+  await page.goto(origin+'/stock-market');
+  await page.getByRole('button',{name:'LOG IN TO TRADE →',exact:true}).click();
+  await page.getByRole('img',{name:'Scan to connect your school account',exact:true}).waitFor();
+  assert.match(await page.getByRole('timer').textContent(), /Returning home in (60|59)s/, 'QR shows a visible 60-second countdown');
+  offset+=51000;
+  await page.clock.runFor(51000);
+  await page.getByRole('dialog',{name:'Inactivity warning / 闲置提醒',exact:true}).waitFor();
+  waiting=false; // Server also reports that this QR is no longer valid.
+  offset+=14000;
+  await page.clock.runFor(14000);
+  await page.waitForURL(origin+'/');
+  // A guide modal must not disable ordinary 60-second idle handling.
+  await page.goto(origin+'/stock-market');
+  await page.getByRole('button',{name:'How to play',exact:true}).click();
+  offset+=61000;
+  await page.clock.runFor(61000);
+  await page.waitForURL(origin+'/');
+  await page.getByRole('button',{name:'Pause',exact:true}).click();
+  await page.clock.runFor(61000);
+  await page.getByRole('button',{name:'Pause',exact:true}).waitFor();
+  assert.equal(await page.getByRole('button',{name:'Resume',exact:true}).count(),0,'Paused homepage resumes when unattended');
   assert.deepEqual(errors,[]);
   await page.screenshot({path:"tmp/market-navigation.png",fullPage:true});
-  console.log("PASS: stale reads and slow pairing cannot close login; cancel stays on market; original/renewed QR survive idle; phone confirmation gets 60s; three trades show receipts and next steps; final countdown returns home. Mock responses only.");
+  console.log("PASS: login races and renewal, confirmation activity, trade receipts, unattended QR warning and home return, guide idle return, paused-home recovery. Mock responses only.");
 } finally { await browser.close(); }

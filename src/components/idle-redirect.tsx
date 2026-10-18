@@ -49,7 +49,7 @@ export function IdleRedirect({ seconds = 60, enabled = true, onIdle }: {
     else notice.current?.close();
   }, [remaining]);
   if (!enabled) return null;
-  return <dialog ref={notice} className="idle-notice idle-dialog" aria-label="Inactivity warning / 闲置提醒" onCancel={event => { event.preventDefault(); window.dispatchEvent(new Event("mathweek:activity")); }}>
+  return <dialog ref={notice} className="idle-notice idle-dialog" aria-label="Inactivity warning / 闲置提醒" onCancel={event => { event.preventDefault(); event.stopPropagation(); window.dispatchEvent(new Event("mathweek:activity")); }}>
     <span>Returning home in <strong>{remaining ?? 0}s</strong></span>
     <button className="week-button" onClick={() => window.dispatchEvent(new Event("mathweek:activity"))}>Stay here</button>
   </dialog>;
