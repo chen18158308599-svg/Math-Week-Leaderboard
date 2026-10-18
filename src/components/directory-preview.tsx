@@ -11,8 +11,12 @@ export function DirectoryPreview({ date, large }: { date: string; large: boolean
         <Image src="/whats-on-today/prizes-composite.webp" alt="Math Week awards: camping chair, thermos, character blankets and magnetic badge" fill sizes={large ? "(max-width: 600px) 55vw, 35vw" : "18vw"} />
         <span className={styles.caption}>Explore the awards.</span>
       </div>
-      <div className={styles.tile} aria-hidden="true" />
-      <div className={styles.tile} aria-hidden="true" />
+      <div className={styles.tile}>
+        <Image src="/whats-on-today/random2.webp" alt="Puzzle cards displayed on the library wall" fill sizes={large ? "(max-width: 600px) 35vw, 20vw" : "12vw"} />
+      </div>
+      <div className={styles.tile}>
+        <Image src="/whats-on-today/random4.webp" alt="Wooden mathematical puzzles on a library activity table" fill sizes={large ? "(max-width: 600px) 35vw, 20vw" : "12vw"} />
+      </div>
     </div>
     <div className={styles.copy}>
       <span className={styles.eyebrow}>19–25 OCTOBER / XMUM LIBRARY</span>
