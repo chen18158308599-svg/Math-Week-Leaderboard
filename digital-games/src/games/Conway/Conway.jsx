@@ -14,7 +14,7 @@ import "./Conway.css";
 import LifeRules from "../../components/LifeRules.jsx";
 import { GameGuide, QuickBrief, useGuidePause } from "../../components/GameGuide.jsx";
 
-import homeBackground from "../../assets/home-layers/background.png";
+import homeBackground from "../../assets/home-layers/background.webp";
 
 import conwayIsland from "../../assets/home-layers/conway.webp";
 

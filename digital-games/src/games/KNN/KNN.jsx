@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import "./KNN.css";
 import { GameGuide, QuickBrief, useGuidePause } from "../../components/GameGuide.jsx";
 import knnIslandImg from "../../assets/home-layers/knn.webp";
-import backgroundImg from "../../assets/home-layers/background.png";
+import backgroundImg from "../../assets/home-layers/background.webp";
 import {
   calculateKnnCompetitionScore,
   createCompetitionAttempt,
@@ -1369,7 +1369,6 @@ export default function KNN({ onHome }) {
   const [runLeft, setRunLeft] = useState(0);
   const [move, setMove] = useState({ x: 0, y: 0 });
   const [time, setTime] = useState(0);
-  const music = true;
   const sfxOn = true;
   const [hurt, setHurt] = useState(0);
   const [canInteract, setCanInteract] = useState(false);
@@ -1399,7 +1398,6 @@ export default function KNN({ onHome }) {
   const puzzleRef = useRef(false);
   const audioRef = useRef(null);
   const gainRef = useRef(null);
-  const bgmRef = useRef(null);
   const runBufRef = useRef(0);
   const runCdRef = useRef(0);
   const runHeldRef = useRef(false);
@@ -1488,16 +1486,6 @@ export default function KNN({ onHome }) {
     else if (name === "win") { [520, 660, 880, 1180, 1480].forEach((f, i) => tone(f, f * 1.05, .18, .04, "triangle", i * .08)); }
   }, [tone]);
 
-  const ensureBgm = useCallback(() => {
-    if (!bgmRef.current) {
-      const base = import.meta.env.BASE_URL || "/";
-      const a = new Audio(`${base}audio/KNN background music.mp3`);
-      a.loop = true; a.preload = "auto"; a.volume = .32;
-      bgmRef.current = a;
-    }
-    return bgmRef.current;
-  }, []);
-
   const loadLevel = useCallback(idx => {
     const lv = buildLevel(idx);
 
@@ -1550,17 +1538,13 @@ export default function KNN({ onHome }) {
 
   const startGame = useCallback(() => {
     resetGame(); setScreen("game"); ensureAudio();
-    const b = ensureBgm();
-    if (music) b.play().catch(() => { });
-  }, [ensureAudio, ensureBgm, music, resetGame]);
+  }, [ensureAudio, resetGame]);
 
   // Browser autoplay rules require a user gesture before sound can begin.
   // Any interaction on the KNN intro page unlocks the audio context/BGM.
   const unlockStartAudio = useCallback(() => {
     ensureAudio();
-    const b = ensureBgm();
-    if (music && b.paused) b.play().catch(() => { });
-  }, [ensureAudio, ensureBgm, music]);
+  }, [ensureAudio]);
 
   // Return from the live mission to the KNN realm intro.
   // Starting again will reset the mission through startGame().
@@ -1693,7 +1677,6 @@ export default function KNN({ onHome }) {
       finalizeCompetition({ outcome: "loss" });
       setResultType("lose");
       setScreen("result");
-      bgmRef.current?.pause();
       return;
     }
 
@@ -1747,18 +1730,7 @@ export default function KNN({ onHome }) {
     };
   }, [screen, doInteract]);
 
-  useEffect(() => {
-    const b = ensureBgm();
-
-    const shouldPlay =
-      music &&
-      (screen === "start" || (screen === "game" && !paused));
-
-    if (shouldPlay) b.play().catch(() => { });
-    else b.pause();
-  }, [ensureBgm, music, paused, screen]);
-
-  useEffect(() => () => { bgmRef.current?.pause(); audioRef.current?.close?.().catch(() => { }); }, []);
+  useEffect(() => () => { audioRef.current?.close?.().catch(() => { }); }, []);
 
   useEffect(() => {
     if (screen !== "game") return;
@@ -1774,7 +1746,6 @@ export default function KNN({ onHome }) {
         finalizeCompetition({ outcome: "loss" });
         setTimeout(() => {
           setScreen("result");
-          bgmRef.current?.pause();
         }, 260);
       }
     };
@@ -1804,6 +1775,23 @@ export default function KNN({ onHome }) {
       return moved;
     };
 
+    // Observe layout changes instead of forcing a layout read on every frame.
+    let viewport = { width: 1, height: 1 };
+    const measure = () => {
+      const rect = stRef.current?.getBoundingClientRect();
+      if (rect) viewport = { width: Math.max(1, rect.width), height: Math.max(1, rect.height) };
+    };
+    measure();
+    const resizeObserver = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(measure);
+    if (stRef.current) resizeObserver?.observe(stRef.current);
+    window.addEventListener("resize", measure);
+    let lastDraw = -Infinity;
+    const drawScene = (now, cv, scene, width, height, dpr, paused) => {
+      if (document.hidden || now - lastDraw < (paused ? 200 : 1000 / 30)) return;
+      lastDraw = now;
+      drawWorld(cv.getContext("2d"), scene, width, height, dpr);
+    };
+
     const loop = now => {
       rafRef.current = requestAnimationFrame(loop);
       const dt = Math.min(.034, (now - lastRef.current) / 1000);
@@ -1811,8 +1799,9 @@ export default function KNN({ onHome }) {
 
       const st = stRef.current, cv = cvRef.current;
       if (!st || !cv) return;
-      const rc = st.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rc = viewport;
+      // Cap the backing surface, not the CSS size or game-world coordinates.
+      const dpr = Math.min(window.devicePixelRatio || 1, 1, 1280 / rc.width, 720 / rc.height);
       const tw = Math.max(1, Math.floor(rc.width * dpr)), th = Math.max(1, Math.floor(rc.height * dpr));
       if (cv.width !== tw || cv.height !== th) {
         cv.width = tw; cv.height = th;
@@ -1831,10 +1820,10 @@ export default function KNN({ onHome }) {
   puzzleRef.current ||
   doneRef.current
 ) {
-        drawWorld(cv.getContext("2d"), {
+        drawScene(now, cv, {
           px: p.x, pz: p.z, guards, walls, doors,
           now, safe: levelRef.current?.safe, hasKey: hasKeyRef.current
-        }, rc.width, rc.height, dpr);
+        }, rc.width, rc.height, dpr, true);
         return;
       }
 
@@ -2054,7 +2043,6 @@ export default function KNN({ onHome }) {
           if (next >= COMPETITION_LEVEL_COUNT) {
             setResultType("win");
             setScreen("result");
-            bgmRef.current?.pause();
           } else {
             loadLevel(next);
           }
@@ -2075,14 +2063,14 @@ export default function KNN({ onHome }) {
         setCanInteract(nearSafe || nearD);
       }
 
-      drawWorld(cv.getContext("2d"), {
+      drawScene(now, cv, {
         px: p.x, pz: p.z, guards, walls, doors,
         now, safe: levelRef.current?.safe, hasKey: hasKeyRef.current
-      }, rc.width, rc.height, dpr);
+      }, rc.width, rc.height, dpr, false);
     };
 
     rafRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => { cancelAnimationFrame(rafRef.current); resizeObserver?.disconnect(); window.removeEventListener("resize", measure); };
   }, [screen, finalizeCompetition, loadLevel, sfx, show, siteIdx, t]);
 
   const liveCompetitionScore = calculateKnnCompetitionScore({

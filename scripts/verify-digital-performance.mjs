@@ -9,7 +9,7 @@ const payload=`${Math.floor(Date.now()/1000)+3600}.${randomBytes(16).toString('h
 const token=`${payload}.${createHmac('sha256',key).update(payload).digest('hex')}`;
 const browser=await chromium.launch({channel:'msedge',headless:true});
 try {
-  const context=await browser.newContext({viewport:{width:1440,height:1000}});
+  const context=await browser.newContext({viewport:{width:1920,height:1080},deviceScaleFactor:2});
   await context.addCookies([{name:'mathweek-site-access',value:token,url:origin}]);
   const page=await context.newPage();
   const requests=[],errors=[]; let reports=0;
@@ -26,8 +26,8 @@ try {
   await frame.getByRole('button',{name:'Open Conway',exact:true}).waitFor();
   assert.equal(await page.locator('.background-scene').count(),0,'Host decorations must not run behind the game');
   assert.equal(requests.filter(url=>/\/assets\/(Conway|Planarity|Symmetry|KNN|NumberSequence|DealOrNoDeal)-.*\.js$/.test(url)).length,0,'Home must not load all game modules');
-  // The island intentionally floats continuously, so it never satisfies the
-  // automation-only requirement for two identical animation-frame bounds.
+  assert.equal(await frame.locator('.island').first().evaluate(el=>getComputedStyle(el).animationName),'none');
+  assert.equal(requests.filter(url=>/background-.*\.png$/.test(url)).length,0,'Shared background must use WebP');
   await frame.getByRole('button',{name:'Open Conway',exact:true}).click({force:true});
   await frame.getByText('Conway Table Tennis Arena',{exact:true}).waitFor();
   assert.ok(requests.some(url=>/\/assets\/Conway-.*\.js$/.test(url)));
@@ -53,10 +53,28 @@ try {
     await frame.getByRole('button',{name:'Open Home navigation',exact:true}).waitFor();
     await gameFrame.waitForFunction(()=>!document.querySelector('.game-module-loading'));
     assert.ok(requests.some(url=>new RegExp('/assets/'+module+'-.*\\.js$').test(url)),module+' must load on selection');
+    if (module === 'KNN') {
+      await frame.locator('.knn-start-btn').click();
+      await frame.locator('canvas').first().waitFor();
+      await page.waitForTimeout(300);
+      const canvas=await frame.locator('canvas').first().evaluate(el=>({width:el.width,height:el.height}));
+      assert.ok(canvas.width<=1280 && canvas.height<=720,'KNN backing surface must be capped on high-DPI displays');
+    }
     await frame.getByRole('button',{name:'Open Home navigation',exact:true}).click();
     await frame.getByRole('button',{name:'Return to Home',exact:true}).click();
     await frame.getByRole('button',{name:label,exact:true}).waitFor();
   }
+  assert.equal(requests.filter(url=>/\/audio\/(?:home|battle|boss|victory|defeat|planarity|KNN(?:%20| )background(?:%20| )music)\.(?:mp3|wav)$/.test(url)).length,0,'Background music must not be requested');
   assert.deepEqual(errors,[]);
+  const recovery = await context.newPage();
+  await recovery.route('**/assets/Planarity-*.js', route=>route.abort());
+  await recovery.goto(origin+'/digital-play/index.html');
+  await recovery.getByRole('button',{name:'Open Planarity',exact:true}).click();
+  await recovery.getByRole('heading',{name:'This game could not open.',exact:true}).waitFor();
+  await recovery.unroute('**/assets/Planarity-*.js');
+  await recovery.getByRole('button',{name:'Reload games',exact:true}).click();
+  await recovery.getByRole('button',{name:'Open Conway',exact:true}).waitFor();
+  await recovery.close();
+  console.log('PASS: no background-music requests; static island menu; high-DPI KNN backing surface capped; failed module displays a working reload action.');
   console.log(`PASS: games load on demand, no heavy island PNGs or host background, finished game unmounts, QR visible in ${elapsed}ms with a mocked 300ms server delay, retry makes no extra result request. No real scores created.`);
 } finally { await browser.close(); }

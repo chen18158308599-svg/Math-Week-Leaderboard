@@ -1,6 +1,6 @@
 import "./Home.css";
 
-import background from "../assets/home-layers/background.png";
+import background from "../assets/home-layers/background.webp";
 import conway from "../assets/home-layers/conway.webp";
 import deal from "../assets/home-layers/deal.webp";
 import knn from "../assets/home-layers/knn.webp";

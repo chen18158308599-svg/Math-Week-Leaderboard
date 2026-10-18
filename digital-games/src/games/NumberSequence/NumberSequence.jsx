@@ -2,7 +2,7 @@ import { GameGuide, QuickBrief } from "../../components/GameGuide.jsx";
 import { uniqueSequenceDeck, sequenceQuestionKey } from "../../scoring/shortGameRules.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./NumberSequence.css";
-import hubBackground from "../../assets/home-layers/background.png";
+import hubBackground from "../../assets/home-layers/background.webp";
 import sequenceIsland from "../../assets/home-layers/sequence.webp";
 import {
   calculateNumberSequenceScore,
@@ -12,24 +12,8 @@ import {
 const GAME_ID = "REPLACE_WITH_GAME_ID";
 const MAX_HEARTS = 3;
 
-const MUSIC_TRACKS = {
-  home: `${import.meta.env.BASE_URL}audio/home.mp3`,
-  battle: `${import.meta.env.BASE_URL}audio/battle.mp3`,
-  boss: `${import.meta.env.BASE_URL}audio/boss.mp3`,
-  victory: `${import.meta.env.BASE_URL}audio/victory.wav`,
-  defeat: `${import.meta.env.BASE_URL}audio/defeat.wav`,
-};
-
 const ONE_SHOT_AUDIO = {
   enemyAttack: `${import.meta.env.BASE_URL}audio/enemy_attack.wav`,
-};
-
-const MUSIC_VOLUME = {
-  home: 0.24,
-  battle: 0.22,
-  boss: 0.27,
-  victory: 0.34,
-  defeat: 0.32,
 };
 
 const SKILL_COOLDOWN = {
@@ -1456,7 +1440,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
   const [canvasScale, setCanvasScale] = useState({ x: 1, y: 1 });
   const [mainGone, setMainGone] = useState(false);
   const [gameMode, setGameMode] = useState("home");
-  const musicOn = true;
+  const musicOn = false;
   const sfxOn = true;
   const [confirmHome, setConfirmHome] = useState(false);
   const [powerItemUid, setPowerItemUid] = useState(null);
@@ -1485,14 +1469,6 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
     sfx: null,
     score: null,
     sfxOn: true,
-  });
-
-  const musicRef = useRef({
-    player: null,
-    key: null,
-    unlocked: false,
-    fadeTimer: null,
-    switchTimer: null,
   });
 
   const resultSoundRef = useRef(null);
@@ -1551,16 +1527,6 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
       const audio = audioRef.current;
       try { audio.ctx?.close?.(); } catch {}
 
-      const music = musicRef.current;
-      if (music.fadeTimer) window.clearInterval(music.fadeTimer);
-      if (music.switchTimer) window.clearTimeout(music.switchTimer);
-
-      if (music.player) {
-        try {
-          music.player.pause();
-          music.player.src = "";
-        } catch {}
-      }
     };
   }, []);
 
@@ -1600,30 +1566,6 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
       window.removeEventListener("resize", updateCanvasScale);
     };
   }, [gameMode]);
-
-  useEffect(() => {
-    if (!musicOn) return;
-
-    const music = musicRef.current;
-    const player = ensureMusicPlayer();
-
-    player.src = MUSIC_TRACKS.home;
-    player.loop = true;
-    player.volume = MUSIC_VOLUME.home;
-    music.key = "home";
-
-    player.play()
-      .then(() => {
-        music.unlocked = true;
-      })
-      .catch(() => {
-        // Browser autoplay policy can block this.
-        // The first pointer interaction will unlock and start it.
-        player.pause();
-        player.currentTime = 0;
-        player.volume = 0;
-      });
-  }, []);
 
   function ensureAudio() {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -2117,158 +2059,8 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
     };
   }
 
-  function ensureMusicPlayer() {
-    const music = musicRef.current;
-
-    if (!music.player) {
-      const player = new Audio();
-      player.loop = true;
-      player.preload = "auto";
-      player.volume = 0;
-      music.player = player;
-    }
-
-    return music.player;
-  }
-
-  function clearMusicTimers() {
-    const music = musicRef.current;
-
-    if (music.fadeTimer) {
-      window.clearInterval(music.fadeTimer);
-      music.fadeTimer = null;
-    }
-
-    if (music.switchTimer) {
-      window.clearTimeout(music.switchTimer);
-      music.switchTimer = null;
-    }
-  }
-
-  function fadeMusicTo(targetVolume, duration = 360) {
-    const music = musicRef.current;
-    const player = ensureMusicPlayer();
-
-    clearMusicTimers();
-
-    const start = player.volume;
-    const target = Math.max(0, Math.min(1, targetVolume));
-    const steps = 12;
-    const stepMs = Math.max(16, Math.floor(duration / steps));
-    let step = 0;
-
-    music.fadeTimer = window.setInterval(() => {
-      step += 1;
-      const progress = Math.min(1, step / steps);
-      player.volume = start + (target - start) * progress;
-
-      if (progress >= 1) {
-        window.clearInterval(music.fadeTimer);
-        music.fadeTimer = null;
-
-        if (target === 0 && !musicOn) {
-          player.pause();
-        }
-      }
-    }, stepMs);
-  }
-
-  function desiredMusicKey() {
-    if (gameMode === "home" || gameMode === "entering") return "home";
-    if (gameMode !== "game") return null;
-    if (status === "won") return "victory";
-    if (status === "lost") return "defeat";
-    if (bossApproach || isFinalWave) return "boss";
-    return "battle";
-  }
-
-  function playMusic(key) {
-    if (!key || !musicOn) return;
-
-    const music = musicRef.current;
-    const player = ensureMusicPlayer();
-
-    if (!music.unlocked) return;
-
-    const nextSrc = MUSIC_TRACKS[key];
-    const nextVolume = MUSIC_VOLUME[key] ?? 0.3;
-
-    if (music.key === key && player.src) {
-      player.play().catch(() => {});
-      fadeMusicTo(nextVolume, 260);
-      return;
-    }
-
-    clearMusicTimers();
-
-    const switchTrack = () => {
-      music.key = key;
-      player.src = nextSrc;
-      player.loop = true;
-      player.currentTime = 0;
-      player.volume = 0;
-      player.load();
-
-      player
-        .play()
-        .then(() => fadeMusicTo(nextVolume, 520))
-        .catch(() => {});
-    };
-
-    if (!player.paused && player.volume > 0.02) {
-      const start = player.volume;
-      let step = 0;
-      const steps = 8;
-
-      music.fadeTimer = window.setInterval(() => {
-        step += 1;
-        player.volume = Math.max(0, start * (1 - step / steps));
-
-        if (step >= steps) {
-          window.clearInterval(music.fadeTimer);
-          music.fadeTimer = null;
-          player.pause();
-          switchTrack();
-        }
-      }, 28);
-    } else {
-      switchTrack();
-    }
-  }
-
-  function pauseMusic(duration = 320) {
-    const music = musicRef.current;
-    const player = music.player;
-    if (!player) return;
-
-    clearMusicTimers();
-
-    const start = player.volume;
-    const steps = 10;
-    let step = 0;
-
-    music.fadeTimer = window.setInterval(() => {
-      step += 1;
-      player.volume = Math.max(0, start * (1 - step / steps));
-
-      if (step >= steps) {
-        window.clearInterval(music.fadeTimer);
-        music.fadeTimer = null;
-        player.pause();
-      }
-    }, Math.max(18, Math.floor(duration / steps)));
-  }
-
   function unlockAudioExperience() {
     ensureAudio();
-
-    const music = musicRef.current;
-    if (music.unlocked) return;
-
-    music.unlocked = true;
-
-    const key = desiredMusicKey();
-    if (musicOn && key) playMusic(key);
   }
 
   useEffect(() => {
@@ -2283,22 +2075,6 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
       );
     }
   }, [sfxOn]);
-
-  useEffect(() => {
-    const music = musicRef.current;
-
-    if (!music.unlocked) return;
-
-    const key = desiredMusicKey();
-
-    if (!musicOn || !key) {
-      pauseMusic(420);
-      return;
-    }
-
-    playMusic(key);
-  }, [musicOn, gameMode, waveIndex, bossApproach, status]);
-
 
   const spawnFx = useCallback(
     (item, ttl = 900) => {

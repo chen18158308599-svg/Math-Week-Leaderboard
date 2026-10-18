@@ -6,7 +6,7 @@ import {
   createCompetitionAttempt,
 } from "../../scoring/competitionScoring.js";
 
-import homeBackground from "../../assets/home-layers/background.png";
+import homeBackground from "../../assets/home-layers/background.webp";
 import dealIsland from "../../assets/home-layers/deal.webp";
 
 const WORLD_W = 3100;

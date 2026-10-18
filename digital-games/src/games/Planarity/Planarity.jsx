@@ -7,7 +7,7 @@ import {
 } from "react";
 import "./Planarity.css";
 import { GameGuide, QuickBrief } from "../../components/GameGuide.jsx";
-import hubBackground from "../../assets/home-layers/background.png";
+import hubBackground from "../../assets/home-layers/background.webp";
 import planarityIsland from "../../assets/home-layers/planarity.webp";
 import {
   calculatePlanarityScore,
@@ -743,7 +743,6 @@ export default function Planarity({ onHome }) {
   );
   const statusRef = useRef(status);
 const timeoutsRef = useRef([]);
-const bgmRef = useRef(null);
   const endingStartedRef = useRef(false);
   const solvedCountsRef = useRef({ p1: 0, p2: 0 });
   const competitionAttemptRef = useRef(initialCompetitionAttempt);
@@ -761,22 +760,6 @@ const bgmRef = useRef(null);
   }, []);
   useEffect(() => {
     statusRef.current = status;
-  }, [status]);
-  useEffect(() => {
-    const audio = bgmRef.current;
-    if (!audio) return;
-    audio.volume = 0.42;
-    audio.loop = true;
-    audio.muted = false;
-    if (status === "ended") {
-      audio.pause();
-      return;
-    }
-    // Try to keep the same BGM running on both the intro and battle screens.
-    audio.play().catch(() => {
-      // Browsers may block autoplay until the first user gesture.
-      // onPointerDownCapture below unlocks it immediately.
-    });
   }, [status]);
 useEffect(() => {
     return () => {
@@ -833,11 +816,6 @@ useEffect(() => {
     setSolvedCounts({ p1: 0, p2: 0 });
     setCompetitionResults({ p1: null, p2: null });
     setStatus("playing");
-    if (bgmRef.current) {
-      bgmRef.current.volume = 0.42;
-      bgmRef.current.muted = false;
-      bgmRef.current.play().catch(() => {});
-    }
     setWinner(null);
     setP1Round(1);
     setP2Round(1);
@@ -1095,12 +1073,6 @@ useEffect(() => {
       className={`planarity-app ${screenShake ? "screen-shake" : ""}`}
       style={{ "--game-scale": gameScale }}
     >
-      <audio
-        ref={bgmRef}
-        src={`${import.meta.env.BASE_URL}audio/planarity.mp3`}
-        loop
-        preload="auto"
-      />
       <div className="planarity-global-controls">
         <div className="planarity-lang-switch" role="group" aria-label="Language">
           <button

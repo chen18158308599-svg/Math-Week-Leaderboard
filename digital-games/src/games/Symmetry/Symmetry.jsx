@@ -1897,6 +1897,7 @@ export default function SymmetryGame({ onBack }) {
 
 
     let raf = 0;
+    let lastUiUpdate = -Infinity;
 
     function frame(time) {
 
@@ -1910,6 +1911,9 @@ export default function SymmetryGame({ onBack }) {
       lastFrameRef.current = time;
 
 
+
+      const publishUi = time - lastUiUpdate >= 1000 / 30;
+      if (publishUi) lastUiUpdate = time;
 
       const currentProgress = progressRef.current;
 
@@ -1939,7 +1943,7 @@ export default function SymmetryGame({ onBack }) {
 
       progressRef.current = nextProgress;
 
-      setProgress(nextProgress);
+      if (publishUi) setProgress(nextProgress);
 
 
 
@@ -1993,7 +1997,7 @@ export default function SymmetryGame({ onBack }) {
 
       playerYRef.current = y;
 
-      setPlayerY(y);
+      if (publishUi) setPlayerY(y);
 
 
 
@@ -2097,7 +2101,7 @@ export default function SymmetryGame({ onBack }) {
 
       missilesRef.current = updatedMissiles;
 
-      setMissiles(updatedMissiles);
+      if (publishUi) setMissiles(updatedMissiles);
 
 
 
@@ -2111,7 +2115,7 @@ export default function SymmetryGame({ onBack }) {
 
         burstsRef.current = updatedBursts;
 
-        setBursts(updatedBursts);
+        if (publishUi || updatedBursts.length === 0) setBursts(updatedBursts);
 
       }
 

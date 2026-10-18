@@ -1,0 +1,20 @@
+/* Touchscreen defaults: keep gameplay feedback, drop continuous decoration. */
+.home-page .island { animation: none; will-change: auto; transform: none; }
+.home-page .mathweek-title { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.home-page .mathweek-title-main { filter: none; }
+.planarity-app .nebula,
+.planarity-app .arena-stars,
+.planarity-app .floating-dust,
+.planarity-app .battle-particles i,
+.planarity-app .operative-svg,
+.mirror-game-root .intro-stars,
+.mirror-game-root .intro-symmetry-island { animation: none; }
+/* Blur of a full moving game scene is expensive on integrated graphics. */
+.planarity-app *, .game *, .ns-shell *, .mirror-game-root * {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.game-load-error { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 32px; text-align: center; background: #101b30; color: #fff; }
+.game-load-error h1 { font-size: 32px; }
+.game-load-error p { font-size: 17px; line-height: 1.6; }
+.game-load-error button { min-height: 56px; padding: 12px 28px; border: 0; border-radius: 12px; background: #4d6bfe; color: #fff; font-size: 18px; cursor: pointer; }
