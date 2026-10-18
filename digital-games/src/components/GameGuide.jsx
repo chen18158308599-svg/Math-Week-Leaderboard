@@ -1,4 +1,4 @@
-import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import "./GameGuide.css";
 
@@ -8,7 +8,6 @@ export function GameGuide({ steps, active = true, defer = false, lang = "en", on
   const [index, setIndex] = useState(0);
   const [box, setBox] = useState(null);
   const [skipped] = useState(!autoStart);
-  const maskId = useId();
   const step = !skipped && active && (!defer || index === 0) ? steps[index] : null;
   const complete = useRef(false);
   const ignoreGestureClick = useRef(false);
@@ -31,6 +30,7 @@ export function GameGuide({ steps, active = true, defer = false, lang = "en", on
     let visible = false;
     let pendingAction = false;
     let finishTimer;
+    let lastPaused;
     const advance = () => {
       if (complete.current) return;
       complete.current = true;
@@ -39,13 +39,17 @@ export function GameGuide({ steps, active = true, defer = false, lang = "en", on
     const refresh = () => {
       target = document.querySelector(step.target);
       const nodes = step.highlightAll ? [...document.querySelectorAll(step.target)] : target ? [target] : [];
-      const areas = nodes.map(node => node.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0).map(r => ({ x:r.left, y:r.top, w:r.width, h:r.height }));
+      const areas = nodes.map(node => node.getBoundingClientRect()).filter(r => r.width > 0 && r.height > 0).map(r => ({ x:Math.round(r.left), y:Math.round(r.top), w:Math.round(r.width), h:Math.round(r.height) }));
       visible = areas.length > 0;
       const x = visible ? Math.min(...areas.map(r=>r.x)) : 0;
       const y = visible ? Math.min(...areas.map(r=>r.y)) : 0;
       const next = visible ? { x, y, w:Math.max(...areas.map(r=>r.x+r.w))-x, h:Math.max(...areas.map(r=>r.y+r.h))-y, areas } : null;
       setBox(old => JSON.stringify(old) === JSON.stringify(next) ? old : next);
-      window.dispatchEvent(new CustomEvent("mathweek:guide-pause", { detail: !!(visible && step.pause) }));
+      const paused = !!(visible && step.pause);
+      if (paused !== lastPaused) {
+        lastPaused = paused;
+        window.dispatchEvent(new CustomEvent("mathweek:guide-pause", { detail: paused }));
+      }
     };
     const down = event => {
       ignoreGestureClick.current = false;
@@ -89,10 +93,9 @@ export function GameGuide({ steps, active = true, defer = false, lang = "en", on
   if (!active) return null;
   const zh = lang === "zh";
   const labelWidth = Math.min(380, window.innerWidth - 32);
-  const top = box ? (box.y > labelHeight + 30 ? box.y - labelHeight - 20 : Math.min(window.innerHeight - labelHeight - 16, box.y + box.h + 20)) : 0;
+  const top = box ? Math.max(16, Math.min(window.innerHeight - labelHeight - 16, box.y > labelHeight + 30 ? box.y - labelHeight - 20 : box.y + box.h + 20)) : 0;
   return createPortal(<>
     {step && box && <div className="game-guide-layer">
-      <svg className="game-guide-shade" width="100%" height="100%"><defs><mask id={maskId}><rect width="100%" height="100%" fill="white" />{box.areas.map((r,i)=><rect key={i} x={r.x-6} y={r.y-6} width={r.w+12} height={r.h+12} rx="16" fill="black" />)}</mask></defs><rect width="100%" height="100%" fill="#03071280" mask={`url(#${maskId})`} /></svg>
       {box.areas.map((r,i)=><div key={i} className="game-guide-focus" style={{ left:r.x-6, top:r.y-6, width:r.w+12, height:r.h+12 }} />)}
       <div ref={labelRef} className="game-guide-label" role="status" style={{ width: labelWidth, left: Math.max(16, Math.min(window.innerWidth - labelWidth - 16, box.x + box.w / 2 - labelWidth / 2)), top }}>
         <strong>{zh ? step.zh : step.text}</strong>

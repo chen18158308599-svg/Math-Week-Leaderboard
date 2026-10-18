@@ -1,6 +1,6 @@
 import { GameGuide, QuickBrief } from "../../components/GameGuide.jsx";
 import { uniqueSequenceDeck, sequenceQuestionKey } from "../../scoring/shortGameRules.js";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import "./NumberSequence.css";
 import hubBackground from "../../assets/home-layers/background.webp";
 import sequenceIsland from "../../assets/home-layers/sequence.webp";
@@ -1530,7 +1530,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
     };
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const DESIGN_WIDTH = 1440;
     const DESIGN_HEIGHT = 960;
     const shell = shellRef.current;
@@ -1552,18 +1552,19 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
       const scale =
         Number.isFinite(rawScale) && rawScale > 0 ? rawScale : 1;
 
-      setCanvasScale({
-        x: scale,
-        y: scale,
-      });
+      setCanvasScale(old => old.x === scale && old.y === scale ? old : { x: scale, y: scale });
     };
 
     updateCanvasScale();
 
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateCanvasScale);
+    observer?.observe(shell);
     window.addEventListener("resize", updateCanvasScale);
-
+    window.visualViewport?.addEventListener("resize", updateCanvasScale);
     return () => {
+      observer?.disconnect();
       window.removeEventListener("resize", updateCanvasScale);
+      window.visualViewport?.removeEventListener("resize", updateCanvasScale);
     };
   }, [gameMode]);
 
@@ -3003,7 +3004,7 @@ export default function NumberSequence({ onHome, onPostGameHome }) {
         data-lang={lang}
         style={{
           "--ns-canvas-scale": canvasScale.x,
-          transform: `scale(${canvasScale.x}, ${canvasScale.y})`,
+          transform: `translate(-50%, -50%) scale(${canvasScale.x})`,
         }}
       >
         {gameMode === "home" ? (

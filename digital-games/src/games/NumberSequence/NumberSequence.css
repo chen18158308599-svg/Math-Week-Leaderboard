@@ -6493,10 +6493,10 @@ body,
 
 /*
   React provides ONLY:
-    transform: scale(canvasScale)
+    transform: translate(-50%, -50%) scale(canvasScale)
 
-  canvasScale is calculated ONCE when the page first opens.
-  It is intentionally NOT recalculated when browser zoom changes.
+  canvasScale is measured before paint and updated when the available
+  viewport or iframe size changes.
 */
 .ns-canvas .ns-game {
   position: relative !important;
@@ -9867,15 +9867,18 @@ body,
 
 .ns-canvas.is-cover {
   top: 50% !important;
-  translate: -50% -50% !important;
+  translate: none !important;
   transform-origin: center center !important;
 }
 
 .ns-canvas.is-game {
   top: 50% !important;
-  translate: -50% -50% !important;
+  translate: none !important;
   transform-origin: center center !important;
 }
+
+/* Translation is part of the inline transform, including on older touchscreens. */
+.ns-canvas { will-change: auto; }
 
 .ns-canvas.is-cover .ns-home-tool,
 .ns-canvas.is-cover .ns-home-start,

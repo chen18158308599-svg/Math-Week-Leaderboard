@@ -1,6 +1,5 @@
 .game-guide-layer { position:fixed; inset:0; z-index:10000; pointer-events:none; }
-.game-guide-focus { position:fixed; border:4px solid #fff250; border-radius:16px; box-shadow:0 0 0 4px #111827,0 0 28px 8px #ffe552a6; animation:guide-arrive .75s ease-in-out 2; }
-.game-guide-shade { position:fixed; inset:0; }
+.game-guide-focus { position:fixed; border:4px solid #fff250; border-radius:16px; box-shadow:0 0 0 3px #111827; }
 .game-guide-label small { display:block; margin-top:8px; color:#dbeafe; font-size:16px; }
 .game-guide-reopen.in-corner { left:auto; right:12px; bottom:12px; transform:none; font-size:12px; padding:7px 12px; }
 .game-guide-label { position:fixed; box-sizing:border-box; padding:14px 20px; border:2px solid #fff250; border-radius:14px; background:#101827; color:#fff; box-shadow:0 8px 30px #0009; font:700 22px/1.3 system-ui,sans-serif; text-align:center; }
@@ -12,5 +11,4 @@
 .game-quick-brief div { display:flex; gap:12px; margin:5px 0; }
 .game-quick-brief dt { min-width:70px; font-weight:800; color:#ffec8a; }
 .game-quick-brief dd { margin:0; }
-@keyframes guide-arrive { 50% { border-color:#fff; } }
 @media(prefers-reduced-motion:reduce) { .game-guide-focus { animation:none; } }
