@@ -4,15 +4,22 @@ import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ClaimToken, Game } from "@/lib/supabase/types";
 import { ClaimCard } from "./claim-card";
+import { phoneClaimLease } from "@/lib/digital-claim-lease";
+import { ClaimTimeRemaining } from "./claim-time-remaining";
 
 export const dynamic = "force-dynamic";
 
 export default async function ClaimPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ token: string }>;
+  searchParams: Promise<{ scan?: string }>;
 }) {
   const { token } = await params;
+  if ((await searchParams).scan === "expired") {
+    return <Message title="QR expired" body="Tap Reclaim QR on the game screen, then scan again." />;
+  }
   const profile = await requireUser(`/claim/${token}`);
 
   const admin = createAdminClient();
@@ -50,12 +57,18 @@ export default async function ClaimPage({
   if (!submission && claim.used_at) {
     return <Message title="Already claimed" body="This code has already been used." />;
   }
-  if (!submission && new Date().getTime() >= claimDeadline(claim)) {
+  let lease = null;
+  if (claim.result_payload && !submission && !claim.used_at) {
+    try { lease = await phoneClaimLease(token); }
+    catch { return <Message title="Temporarily unavailable" body="Your claim could not be checked. Please refresh to try again." />; }
+  }
+  if (!submission && !lease && new Date().getTime() >= claimDeadline(claim)) {
     return <Message title="Expired" body="This code expired — ask staff for a new one." />;
   }
 
   return (
     <Shell>
+      {lease && !submission && <ClaimTimeRemaining expiresAt={lease.expires_at} />}
       <ClaimCard
         token={token}
         gameName={game.name}

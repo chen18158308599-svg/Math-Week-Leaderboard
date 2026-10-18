@@ -22,7 +22,7 @@ function PlayerClaim({ submission, slot, requestClaim }) {
     {player.state === "claimed" ? <p className="post-game-saved" role="status">{`${player.pointsAwarded} POINTS CLAIMED`}</p> : <>
       {player.qrDataUrl && !expired && <>
         <img className="claim-qr" src={player.qrDataUrl} width="248" height="248" alt="Scan to sign in and claim this result" />
-        <p>Scan &amp; sign in with your school account.</p>
+        <p>Scan now. Then you have 5 minutes to sign in &amp; claim.</p>
         <p className="post-game-countdown" role="timer">{loading ? "Renewing QR…" : `${Math.max(0, Math.min(60, Math.ceil((Date.parse(player.expiresAt) - now) / 1000)))}s remaining`}</p>
       </>}
       {(player.error || expired) && <p className="post-game-error" role="alert">{expired ? "This result has expired." : player.error}</p>}

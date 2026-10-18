@@ -70,6 +70,7 @@ await db.exec(readFileSync(new URL('../supabase/migrations/0022_digital_medium_r
 await db.exec(readFileSync(new URL('../supabase/migrations/0023_knn_two_maps.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0024_digital_claim_points_boost.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0025_renew_digital_claim_window.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0026_digital_phone_claim_reservations.sql', import.meta.url), 'utf8'));
 assert.equal((await db.query("select count(*)::int as count from games where type='digital' and digital_key <> 'average' and embed_url='/digital-play/index.html'")).rows[0].count,6);
 // Exercise the real route with its Supabase transport replaced by a PostgreSQL adapter.
 function table(name) {
@@ -227,5 +228,34 @@ assert.equal((await db.query('select count(*)::int as n from claim_tokens where 
 await db.exec('set role authenticated');
 await assert.rejects(db.query('select * from renew_digital_claim($1)',[renewFirst.token]),/permission denied/);
 await db.exec('reset role');
+// Anonymous phone reservations are issued only by the service role, before login.
+const leaseId = '77777777-7777-4777-8777-777777777777';
+const otherLease = '88888888-8888-4888-8888-888888888888';
+const phoneUser = '99999999-9999-4999-8999-999999999999';
+await db.query('insert into profiles(id) values ($1)', [phoneUser]);
+await db.query("select set_config('test.uid',$1,false)", [phoneUser]);
+const phoneResult = await report({...base,attemptId:'knn-phone-reservation-test'});
+assert.equal(phoneResult.status, 200);
+await db.query("update claim_tokens set token='phone-reservation-test' where token=$1", [phoneResult.token]);
+const reserved = (await db.query('select reserve_digital_claim($1,$2) as expires', ['phone-reservation-test', leaseId])).rows[0].expires;
+assert.ok(+new Date(reserved) - Date.now() > 295000);
+assert.equal(+new Date((await db.query('select reserve_digital_claim($1,$2) as expires', ['phone-reservation-test', leaseId])).rows[0].expires), +new Date(reserved), 'Refresh must not extend a reservation');
+await db.exec("update claim_tokens set expires_at=now()-interval '1 second' where token='phone-reservation-test'");
+await assert.rejects(db.query('select reserve_digital_claim($1,$2)', ['phone-reservation-test', otherLease]), /expired_token/);
+await assert.rejects(db.query('select * from claim_token($1)', ['phone-reservation-test']), /expired_token/);
+await assert.rejects(db.query('select * from claim_token($1,$2)', ['phone-reservation-test', otherLease]), /expired_token/);
+await db.exec('set role authenticated');
+await assert.rejects(db.query('select reserve_digital_claim($1,$2)', ['phone-reservation-test', otherLease]), /permission denied/);
+await assert.rejects(db.query('select * from digital_claim_leases'), /permission denied/);
+await db.exec('reset role');
+await db.query("update digital_claim_leases set expires_at=now()-interval '1 second' where id=$1", [leaseId]);
+await assert.rejects(db.query('select * from claim_token($1,$2)', ['phone-reservation-test', leaseId]), /expired_token/);
+await db.query("update digital_claim_leases set expires_at=now()+interval '1 minute' where id=$1", [leaseId]);
+assert.equal((await db.query('select * from claim_token($1,$2)', ['phone-reservation-test', leaseId])).rows[0].points_awarded, 19);
+await assert.rejects(db.query('select * from claim_token($1,$2)', ['phone-reservation-test', leaseId]), /already_scored/);
+const secondPhone = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+await db.query('insert into profiles(id) values ($1)', [secondPhone]);
+await db.query("select set_config('test.uid',$1,false)", [secondPhone]);
+await assert.rejects(db.query('select * from claim_token($1,$2)', ['phone-reservation-test', leaseId]), /already_claimed/);
 await db.close();
 console.log('Digital claims verified: variable scores, metadata, two seats, retired Average, six all-day games, idempotency, normal-retry expiry, explicit server renewal, no duplicate awards, renewal permissions, authentication and legacy awards.');

@@ -11,6 +11,7 @@ function LoginHeading() {
   const title = card ? "Sign in to answer your puzzle card" : next.startsWith("/claim/") ? "Sign in to claim your points" : next.startsWith("/digital/pair/") ? "Sign in to join your game" : "Sign in to Math Week";
   return <>
     <h1 className="mt-1 text-2xl font-semibold">{title}</h1>
+    {next.startsWith("/claim/") && <p className="mt-3 text-sm text-neutral-400">Scanned a game QR? Complete sign-in and claim within 5 minutes of scanning. The game screen can return home while you sign in.</p>}
     {card && <p className="mt-3 text-sm text-neutral-400">After signing in, you&apos;ll return to your card&apos;s answer page. If you opened this login directly, choose your card next.</p>}
   </>;
 }

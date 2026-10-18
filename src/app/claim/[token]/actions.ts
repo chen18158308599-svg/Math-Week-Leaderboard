@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { phoneClaimLease } from "@/lib/digital-claim-lease";
 
 export type ClaimResult =
   | { status: "idle" }
@@ -20,11 +21,14 @@ type ClaimRpcRow = { game_id: string; game_name: string; points_awarded: number 
 
 export async function claimTokenAction(token: string): Promise<ClaimResult> {
   const supabase = await createClient();
+  let lease;
+  try { lease = await phoneClaimLease(token); }
+  catch { return { status: "error", message: "Unable to check your claim. Please try again." }; }
 
   // @ts-expect-error — same upstream RPC input-type gap noted in
   // onboarding/nickname/actions.ts; runtime shape matches claim_token() in
   // supabase/migrations/0003_claim_and_puzzle_rpcs.sql.
-  const rpcResult = await supabase.rpc("claim_token", { p_token: token });
+  const rpcResult = await supabase.rpc("claim_token", { p_token: token, p_lease: lease?.id ?? null });
   const { data, error } = rpcResult as unknown as {
     data: ClaimRpcRow[] | null;
     error: { message: string } | null;

@@ -33,6 +33,13 @@ function isPublic(pathname: string) {
 // and redirects signed-in students who haven't set a nickname yet to /onboarding/nickname
 // before they can reach anything that needs one (claiming a win, the profile page, etc).
 export async function updateSession(request: NextRequest) {
+  // Capture a phone's scan before OAuth and nickname onboarding consume the QR window.
+  const claimMatch = request.nextUrl.pathname.match(/^\/claim\/([A-Za-z0-9_-]+)$/);
+  if (/^\/claim\/[A-Za-z0-9_-]+\/enter$/.test(request.nextUrl.pathname)) return NextResponse.next({ request });
+  if (claimMatch && request.nextUrl.searchParams.get("scan") === "expired") return NextResponse.next({ request });
+  if (claimMatch && !request.cookies.has("mathweek-claim-lease")) {
+    return NextResponse.redirect(new URL(`/claim/${claimMatch[1]}/enter`, request.url));
+  }
   // This kiosk endpoint checks the display credential itself. A student OAuth
   // refresh/profile lookup on the QR-creation path adds unrelated network work.
   if (request.nextUrl.pathname === "/api/games/claim-result") return NextResponse.next({ request });
