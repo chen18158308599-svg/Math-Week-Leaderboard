@@ -2,7 +2,7 @@
 .collage { display: grid; grid-template-columns: 1.45fr 1fr; grid-template-rows: 1fr 1fr; gap: 8px; flex: 1 1 40%; min-height: 110px; }
 .tile { position: relative; overflow: hidden; background: #e9edf8; }
 .tile:first-child { grid-row: span 2; }
-.tile img { object-fit: cover; }
+.tile img { object-fit: contain; }
 .placeholder { position: absolute; top: 10px; left: 10px; padding: 4px 7px; border-radius: 20px; background: #ffffffcc; color: #66788c; font-size: 7px; letter-spacing: 1px; }
 .caption { position: absolute; inset: auto 0 0; padding: 25px 14px 10px; font-size: clamp(12px, 1.3vw, 18px); color: white; background: linear-gradient(transparent, #172b4cbb); }
 .copy { padding: clamp(15px, 2vh, 25px) clamp(18px, 2vw, 30px); }
@@ -31,3 +31,10 @@
 .small .action { font-size: 9px; margin-top: 5px; }
 .small .action > span { font-size: 14px; }
 @media (max-height: 850px) { .large .experiences { display: none; } .large .copy > p { font-size: 11px; } .large .copy h3 { font-size: 31px; } .large .copy { padding: 14px 22px; } }
+
+@media (max-width: 600px) {
+  .large .collage { flex: none; height: 260px; }
+  .large .copy { padding: 20px; }
+  .large .caption { font-size: 12px; padding: 24px 10px 10px; }
+  .large .agenda > div { flex-wrap: wrap; }
+}

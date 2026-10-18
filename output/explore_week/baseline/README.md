@@ -1,0 +1,1 @@
+Baseline: title + poster + Awards composite image, before the slideshow experiment. Restore the two files in this folder to src/app/directory/ to return to this baseline. Earlier design variants are superseded. No Git commit was created.

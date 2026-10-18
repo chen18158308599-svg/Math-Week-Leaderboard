@@ -1,15 +1,8 @@
-﻿.directory { padding-bottom: 48px; }
-.intro { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: 42px; padding: 38px 0 32px; }
+.directory { padding-bottom: 48px; }
+.intro { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.25fr); align-items: center; gap: 24px; padding: 28px 0; }
 .intro h1 { font-size: clamp(38px, 3.8vw, 62px); line-height: 1.08; font-weight: 500; margin: 18px 0 20px; }
 .intro h1 span { color: #4d6bfe; }
 .introCopy > p:last-child { max-width: 490px; color: #68768a; line-height: 1.7; font-size: 15px; }
-.collage { display: grid; grid-template-columns: 1.3fr 1fr; grid-template-rows: 145px 145px; gap: 12px; }
-.collageTile { position: relative; overflow: hidden; border-radius: 18px; text-align: left; cursor: pointer; background: #e9edf8; }
-.collageTile:first-child { grid-row: span 2; }
-.collageTile img { object-fit: cover; transition: transform .25s; }
-.collageTile:hover img { transform: scale(1.04); }
-.collageCaption { position: absolute; inset: auto 0 0; padding: 35px 16px 16px; background: linear-gradient(transparent, #142343bc); color: white; font-size: 17px; font-weight: 500; }
-.collageTile .photoLabel { top: 12px; bottom: auto; left: 12px; font-size: 7px; }
 .days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 9px; padding-bottom: 22px; border-bottom: 1px solid #dfe5ef; }
 .days button { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; border: 1px solid #dfe5ef; border-radius: 14px; background: #fff; cursor: pointer; }
 .days button[aria-pressed=true] { color: white; background: #4d6bfe; border-color: #4d6bfe; box-shadow: 0 8px 20px #4d6bfe25; }
@@ -69,4 +62,53 @@
 .visitNote { border-top: 1px solid #edf0f5; padding-top: 18px; margin-top: 20px; }
 .close { display: block; width: 100%; padding: 14px; border-radius: 12px; background: #4d6bfe; color: #fff; margin-top: 20px; cursor: pointer; font-size: 14px; }
 .directory button:focus-visible, .dialog button:focus-visible { outline: 3px solid #6c80fc; outline-offset: 4px; }
-@media (prefers-reduced-motion: reduce) { .card, .collageTile img { transition: none; } .card:hover, .collageTile:hover img { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+
+@media (max-width: 1000px) {
+ .reward { flex-direction: column; align-items: flex-start; }
+ .intro { gap: 24px; }
+ .experienceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .agenda { flex-direction: column; gap: 6px; }
+ .agendaLabel { flex-basis: auto; padding-top: 0; }
+ .agendaLocation { white-space: normal; }
+ .wayfinding { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 900px) {
+ .intro { grid-template-columns: 1fr; padding-top: 24px; }
+ .rewards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+}
+@media (max-width: 600px) {
+ .intro h1 { font-size: 38px; }
+ .reward { flex-direction: column; align-items: flex-start; }
+ .rewards { padding: 14px; }
+ .rewardCopy h3 { font-size: 18px; }
+ .days { gap: 4px; }
+ .days button { padding: 10px 2px; border-radius: 10px; }
+ .days button > span { font-size: 10px; letter-spacing: 0; }
+ .days strong { font-size: 22px; }
+ .days small { font-size: 8px; }
+ .tags { max-width: 100%; justify-content: flex-start; }
+ .agenda { padding: 16px; }
+ .agendaEvent { flex-wrap: wrap; gap: 12px; }
+ .agendaTime, .agendaLocation { flex-basis: 100%; }
+ .agendaCopy { min-width: 0; }
+ .agendaPhoto { width: 64px; height: 58px; }
+ .sectionTitle { flex-wrap: wrap; }
+ .experienceGrid, .wayfinding > div:last-child { grid-template-columns: 1fr; }
+ .dialogCopy { padding: 22px; }
+}
+@media (max-width: 360px) { .rewards { grid-template-columns: 1fr; } .days small { font-size: 7px; } }
+
+
+.showcase { min-width: 0; overflow: hidden; border: 1px solid #dbe3f4; border-radius: 18px; background: #edf1fc; }
+.slideMedia { position: relative; aspect-ratio: 16/9; }
+.slideMedia img { object-fit: contain; }
+.slideLabel { position: absolute; top: 12px; left: 12px; border-radius: 20px; padding: 7px 12px; background: #ffffffed; color: #4059b4; font-size: 12px; font-weight: 600; }
+.slidePlaceholder { position: absolute; bottom: 12px; left: 12px; background: #ffffffed; padding: 6px 10px; border-radius: 16px; color: #65738b; font-size: 9px; letter-spacing: 1px; }
+.slideControls { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; background: #fff; }
+.slideDots { display: flex; flex-wrap: wrap; }
+.slideDots button { display: grid; place-items: center; width: 32px; height: 44px; cursor: pointer; }
+.slideDots button::after { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #c5cfe8; }
+.slideDots button[aria-pressed=true]::after { background: #4d6bfe; width: 20px; border-radius: 8px; }
+.slideArrow { flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px; background: #edf1fc; color: #4059b4; cursor: pointer; font-size: 22px; }
+@media (max-width: 450px) { .slideDots button { width: 24px; } .slideControls { gap: 4px; padding: 6px; } }

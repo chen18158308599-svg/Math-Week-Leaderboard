@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { DAY_PICKS, EXPERIENCES, SPECIAL_EVENTS, type DiscoverCard } from "@/lib/directory-content";
 import { themesActiveOn } from "@/lib/event-content";
+import DirectoryShowcase from "./directory-showcase";
 import styles from "./directory.module.css";
 
 function PreviewImage({ card, sizes }: { card: DiscoverCard; sizes: string }) {
@@ -25,11 +26,6 @@ export default function DirectoryExplorer({ initialDay }: { initialDay: number }
     if (dialog.current) dialog.current.scrollTop = 0;
   };
   const close = () => { dialog.current?.close(); };
-  const hero = [
-    { id: "exhibition", caption: "See the unexpected." },
-    { id: "digital", caption: "Make your next move." },
-    { id: "committee", caption: "Solve it together." },
-  ];
   return <div className={styles.directory}>
     <header className={styles.intro}>
       <div className={styles.introCopy}>
@@ -37,15 +33,7 @@ export default function DirectoryExplorer({ initialDay }: { initialDay: number }
         <h1>Maths you can see,<br /><span>touch and play.</span></h1>
         <p>Discover curious exhibits, hands-on puzzles and games across the library. Pick something that catches your eye.</p>
       </div>
-      <div className={styles.collage} aria-label="A glimpse of Math Week">
-        {hero.map(item => {
-          const card = EXPERIENCES.find(c => c.id === item.id)!;
-          return <button className={styles.collageTile} key={item.id} onClick={() => open(card)} aria-label={`Explore ${card.title}`}>
-            <PreviewImage card={card} sizes={item.id === "exhibition" ? "440px" : "260px"} />
-            <span className={styles.collageCaption}>{item.caption}</span>
-          </button>;
-        })}
-      </div>
+      <DirectoryShowcase />
     </header>
     <nav className={styles.days} aria-label="Choose an event date">
       {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((name, i) => <button key={name} aria-pressed={day === i + 19} onClick={() => setDay(i + 19)}>

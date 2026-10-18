@@ -1,0 +1,134 @@
+.directory { padding-bottom: 48px; }
+.intro { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.1fr) minmax(230px, .55fr); align-items: center; gap: 24px; padding: 28px 0; }
+.intro h1 { font-size: clamp(38px, 3.8vw, 62px); line-height: 1.08; font-weight: 500; margin: 18px 0 20px; }
+.intro h1 span { color: #4d6bfe; }
+.introCopy > p:last-child { max-width: 490px; color: #68768a; line-height: 1.7; font-size: 15px; }
+.poster { display: block; overflow: hidden; border: 1px solid #dbe3f4; border-radius: 18px; background: #edf1fc; color: #425dcf; }
+.poster img { display: block; width: 100%; height: auto; object-fit: contain; }
+.rewards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto; grid-auto-rows: 1fr; gap: 14px; margin-bottom: 28px; padding: 18px; border-radius: 18px; background: #edf0fd; border: 1px solid #dfe5ef; }
+.awardsHeading { grid-column: 1 / -1; font-size: 24px; font-weight: 600; color: #4059b4; }
+.awardsHeading span { color: #b38627; margin-right: 6px; }
+.reward { display: flex; align-items: center; gap: 12px; padding: 12px; overflow: hidden; border: 1px solid #dfe5ef; border-radius: 18px; background: #fff; }
+.rewardPhoto { position: relative; width: 90px; height: 120px; flex-shrink: 0; border-radius: 8px; overflow: hidden; background: #f0f3fb; }
+.rewardPhoto img { object-fit: contain; }
+.rewardCopy { min-width: 0; }
+.rewardCopy > span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #4d6bfe; }
+.rewardCopy h3 { font-size: 18px; font-weight: 500; margin: 8px 0 0; }
+.rewardCopy p { font-size: 12px; margin-top: 8px; color: #64738b; }
+.days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 9px; padding-bottom: 22px; border-bottom: 1px solid #dfe5ef; }
+.days button { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 12px 8px; border: 1px solid #dfe5ef; border-radius: 14px; background: #fff; cursor: pointer; }
+.days button[aria-pressed=true] { color: white; background: #4d6bfe; border-color: #4d6bfe; box-shadow: 0 8px 20px #4d6bfe25; }
+.days button > span { font-size: 12px; letter-spacing: 1px; }
+.days strong { font-size: 26px; font-weight: 500; line-height: 1.2; }
+.days small { font-size: 10px; }
+.dayHeading { padding: 24px 0; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+.dayHeading h2 { font-size: 28px; margin-top: 7px; }
+.tags { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; max-width: 55%; }
+.tags span { border-radius: 30px; padding: 7px 12px; background: #eaf0fa; font-size: 10px; color: #516178; }
+.sundayNote { flex-basis: 100%; font-size: 13px; color: #6a768b; }
+.agenda { display: flex; gap: 22px; padding: 18px 22px; border-radius: 18px; background: #edf0fd; margin-bottom: 28px; }
+.agendaLabel { flex: 0 0 70px; font-size: 10px; color: #4d6bfe; letter-spacing: 1px; padding-top: 10px; }
+.agenda > div { flex: 1; min-width: 0; }
+.agendaEvent { display: flex; align-items: center; width: 100%; gap: 18px; padding: 8px 0; text-align: left; cursor: pointer; }
+.agendaEvent + .agendaEvent { border-top: 1px solid #d5dcf2; padding-top: 16px; margin-top: 8px; }
+.agendaTime { flex: 0 0 115px; color: #4056b9; font-size: 14px; }
+.agendaPhoto { position: relative; width: 82px; height: 66px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+.agendaPhoto img { object-fit: cover; }
+.agendaPhoto .photoLabel { display: none; }
+.agendaCopy { flex: 1; }
+.agendaCopy h3 { font-size: 20px; margin-bottom: 5px; }
+.agendaCopy p { color: #64738b; font-size: 12px; line-height: 1.6; max-width: 650px; }
+.agendaLocation { font-size: 11px; color: #526588; white-space: nowrap; }
+.agendaLocation > span { font-size: 23px; padding-left: 12px; }
+.section { margin: 12px 0 44px; }
+.sectionTitle { display: flex; align-items: end; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+.sectionTitle h2 { font-size: 35px; font-weight: 500; margin-top: 7px; }
+.sectionTitle > span { font-size: 11px; color: #768399; padding-bottom: 7px; }
+.experienceGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.card { border-radius: 18px; overflow: hidden; text-align: left; background: #fff; cursor: pointer; display: flex; flex-direction: column; transition: box-shadow .2s, transform .2s; }
+.card:hover { box-shadow: 0 10px 30px #24417613; transform: translateY(-3px); }
+.photo { aspect-ratio: 4/3; position: relative; background: #e9edf8; overflow: hidden; }
+.photo img, .dialogPhoto img { object-fit: cover; }
+.photoLabel { position: absolute; bottom: 14px; left: 16px; border-radius: 20px; padding: 6px 9px; background: #ffffffd9; font-size: 8px; letter-spacing: 1.2px; color: #596d85; }
+.cardCopy { padding: 22px; display: flex; flex-direction: column; flex: 1; }
+.category { font-size: 10px; color: #4d6bfe; letter-spacing: 1px; text-transform: uppercase; font-weight: 600; }
+.cardCopy h3 { font-size: 25px; line-height: 1.2; margin: 11px 0; }
+.cardCopy > p { font-size: 13px; color: #6b788a; line-height: 1.7; margin-bottom: 18px; }
+.cardMeta { margin-top: auto; display: flex; flex-direction: column; gap: 6px; font-size: 11px; color: #7a8698; line-height: 1.6; }
+.cardMeta strong { font-size: 13px; color: #344566; font-weight: 600; }
+.discover { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; color: #425dcf; font-size: 12px; }
+.discover > span { font-size: 22px; }
+.wayfinding { border-top: 1px solid #dfe5ef; padding-top: 36px; display: grid; grid-template-columns: 1fr 2fr; gap: 40px; }
+.wayfinding h2 { font-size: 32px; line-height: 1.2; margin-top: 12px; }
+.wayfinding > div:last-child { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.wayfinding article > span { font-size: 9px; letter-spacing: 1px; color: #4d6bfe; }
+.wayfinding h3 { font-size: 18px; margin: 12px 0; }
+.wayfinding p:not([class]) { font-size: 12px; line-height: 1.8; color: #768399; }
+.dialog { position: fixed; inset: 0; margin: auto; width: min(640px, calc(100% - 32px)); max-height: 88svh; overflow-y: auto; border: 0; padding: 0; border-radius: 24px; background: #fff; color: #202939; box-shadow: 0 24px 90px #10224744; }
+.dialog::backdrop { background: #13234399; backdrop-filter: blur(5px); }
+.dialogPhoto { position: relative; aspect-ratio: 16/9; }
+.dialogCopy { padding: 30px; }
+.dialogCopy h2 { font-size: 30px; line-height: 1.15; margin: 12px 0 18px; }
+.dialogCopy > p:not(.category) { font-size: 14px; line-height: 1.8; color: #69788c; }
+.dialogCopy .cardMeta { margin-top: 20px; }
+.visitNote { border-top: 1px solid #edf0f5; padding-top: 18px; margin-top: 20px; }
+.close { display: block; width: 100%; padding: 14px; border-radius: 12px; background: #4d6bfe; color: #fff; margin-top: 20px; cursor: pointer; font-size: 14px; }
+.directory button:focus-visible, .dialog button:focus-visible { outline: 3px solid #6c80fc; outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+
+@media (max-width: 1000px) {
+ .reward { flex-direction: column; align-items: flex-start; }
+ .intro { gap: 24px; }
+ .experienceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+ .agenda { flex-direction: column; gap: 6px; }
+ .agendaLabel { flex-basis: auto; padding-top: 0; }
+ .agendaLocation { white-space: normal; }
+ .wayfinding { grid-template-columns: 1fr; gap: 24px; }
+}
+@media (max-width: 900px) {
+ .intro { grid-template-columns: 1fr; padding-top: 24px; }
+ .rewards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+}
+@media (max-width: 600px) {
+ .intro h1 { font-size: 38px; }
+ .reward { flex-direction: column; align-items: flex-start; }
+ .rewards { padding: 14px; }
+ .rewardCopy h3 { font-size: 18px; }
+ .days { gap: 4px; }
+ .days button { padding: 10px 2px; border-radius: 10px; }
+ .days button > span { font-size: 10px; letter-spacing: 0; }
+ .days strong { font-size: 22px; }
+ .days small { font-size: 8px; }
+ .tags { max-width: 100%; justify-content: flex-start; }
+ .agenda { padding: 16px; }
+ .agendaEvent { flex-wrap: wrap; gap: 12px; }
+ .agendaTime, .agendaLocation { flex-basis: 100%; }
+ .agendaCopy { min-width: 0; }
+ .agendaPhoto { width: 64px; height: 58px; }
+ .sectionTitle { flex-wrap: wrap; }
+ .experienceGrid, .wayfinding > div:last-child { grid-template-columns: 1fr; }
+ .dialogCopy { padding: 22px; }
+}
+@media (max-width: 360px) { .rewards { grid-template-columns: 1fr; } .days small { font-size: 7px; } }
+
+/* Trial: compact awards stacked beside the poster. */
+.awardsComposite { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 10px; grid-column: 1 / -1; }
+.intro .rewards { grid-template-columns: 1fr; gap: 8px; margin: 0; padding: 12px; }
+.intro .awardsHeading { font-size: 20px; margin-bottom: 2px; }
+.intro .reward { flex-direction: row; align-items: center; padding: 8px; gap: 10px; border-radius: 10px; }
+.intro .rewardPhoto { width: 48px; height: 64px; }
+.intro .rewardCopy h3 { font-size: 16px; margin-top: 4px; }
+.intro .rewardCopy > span { font-size: 9px; letter-spacing: .5px; }
+.intro .rewardCopy p { font-size: 11px; margin-top: 4px; }
+.intro .rewards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.intro .reward { padding: 8px; }
+@media (max-width: 1100px) and (min-width: 901px) {
+ .intro { grid-template-columns: minmax(0, 1fr) 240px; }
+ .introCopy { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+ .intro .rewards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 400px) {
+ .intro .rewards { grid-template-columns: 1fr; }
+}

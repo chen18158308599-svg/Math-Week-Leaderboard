@@ -5,14 +5,15 @@ import styles from "./directory-preview.module.css";
 export function DirectoryPreview({ date, large }: { date: string; large: boolean }) {
   const previewDate = date < "2026-10-19" ? "2026-10-19" : date > "2026-10-25" ? "2026-10-25" : date;
   const events = SPECIAL_EVENTS[Number(previewDate.slice(-2))] ?? [];
-  const captions = ["See the unexpected.", "Make your next move.", "Solve it together."];
-  const images = ["exhibition", "digital", "committee"].map(id => EXPERIENCES.find(card => card.id === id)!);
   return <div className={`${styles.preview} ${large ? styles.large : styles.small}`}>
-    <div className={styles.collage}>{images.map((card, i) => <div key={card.id} className={styles.tile}>
-      <Image src={card.image} alt={`${card.title}${card.image.endsWith(".svg") ? " illustration" : " at Math Week"}`} fill sizes={large ? "35vw" : "18vw"} />
-      {card.image.endsWith(".svg") && <span className={styles.placeholder}>PHOTO COMING SOON</span>}
-      <span className={styles.caption}>{captions[i]}</span>
-    </div>)}</div>
+    <div className={styles.collage}>
+      <div className={styles.tile}>
+        <Image src="/whats-on-today/prizes-composite.webp" alt="Math Week awards: camping chair, thermos, character blankets and magnetic badge" fill sizes={large ? "(max-width: 600px) 55vw, 35vw" : "18vw"} />
+        <span className={styles.caption}>Explore the awards.</span>
+      </div>
+      <div className={styles.tile} aria-hidden="true" />
+      <div className={styles.tile} aria-hidden="true" />
+    </div>
     <div className={styles.copy}>
       <span className={styles.eyebrow}>19–25 OCTOBER / XMUM LIBRARY</span>
       <h3>Maths you can see,<br />touch and play.</h3>

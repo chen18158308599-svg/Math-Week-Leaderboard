@@ -1607,3 +1607,13 @@ body {
 .display-fullscreen-control button:disabled { opacity:.65; cursor:wait; }
 .display-fullscreen-control p { max-width:300px; margin:0; padding:12px; border-radius:9px; background:#fff; color:#8c3029; box-shadow:0 3px 14px #13243a20; font:500 13px/1.5 system-ui,sans-serif; }
 @media print { .display-fullscreen-control { display:none; } }
+
+/* Stack the existing home panels when the display is too narrow for the kiosk grid. */
+@media (max-width: 600px) {
+  .kiosk-home { height: auto; min-height: 100svh; overflow: visible; }
+  .kiosk-home .hub-windows { display: flex; flex-direction: column; flex: none; }
+  .kiosk-home .hub-panel { min-height: 240px; }
+  .kiosk-home .hub-large { min-height: 720px; }
+  .kiosk-home .hub-panel-body { flex: auto; }
+  .kiosk-home .hub-toolbar { letter-spacing: 0; gap: 8px; font-size: 8px; }
+}

@@ -1185195,3 +1185195,527 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
  GET /site-access?next=%2F 200 in 49ms (next.js: 11ms, proxy.ts: 7ms, application-code: 32ms)
  GET /login?next=%2Fadmin%2Fgames 200 in 223ms (next.js: 10ms, proxy.ts: 185ms, application-code: 28ms)
  GET /stock-market 200 in 78ms (next.js: 19ms, proxy.ts: 8ms, application-code: 50ms)
+✓ Compiled in 355ms
+ GET /directory 200 in 102ms (next.js: 33ms, proxy.ts: 7ms, application-code: 62ms)
+[browser] Image with src "/directory/exhibition.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/directory/hands-on.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 185ms (next.js: 127ms, proxy.ts: 9ms, application-code: 49ms)
+[browser] Image with src "/directory/committee.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 105ms (next.js: 8ms, proxy.ts: 9ms, application-code: 88ms)
+ GET /api/stock-market/status 200 in 108ms (next.js: 23ms, proxy.ts: 9ms, application-code: 76ms)
+✓ Compiled in 279ms
+ GET /site-access?next=%2F 200 in 60ms (next.js: 10ms, proxy.ts: 17ms, application-code: 32ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 352ms (next.js: 9ms, proxy.ts: 320ms, application-code: 23ms)
+✓ Compiled in 276ms
+ GET /site-access?next=%2F 200 in 48ms (next.js: 9ms, proxy.ts: 10ms, application-code: 29ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 217ms (next.js: 10ms, proxy.ts: 187ms, application-code: 20ms)
+ GET /directory 200 in 86ms (next.js: 15ms, proxy.ts: 7ms, application-code: 64ms)
+ GET / 200 in 196ms (next.js: 143ms, proxy.ts: 6ms, application-code: 47ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 287ms (next.js: 13ms, proxy.ts: 9ms, application-code: 265ms)
+ GET /api/stock-market/status 200 in 291ms (next.js: 22ms, proxy.ts: 6ms, application-code: 264ms)
+ GET /directory 200 in 225ms (next.js: 192ms, proxy.ts: 5ms, application-code: 27ms)
+ GET /directory 200 in 63ms (next.js: 7ms, proxy.ts: 5ms, application-code: 50ms)
+ GET /directory 200 in 72ms (next.js: 12ms, proxy.ts: 6ms, application-code: 54ms)
+ GET / 200 in 56ms (next.js: 8ms, proxy.ts: 7ms, application-code: 42ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 104ms (next.js: 9ms, proxy.ts: 5ms, application-code: 90ms)
+ GET /api/stock-market/status 200 in 107ms (next.js: 6ms, proxy.ts: 18ms, application-code: 82ms)
+ GET /directory 200 in 35ms (next.js: 8ms, proxy.ts: 5ms, application-code: 23ms)
+ GET /directory 200 in 64ms (next.js: 10ms, proxy.ts: 6ms, application-code: 48ms)
+ GET / 200 in 189ms (next.js: 140ms, proxy.ts: 6ms, application-code: 42ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 179ms (next.js: 31ms, proxy.ts: 14ms, application-code: 134ms)
+ GET /api/stock-market/status 200 in 156ms (next.js: 8ms, proxy.ts: 32ms, application-code: 116ms)
+ GET /directory 200 in 177ms (next.js: 139ms, proxy.ts: 6ms, application-code: 32ms)
+ GET /directory 200 in 65ms (next.js: 9ms, proxy.ts: 7ms, application-code: 50ms)
+ GET / 200 in 175ms (next.js: 127ms, proxy.ts: 7ms, application-code: 41ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 90ms (next.js: 8ms, proxy.ts: 9ms, application-code: 73ms)
+ GET /api/stock-market/status 200 in 87ms (next.js: 17ms, proxy.ts: 7ms, application-code: 63ms)
+ GET /directory 200 in 162ms (next.js: 136ms, proxy.ts: 5ms, application-code: 21ms)
+ GET /directory 200 in 67ms (next.js: 11ms, proxy.ts: 6ms, application-code: 50ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 41ms (next.js: 12ms, proxy.ts: 5ms, application-code: 23ms)
+✓ Compiled in 181ms
+ GET /site-access?next=%2F 200 in 44ms (next.js: 8ms, proxy.ts: 9ms, application-code: 27ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 150ms (next.js: 9ms, proxy.ts: 121ms, application-code: 20ms)
+ GET / 200 in 190ms (next.js: 145ms, proxy.ts: 6ms, application-code: 38ms)
+ GET /api/stock-market/status 200 in 54ms (next.js: 7ms, proxy.ts: 7ms, application-code: 40ms)
+ GET /api/stock-market/status 200 in 89ms (next.js: 5ms, proxy.ts: 16ms, application-code: 68ms)
+ GET /directory 200 in 170ms (next.js: 144ms, proxy.ts: 5ms, application-code: 21ms)
+✓ Compiled in 713ms
+ GET /site-access?next=%2F 200 in 47ms (next.js: 11ms, proxy.ts: 5ms, application-code: 31ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 343ms (next.js: 8ms, proxy.ts: 314ms, application-code: 21ms)
+ GET /directory 200 in 77ms (next.js: 12ms, proxy.ts: 6ms, application-code: 58ms)
+ GET / 200 in 66ms (next.js: 11ms, proxy.ts: 7ms, application-code: 47ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 104ms (next.js: 4ms, proxy.ts: 25ms, application-code: 75ms)
+ GET /api/stock-market/status 200 in 179ms (next.js: 11ms, proxy.ts: 6ms, application-code: 162ms)
+ GET /directory 200 in 38ms (next.js: 9ms, proxy.ts: 5ms, application-code: 25ms)
+ GET /directory 200 in 64ms (next.js: 9ms, proxy.ts: 7ms, application-code: 49ms)
+ GET / 200 in 54ms (next.js: 10ms, proxy.ts: 5ms, application-code: 39ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 134ms (next.js: 7ms, proxy.ts: 8ms, application-code: 119ms)
+ GET /api/stock-market/status 200 in 150ms (next.js: 5ms, proxy.ts: 19ms, application-code: 126ms)
+ GET /directory 200 in 36ms (next.js: 9ms, proxy.ts: 5ms, application-code: 22ms)
+ GET /directory 200 in 71ms (next.js: 9ms, proxy.ts: 8ms, application-code: 55ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 77ms (next.js: 8ms, proxy.ts: 7ms, application-code: 61ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 121ms (next.js: 7ms, proxy.ts: 10ms, application-code: 105ms)
+ GET /api/stock-market/status 200 in 144ms (next.js: 18ms, proxy.ts: 8ms, application-code: 118ms)
+ GET /directory 200 in 44ms (next.js: 14ms, proxy.ts: 6ms, application-code: 24ms)
+ GET /directory 200 in 78ms (next.js: 10ms, proxy.ts: 13ms, application-code: 55ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 65ms (next.js: 10ms, proxy.ts: 6ms, application-code: 49ms)
+ GET /api/stock-market/status 200 in 100ms (next.js: 18ms, proxy.ts: 7ms, application-code: 74ms)
+ GET /api/stock-market/status 200 in 655ms (next.js: 6ms, proxy.ts: 9ms, application-code: 639ms)
+ GET /directory 200 in 49ms (next.js: 11ms, proxy.ts: 7ms, application-code: 31ms)
+ GET /site-access?next=%2Fdirectory 200 in 137ms (next.js: 7ms, proxy.ts: 5ms, application-code: 125ms)
+ GET /site-access?next=%2Fdirectory 200 in 75ms (next.js: 10ms, proxy.ts: 14ms, application-code: 51ms)
+ GET /site-access?next=%2F 200 in 1129ms (next.js: 140ms, proxy.ts: 494ms, application-code: 495ms)
+ GET / 200 in 116ms (next.js: 58ms, proxy.ts: 19ms, application-code: 40ms)
+ POST /site-access?next=%2F 200 in 732ms (next.js: 190ms, proxy.ts: 42ms, application-code: 501ms)
+  └─ ƒ unlockSite("/", {}, {}) in 104ms src/app/site-access/actions.ts
+ GET /api/stock-market/status 200 in 904ms (next.js: 101ms, proxy.ts: 21ms, application-code: 783ms)
+ GET /api/stock-market/status 200 in 944ms (next.js: 243ms, proxy.ts: 23ms, application-code: 678ms)
+ GET /directory 200 in 57ms (next.js: 16ms, proxy.ts: 10ms, application-code: 30ms)
+ GET / 200 in 49ms (next.js: 16ms, proxy.ts: 5ms, application-code: 28ms)
+ GET /api/stock-market/status 200 in 138ms (next.js: 17ms, proxy.ts: 9ms, application-code: 112ms)
+ GET /api/stock-market/status 200 in 283ms (next.js: 44ms, proxy.ts: 11ms, application-code: 228ms)
+ GET / 200 in 56ms (next.js: 13ms, proxy.ts: 7ms, application-code: 36ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 315ms (next.js: 10ms, proxy.ts: 278ms, application-code: 27ms)
+ GET /api/stock-market/status 200 in 63ms (next.js: 4ms, proxy.ts: 5ms, application-code: 53ms)
+ GET /api/stock-market/status 200 in 192ms (next.js: 7ms, proxy.ts: 14ms, application-code: 172ms)
+ GET /api/stock-market/status 200 in 204ms (next.js: 20ms, proxy.ts: 14ms, application-code: 171ms)
+ GET /directory 200 in 80ms (next.js: 13ms, proxy.ts: 5ms, application-code: 62ms)
+[browser] Image with src "/whats-on-today/nap_blanket.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 73ms (next.js: 9ms, proxy.ts: 7ms, application-code: 57ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 101ms (next.js: 11ms, proxy.ts: 8ms, application-code: 82ms)
+ GET /api/stock-market/status 200 in 104ms (next.js: 5ms, proxy.ts: 24ms, application-code: 75ms)
+ GET /directory 200 in 43ms (next.js: 8ms, proxy.ts: 5ms, application-code: 30ms)
+ GET /directory 200 in 67ms (next.js: 9ms, proxy.ts: 11ms, application-code: 48ms)
+[browser] Image with src "/whats-on-today/thermos.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 94ms (next.js: 5ms, proxy.ts: 5ms, application-code: 83ms)
+ GET /api/stock-market/status 200 in 75ms (next.js: 5ms, proxy.ts: 4ms, application-code: 66ms)
+ GET /api/stock-market/status 200 in 100ms (next.js: 5ms, proxy.ts: 5ms, application-code: 91ms)
+ GET /directory 200 in 67ms (next.js: 10ms, proxy.ts: 6ms, application-code: 51ms)
+ GET / 200 in 56ms (next.js: 8ms, proxy.ts: 6ms, application-code: 42ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 115ms (next.js: 8ms, proxy.ts: 8ms, application-code: 99ms)
+ GET /api/stock-market/status 200 in 112ms (next.js: 5ms, proxy.ts: 23ms, application-code: 84ms)
+ GET /directory 200 in 78ms (next.js: 17ms, proxy.ts: 23ms, application-code: 37ms)
+ GET /directory 200 in 64ms (next.js: 9ms, proxy.ts: 7ms, application-code: 48ms)
+ GET / 200 in 59ms (next.js: 10ms, proxy.ts: 6ms, application-code: 44ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 96ms (next.js: 8ms, proxy.ts: 7ms, application-code: 81ms)
+ GET /api/stock-market/status 200 in 102ms (next.js: 6ms, proxy.ts: 24ms, application-code: 73ms)
+ GET /directory 200 in 42ms (next.js: 9ms, proxy.ts: 6ms, application-code: 27ms)
+ GET /directory 200 in 76ms (next.js: 11ms, proxy.ts: 11ms, application-code: 55ms)
+[browser] Image with src "/whats-on-today/thermos.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 63ms (next.js: 8ms, proxy.ts: 5ms, application-code: 50ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 119ms (next.js: 18ms, proxy.ts: 23ms, application-code: 78ms)
+ GET /api/stock-market/status 200 in 112ms (next.js: 30ms, proxy.ts: 8ms, application-code: 73ms)
+ GET /api/stock-market/status 200 in 1351ms (next.js: 5ms, proxy.ts: 6ms, application-code: 1340ms)
+ GET /directory 200 in 35ms (next.js: 8ms, proxy.ts: 6ms, application-code: 21ms)
+ GET /directory 200 in 61ms (next.js: 7ms, proxy.ts: 6ms, application-code: 48ms)
+ GET / 200 in 58ms (next.js: 8ms, proxy.ts: 6ms, application-code: 44ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 90ms (next.js: 14ms, proxy.ts: 9ms, application-code: 66ms)
+ GET /api/stock-market/status 200 in 112ms (next.js: 21ms, proxy.ts: 26ms, application-code: 66ms)
+ GET /api/stock-market/status 200 in 139ms (next.js: 11ms, proxy.ts: 28ms, application-code: 101ms)
+ GET /api/stock-market/status 200 in 119ms (next.js: 21ms, proxy.ts: 24ms, application-code: 75ms)
+ GET /directory 200 in 34ms (next.js: 8ms, proxy.ts: 5ms, application-code: 21ms)
+ GET /api/stock-market/status 200 in 101ms (next.js: 5ms, proxy.ts: 5ms, application-code: 91ms)
+ GET /api/stock-market/status 200 in 80ms (next.js: 5ms, proxy.ts: 5ms, application-code: 70ms)
+ GET /api/stock-market/status 200 in 89ms (next.js: 5ms, proxy.ts: 5ms, application-code: 79ms)
+ GET /api/stock-market/status 200 in 72ms (next.js: 4ms, proxy.ts: 5ms, application-code: 62ms)
+ GET /api/stock-market/status 200 in 91ms (next.js: 5ms, proxy.ts: 6ms, application-code: 80ms)
+ GET /api/stock-market/status 200 in 168ms (next.js: 5ms, proxy.ts: 5ms, application-code: 159ms)
+ GET /api/stock-market/status 200 in 94ms (next.js: 5ms, proxy.ts: 5ms, application-code: 84ms)
+ GET /api/stock-market/status 200 in 93ms (next.js: 5ms, proxy.ts: 23ms, application-code: 66ms)
+ GET /api/stock-market/status 200 in 104ms (next.js: 8ms, proxy.ts: 5ms, application-code: 91ms)
+ GET / 200 in 70ms (next.js: 16ms, proxy.ts: 5ms, application-code: 48ms)
+ GET /api/stock-market/status 200 in 75ms (next.js: 13ms, proxy.ts: 7ms, application-code: 55ms)
+ GET /api/stock-market/status 200 in 93ms (next.js: 29ms, proxy.ts: 6ms, application-code: 57ms)
+ GET /directory 200 in 90ms (next.js: 17ms, proxy.ts: 7ms, application-code: 66ms)
+ GET /whats-on-today 404 in 3.2s (next.js: 2.9s, proxy.ts: 278ms, application-code: 61ms)
+ GET / 200 in 58ms (next.js: 13ms, proxy.ts: 14ms, application-code: 31ms)
+ GET /api/stock-market/status 200 in 88ms (next.js: 8ms, proxy.ts: 14ms, application-code: 66ms)
+ GET /api/stock-market/status 200 in 118ms (next.js: 24ms, proxy.ts: 13ms, application-code: 81ms)
+ GET /directory 200 in 51ms (next.js: 17ms, proxy.ts: 5ms, application-code: 29ms)
+ GET / 200 in 11.3s (next.js: 11.0s, proxy.ts: 216ms, application-code: 120ms)
+ GET /api/stock-market/status 200 in 303ms (next.js: 34ms, proxy.ts: 13ms, application-code: 256ms)
+ GET /api/stock-market/status 200 in 317ms (next.js: 22ms, proxy.ts: 17ms, application-code: 278ms)
+ GET /api/stock-market/status 200 in 95ms (next.js: 7ms, proxy.ts: 15ms, application-code: 73ms)
+ GET /api/stock-market/status 200 in 132ms (next.js: 41ms, proxy.ts: 14ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 136ms (next.js: 18ms, proxy.ts: 12ms, application-code: 106ms)
+ GET /api/stock-market/status 200 in 117ms (next.js: 7ms, proxy.ts: 14ms, application-code: 96ms)
+ GET /api/stock-market/status 200 in 119ms (next.js: 12ms, proxy.ts: 11ms, application-code: 97ms)
+ GET /api/stock-market/status 200 in 128ms (next.js: 31ms, proxy.ts: 16ms, application-code: 81ms)
+ GET /api/stock-market/status 200 in 95ms (next.js: 11ms, proxy.ts: 7ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 109ms (next.js: 26ms, proxy.ts: 12ms, application-code: 72ms)
+ GET /api/stock-market/status 200 in 114ms (next.js: 8ms, proxy.ts: 15ms, application-code: 92ms)
+ GET /api/stock-market/status 200 in 80ms (next.js: 8ms, proxy.ts: 5ms, application-code: 67ms)
+ GET /api/stock-market/status 200 in 112ms (next.js: 8ms, proxy.ts: 10ms, application-code: 93ms)
+ GET /api/stock-market/status 200 in 118ms (next.js: 21ms, proxy.ts: 13ms, application-code: 84ms)
+ GET /api/stock-market/status 200 in 105ms (next.js: 6ms, proxy.ts: 15ms, application-code: 84ms)
+ GET /api/stock-market/status 200 in 109ms (next.js: 8ms, proxy.ts: 14ms, application-code: 87ms)
+ GET /api/stock-market/status 200 in 115ms (next.js: 26ms, proxy.ts: 15ms, application-code: 75ms)
+ GET /api/stock-market/status 200 in 92ms (next.js: 5ms, proxy.ts: 5ms, application-code: 82ms)
+ GET /api/stock-market/status 200 in 117ms (next.js: 11ms, proxy.ts: 15ms, application-code: 90ms)
+ GET /api/stock-market/status 200 in 125ms (next.js: 30ms, proxy.ts: 18ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 14.1s (next.js: 1500ms, proxy.ts: 1898ms, application-code: 10.7s)
+ GET /api/stock-market/status 200 in 7.7s (next.js: 3.3s, proxy.ts: 3.3s, application-code: 1098ms)
+ GET /api/stock-market/status 200 in 6.7s (next.js: 4.4s, proxy.ts: 2.2s, application-code: 86ms)
+ GET /api/stock-market/status 200 in 151ms (next.js: 45ms, proxy.ts: 34ms, application-code: 71ms)
+ GET /api/stock-market/status 200 in 103ms (next.js: 20ms, proxy.ts: 11ms, application-code: 72ms)
+ GET /api/stock-market/status 200 in 110ms (next.js: 8ms, proxy.ts: 14ms, application-code: 88ms)
+ GET /api/stock-market/status 200 in 86ms (next.js: 4ms, proxy.ts: 5ms, application-code: 76ms)
+ GET /api/stock-market/status 200 in 88ms (next.js: 6ms, proxy.ts: 6ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 75ms (next.js: 4ms, proxy.ts: 5ms, application-code: 65ms)
+ GET /api/stock-market/status 200 in 76ms (next.js: 6ms, proxy.ts: 5ms, application-code: 65ms)
+ GET /api/stock-market/status 200 in 90ms (next.js: 5ms, proxy.ts: 5ms, application-code: 79ms)
+ GET /api/stock-market/status 200 in 81ms (next.js: 5ms, proxy.ts: 5ms, application-code: 71ms)
+ GET /api/stock-market/status 200 in 82ms (next.js: 6ms, proxy.ts: 5ms, application-code: 71ms)
+ GET /api/stock-market/status 200 in 87ms (next.js: 5ms, proxy.ts: 5ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 77ms (next.js: 5ms, proxy.ts: 5ms, application-code: 67ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 307ms (next.js: 9ms, proxy.ts: 270ms, application-code: 28ms)
+ GET / 200 in 44ms (next.js: 8ms, proxy.ts: 5ms, application-code: 30ms)
+ GET /api/stock-market/status 200 in 179ms (next.js: 17ms, proxy.ts: 6ms, application-code: 156ms)
+ GET /api/stock-market/status 200 in 149ms (next.js: 30ms, proxy.ts: 14ms, application-code: 105ms)
+ GET /api/stock-market/status 200 in 180ms (next.js: 18ms, proxy.ts: 14ms, application-code: 148ms)
+ GET / 200 in 294ms (next.js: 122ms, proxy.ts: 94ms, application-code: 79ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 482ms (next.js: 224ms, proxy.ts: 228ms, application-code: 29ms)
+ GET /api/stock-market/status 200 in 106ms (next.js: 14ms, proxy.ts: 12ms, application-code: 80ms)
+ GET /api/stock-market/status 200 in 208ms (next.js: 17ms, proxy.ts: 24ms, application-code: 168ms)
+ GET /api/stock-market/status 200 in 241ms (next.js: 44ms, proxy.ts: 25ms, application-code: 172ms)
+ GET /directory 200 in 128ms (next.js: 25ms, proxy.ts: 12ms, application-code: 91ms)
+[browser] Image with src "/directory/exhibition.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 502ms (next.js: 72ms, proxy.ts: 27ms, application-code: 403ms)
+ GET / 200 in 1105ms (next.js: 702ms, proxy.ts: 65ms, application-code: 338ms)
+[browser] Image with src "/whats-on-today/nap_blanket.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 166ms (next.js: 11ms, proxy.ts: 12ms, application-code: 143ms)
+ GET /api/stock-market/status 200 in 232ms (next.js: 7ms, proxy.ts: 29ms, application-code: 197ms)
+ GET /api/stock-market/status 200 in 120ms (next.js: 11ms, proxy.ts: 24ms, application-code: 85ms)
+ GET /api/stock-market/status 200 in 177ms (next.js: 29ms, proxy.ts: 24ms, application-code: 125ms)
+ GET /directory 200 in 915ms (next.js: 779ms, proxy.ts: 100ms, application-code: 37ms)
+ GET /directory 200 in 101ms (next.js: 13ms, proxy.ts: 10ms, application-code: 78ms)
+ GET / 200 in 355ms (next.js: 171ms, proxy.ts: 115ms, application-code: 69ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 118ms (next.js: 11ms, proxy.ts: 15ms, application-code: 92ms)
+ GET /api/stock-market/status 200 in 116ms (next.js: 24ms, proxy.ts: 13ms, application-code: 79ms)
+ GET /directory 200 in 56ms (next.js: 11ms, proxy.ts: 9ms, application-code: 36ms)
+ GET /directory 200 in 92ms (next.js: 10ms, proxy.ts: 10ms, application-code: 72ms)
+ GET / 200 in 83ms (next.js: 12ms, proxy.ts: 9ms, application-code: 62ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 114ms (next.js: 11ms, proxy.ts: 14ms, application-code: 89ms)
+ GET /api/stock-market/status 200 in 110ms (next.js: 7ms, proxy.ts: 31ms, application-code: 72ms)
+ GET /api/stock-market/status 200 in 19.6s (next.js: 4.1s, proxy.ts: 875ms, application-code: 14.6s)
+ GET /directory 200 in 19.1s (next.js: 8.3s, proxy.ts: 9.4s, application-code: 1345ms)
+ GET /api/stock-market/status 200 in 9.1s (next.js: 2.2s, proxy.ts: 6.5s, application-code: 368ms)
+ GET /api/stock-market/status 200 in 8.2s (next.js: 100ms, proxy.ts: 7.7s, application-code: 365ms)
+ GET /api/stock-market/status 200 in 5.8s (next.js: -1007.9ms, proxy.ts: 6.5s, application-code: 323ms)
+ GET /api/stock-market/status 200 in 627ms (next.js: 164ms, proxy.ts: 100ms, application-code: 363ms)
+ GET /directory 200 in 261ms (next.js: 32ms, proxy.ts: 47ms, application-code: 181ms)
+ GET / 200 in 86ms (next.js: 11ms, proxy.ts: 10ms, application-code: 65ms)
+ GET /api/stock-market/status 200 in 120ms (next.js: 25ms, proxy.ts: 45ms, application-code: 50ms)
+ GET /api/stock-market/status 200 in 124ms (next.js: 39ms, proxy.ts: 37ms, application-code: 48ms)
+ GET /api/stock-market/status 200 in 26.6s (next.js: 1833ms, proxy.ts: 6.0s, application-code: 18.8s)
+ GET /api/stock-market/status 200 in 32.7s (next.js: 2.9s, proxy.ts: 7.6s, application-code: 22.1s)
+ GET /api/stock-market/status 200 in 39.3s (next.js: 26.4s, proxy.ts: 12.8s, application-code: 88ms)
+ GET /directory 200 in 53s (next.js: 29.9s, proxy.ts: 2.5s, application-code: 21.0s)
+ GET /api/stock-market/status 200 in 41s (next.js: 20.2s, proxy.ts: 11.5s, application-code: 8.9s)
+ GET /api/stock-market/status 200 in 30.0s (next.js: 21.1s, proxy.ts: 8.7s, application-code: 194ms)
+ GET /api/stock-market/status 200 in 10.7s (next.js: 50ms, proxy.ts: 10.5s, application-code: 127ms)
+ GET /api/stock-market/status 200 in 30.1s (next.js: 13.3s, proxy.ts: 16.6s, application-code: 170ms)
+ GET /api/stock-market/status 200 in 349ms (next.js: 52ms, proxy.ts: 200ms, application-code: 96ms)
+ GET /api/stock-market/status 200 in 784ms (next.js: 36ms, proxy.ts: 630ms, application-code: 118ms)
+ GET /api/stock-market/status 200 in 111ms (next.js: 14ms, proxy.ts: 23ms, application-code: 74ms)
+ GET /api/stock-market/status 200 in 90ms (next.js: 26ms, proxy.ts: 17ms, application-code: 46ms)
+ GET /api/stock-market/status 200 in 115ms (next.js: 11ms, proxy.ts: 18ms, application-code: 86ms)
+ GET /api/stock-market/status 200 in 77ms (next.js: 5ms, proxy.ts: 5ms, application-code: 67ms)
+ GET /directory 200 in 72ms (next.js: 10ms, proxy.ts: 8ms, application-code: 54ms)
+ GET /api/stock-market/status 200 in 89ms (next.js: 4ms, proxy.ts: 5ms, application-code: 79ms)
+ GET /api/stock-market/status 200 in 63ms (next.js: 5ms, proxy.ts: 5ms, application-code: 53ms)
+ GET /directory 200 in 64ms (next.js: 9ms, proxy.ts: 5ms, application-code: 49ms)
+ GET /directory 200 in 61ms (next.js: 8ms, proxy.ts: 5ms, application-code: 48ms)
+ GET /directory 200 in 61ms (next.js: 8ms, proxy.ts: 5ms, application-code: 48ms)
+ GET /directory 200 in 61ms (next.js: 8ms, proxy.ts: 5ms, application-code: 47ms)
+ GET /api/stock-market/status 200 in 94ms (next.js: 5ms, proxy.ts: 5ms, application-code: 84ms)
+ GET /api/stock-market/status 200 in 100ms (next.js: 5ms, proxy.ts: 5ms, application-code: 90ms)
+ GET /api/stock-market/status 200 in 84ms (next.js: 4ms, proxy.ts: 5ms, application-code: 75ms)
+ GET /api/stock-market/status 200 in 85ms (next.js: 5ms, proxy.ts: 6ms, application-code: 73ms)
+ GET /api/stock-market/status 200 in 93ms (next.js: 6ms, proxy.ts: 7ms, application-code: 80ms)
+ GET /api/stock-market/status 200 in 94ms (next.js: 16ms, proxy.ts: 7ms, application-code: 71ms)
+ GET / 200 in 38ms (next.js: 9ms, proxy.ts: 5ms, application-code: 24ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 162ms (next.js: 8ms, proxy.ts: 133ms, application-code: 21ms)
+ GET /api/stock-market/status 200 in 85ms (next.js: 7ms, proxy.ts: 5ms, application-code: 73ms)
+ GET /directory 200 in 86ms (next.js: 12ms, proxy.ts: 8ms, application-code: 65ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 69ms (next.js: 9ms, proxy.ts: 7ms, application-code: 53ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 67ms (next.js: 8ms, proxy.ts: 7ms, application-code: 52ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 127ms (next.js: 13ms, proxy.ts: 7ms, application-code: 106ms)
+ GET /directory 200 in 63ms (next.js: 10ms, proxy.ts: 5ms, application-code: 48ms)
+ GET /api/stock-market/status 200 in 92ms (next.js: 5ms, proxy.ts: 6ms, application-code: 81ms)
+ GET / 200 in 35ms (next.js: 7ms, proxy.ts: 5ms, application-code: 22ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 150ms (next.js: 8ms, proxy.ts: 123ms, application-code: 19ms)
+ GET /api/stock-market/status 200 in 63ms (next.js: 6ms, proxy.ts: 7ms, application-code: 51ms)
+ GET /api/stock-market/status 200 in 92ms (next.js: 16ms, proxy.ts: 7ms, application-code: 70ms)
+ GET / 200 in 158ms (next.js: 13ms, proxy.ts: 14ms, application-code: 131ms)
+ GET /api/stock-market/status 200 in 129ms (next.js: 11ms, proxy.ts: 18ms, application-code: 101ms)
+ GET /api/stock-market/status 200 in 130ms (next.js: 25ms, proxy.ts: 16ms, application-code: 88ms)
+ GET /directory 200 in 57ms (next.js: 19ms, proxy.ts: 7ms, application-code: 31ms)
+ GET /directory 200 in 116ms (next.js: 50ms, proxy.ts: 20ms, application-code: 47ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 561ms (next.js: 11ms, proxy.ts: 513ms, application-code: 37ms)
+ GET /directory 200 in 466ms (next.js: 281ms, proxy.ts: 98ms, application-code: 88ms)
+ GET /directory 200 in 400ms (next.js: 20ms, proxy.ts: 151ms, application-code: 229ms)
+ GET /directory 200 in 85ms (next.js: 9ms, proxy.ts: 10ms, application-code: 66ms)
+ GET /directory 200 in 62ms (next.js: 9ms, proxy.ts: 5ms, application-code: 48ms)
+ GET /directory 200 in 6.3s (next.js: 4.0s, proxy.ts: 1920ms, application-code: 358ms)
+ GET /directory 200 in 468ms (next.js: 358ms, proxy.ts: 26ms, application-code: 84ms)
+ GET /directory 200 in 1083ms (next.js: 180ms, proxy.ts: 831ms, application-code: 72ms)
+ GET / 200 in 37ms (next.js: 12ms, proxy.ts: 5ms, application-code: 20ms)
+ GET /api/stock-market/status 200 in 239ms (next.js: 22ms, proxy.ts: 10ms, application-code: 207ms)
+ GET /api/stock-market/status 200 in 244ms (next.js: 12ms, proxy.ts: 9ms, application-code: 222ms)
+ GET /api/stock-market/status 200 in 149ms (next.js: 5ms, proxy.ts: 5ms, application-code: 139ms)
+✓ Compiled in 425ms
+ GET / 200 in 34ms (next.js: 7ms, proxy.ts: 5ms, application-code: 22ms)
+ GET /api/stock-market/status 200 in 496ms (next.js: 5ms, proxy.ts: 9ms, application-code: 482ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 1079ms (next.js: 11ms, proxy.ts: 1045ms, application-code: 23ms)
+ GET /api/stock-market/status 200 in 1745ms (next.js: 16ms, proxy.ts: 9ms, application-code: 1720ms)
+ GET /directory 200 in 225ms (next.js: 152ms, proxy.ts: 6ms, application-code: 67ms)
+ GET /api/stock-market/status 200 in 151ms (next.js: 13ms, proxy.ts: 6ms, application-code: 132ms)
+ GET /directory 200 in 69ms (next.js: 8ms, proxy.ts: 6ms, application-code: 55ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 68ms (next.js: 8ms, proxy.ts: 6ms, application-code: 54ms)
+ GET /directory 200 in 67ms (next.js: 8ms, proxy.ts: 6ms, application-code: 53ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 158ms (next.js: 6ms, proxy.ts: 5ms, application-code: 148ms)
+ GET /api/stock-market/status 200 in 666ms (next.js: 6ms, proxy.ts: 5ms, application-code: 655ms)
+ GET /directory 200 in 75ms (next.js: 9ms, proxy.ts: 7ms, application-code: 59ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 135ms (next.js: 5ms, proxy.ts: 5ms, application-code: 125ms)
+ GET /api/stock-market/status 200 in 140ms (next.js: 5ms, proxy.ts: 4ms, application-code: 130ms)
+ GET /api/stock-market/status 200 in 186ms (next.js: 5ms, proxy.ts: 5ms, application-code: 176ms)
+ GET /api/stock-market/status 200 in 136ms (next.js: 15ms, proxy.ts: 7ms, application-code: 114ms)
+ GET /api/stock-market/status 200 in 173ms (next.js: 6ms, proxy.ts: 7ms, application-code: 160ms)
+ GET /api/stock-market/status 200 in 151ms (next.js: 7ms, proxy.ts: 5ms, application-code: 139ms)
+ GET /api/stock-market/status 200 in 224ms (next.js: 5ms, proxy.ts: 7ms, application-code: 213ms)
+ GET /api/stock-market/status 200 in 290ms (next.js: 5ms, proxy.ts: 5ms, application-code: 281ms)
+ GET /api/stock-market/status 200 in 152ms (next.js: 17ms, proxy.ts: 6ms, application-code: 129ms)
+ GET /api/stock-market/status 200 in 157ms (next.js: 7ms, proxy.ts: 7ms, application-code: 143ms)
+ GET /api/stock-market/status 200 in 119ms (next.js: 7ms, proxy.ts: 5ms, application-code: 108ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 503 in 33.9s (next.js: 5.8s, proxy.ts: 4.6s, application-code: 23.5s)
+ GET /api/stock-market/status 503 in 34.6s (next.js: 3.6s, proxy.ts: 5.3s, application-code: 25.8s)
+ GET /directory 200 in 36.0s (next.js: 16.7s, proxy.ts: 4.5s, application-code: 14.8s)
+ GET / 200 in 44s (next.js: 9.5s, proxy.ts: 5.7s, application-code: 28.9s)
+ GET /api/stock-market/status 200 in 33.1s (next.js: 3.9s, proxy.ts: 5.8s, application-code: 23.3s)
+ GET /api/stock-market/status 200 in 31.5s (next.js: 4.9s, proxy.ts: 5.1s, application-code: 21.5s)
+ GET /api/stock-market/status 200 in 18.7s (next.js: 8.2s, proxy.ts: 7.4s, application-code: 3.1s)
+ GET /directory 200 in 34.3s (next.js: 8.0s, proxy.ts: 4.1s, application-code: 22.1s)
+ GET / 200 in 34.9s (next.js: 9.2s, proxy.ts: 6.7s, application-code: 18.9s)
+ GET /api/stock-market/status 200 in 9.8s (next.js: 973ms, proxy.ts: 1989ms, application-code: 6.9s)
+ GET /api/stock-market/status 200 in 8.6s (next.js: 1216ms, proxy.ts: 2.8s, application-code: 4.6s)
+ GET /directory 200 in 14.9s (next.js: 1818ms, proxy.ts: 2.3s, application-code: 10.8s)
+ GET /api/stock-market/status 200 in 8.8s (next.js: 2.4s, proxy.ts: 1038ms, application-code: 5.4s)
+ GET / 200 in 33ms (next.js: 9ms, proxy.ts: 5ms, application-code: 19ms)
+ GET /api/stock-market/status 200 in 216ms (next.js: 4ms, proxy.ts: 5ms, application-code: 206ms)
+ GET /api/stock-market/status 200 in 91ms (next.js: 5ms, proxy.ts: 5ms, application-code: 82ms)
+ GET /api/stock-market/status 200 in 239ms (next.js: 67ms, proxy.ts: 40ms, application-code: 133ms)
+ GET /directory 200 in 88ms (next.js: 37ms, proxy.ts: 15ms, application-code: 36ms)
+ GET /directory 200 in 239ms (next.js: 130ms, proxy.ts: 21ms, application-code: 88ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 833ms (next.js: 368ms, proxy.ts: 364ms, application-code: 100ms)
+ GET /directory 200 in 106ms (next.js: 21ms, proxy.ts: 7ms, application-code: 78ms)
+ GET /directory 200 in 72ms (next.js: 8ms, proxy.ts: 6ms, application-code: 58ms)
+ GET /directory 200 in 70ms (next.js: 9ms, proxy.ts: 6ms, application-code: 55ms)
+ GET /directory 200 in 68ms (next.js: 8ms, proxy.ts: 6ms, application-code: 55ms)
+ GET /directory 200 in 64ms (next.js: 10ms, proxy.ts: 5ms, application-code: 48ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 90ms (next.js: 10ms, proxy.ts: 6ms, application-code: 74ms)
+ GET / 200 in 49ms (next.js: 18ms, proxy.ts: 5ms, application-code: 25ms)
+ GET /api/stock-market/status 200 in 319ms (next.js: 18ms, proxy.ts: 4ms, application-code: 296ms)
+ GET /api/stock-market/status 200 in 333ms (next.js: 12ms, proxy.ts: 5ms, application-code: 316ms)
+✓ Compiled in 271ms
+ GET / 200 in 48ms (next.js: 10ms, proxy.ts: 10ms, application-code: 29ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 311ms (next.js: 9ms, proxy.ts: 283ms, application-code: 19ms)
+ GET /directory 200 in 77ms (next.js: 13ms, proxy.ts: 7ms, application-code: 58ms)
+[browser] Image with src "/directory/data-talk.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 157ms (next.js: 5ms, proxy.ts: 5ms, application-code: 147ms)
+ GET /directory 200 in 68ms (next.js: 10ms, proxy.ts: 6ms, application-code: 52ms)
+[browser] Image with src "/directory/data-talk.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 67ms (next.js: 8ms, proxy.ts: 7ms, application-code: 52ms)
+ GET /directory 200 in 66ms (next.js: 7ms, proxy.ts: 6ms, application-code: 53ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 230ms (next.js: 139ms, proxy.ts: 7ms, application-code: 84ms)
+[browser] Image with src "/whats-on-today/camping_chair.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 110ms (next.js: 5ms, proxy.ts: 4ms, application-code: 101ms)
+ GET /api/stock-market/status 200 in 271ms (next.js: 11ms, proxy.ts: 27ms, application-code: 234ms)
+ GET /api/stock-market/status 200 in 268ms (next.js: 28ms, proxy.ts: 22ms, application-code: 219ms)
+ GET / 200 in 94ms (next.js: 22ms, proxy.ts: 19ms, application-code: 53ms)
+ GET /api/stock-market/status 200 in 192ms (next.js: 18ms, proxy.ts: 68ms, application-code: 106ms)
+ GET /api/stock-market/status 200 in 158ms (next.js: 25ms, proxy.ts: 40ms, application-code: 93ms)
+ GET /directory 200 in 215ms (next.js: 116ms, proxy.ts: 60ms, application-code: 39ms)
+ GET / 200 in 31ms (next.js: 8ms, proxy.ts: 5ms, application-code: 18ms)
+ GET /api/stock-market/status 200 in 235ms (next.js: 5ms, proxy.ts: 5ms, application-code: 225ms)
+ GET /api/stock-market/status 200 in 333ms (next.js: 5ms, proxy.ts: 5ms, application-code: 323ms)
+ GET /api/stock-market/status 200 in 127ms (next.js: 5ms, proxy.ts: 5ms, application-code: 117ms)
+ GET /api/stock-market/status 200 in 110ms (next.js: 4ms, proxy.ts: 5ms, application-code: 100ms)
+ GET /api/stock-market/status 200 in 146ms (next.js: 4ms, proxy.ts: 4ms, application-code: 138ms)
+ GET / 200 in 42ms (next.js: 10ms, proxy.ts: 9ms, application-code: 23ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 334ms (next.js: 9ms, proxy.ts: 304ms, application-code: 22ms)
+ GET /api/stock-market/status 200 in 116ms (next.js: 5ms, proxy.ts: 5ms, application-code: 107ms)
+ GET /directory 200 in 75ms (next.js: 12ms, proxy.ts: 7ms, application-code: 56ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 71ms (next.js: 8ms, proxy.ts: 6ms, application-code: 57ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /directory 200 in 124ms (next.js: 59ms, proxy.ts: 6ms, application-code: 59ms)
+ GET /api/stock-market/status 200 in 123ms (next.js: 8ms, proxy.ts: 6ms, application-code: 108ms)
+ GET /directory 200 in 182ms (next.js: 123ms, proxy.ts: 6ms, application-code: 53ms)
+ GET /directory 200 in 71ms (next.js: 8ms, proxy.ts: 10ms, application-code: 54ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 136ms (next.js: 7ms, proxy.ts: 6ms, application-code: 123ms)
+ GET /api/stock-market/status 200 in 131ms (next.js: 4ms, proxy.ts: 17ms, application-code: 111ms)
+ GET /api/stock-market/status 200 in 141ms (next.js: 5ms, proxy.ts: 5ms, application-code: 131ms)
+ GET / 200 in 80ms (next.js: 15ms, proxy.ts: 6ms, application-code: 59ms)
+ GET /api/stock-market/status 200 in 173ms (next.js: 39ms, proxy.ts: 17ms, application-code: 117ms)
+ GET /api/stock-market/status 200 in 193ms (next.js: 39ms, proxy.ts: 28ms, application-code: 126ms)
+ GET /directory 200 in 45s (next.js: 3.7s, proxy.ts: 376ms, application-code: 41s)
+ GET /api/stock-market/status 200 in 27.9s (next.js: 8.2s, proxy.ts: 4.3s, application-code: 15.4s)
+ GET /api/stock-market/status 200 in 28.2s (next.js: 6.6s, proxy.ts: 4.3s, application-code: 17.2s)
+ GET /api/stock-market/status 200 in 28.7s (next.js: 3.3s, proxy.ts: 4.0s, application-code: 21.5s)
+ GET / 200 in 31.1s (next.js: 6.2s, proxy.ts: 4.9s, application-code: 20.1s)
+ GET /api/stock-market/status 200 in 17.0s (next.js: 2.6s, proxy.ts: 12.6s, application-code: 1795ms)
+ GET /directory 200 in 28.2s (next.js: 2.4s, proxy.ts: 2.1s, application-code: 23.8s)
+✓ Compiled in 1644ms
+ GET /directory 200 in 164ms (next.js: 27ms, proxy.ts: 56ms, application-code: 82ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 1016ms (next.js: 193ms, proxy.ts: 693ms, application-code: 130ms)
+ GET / 200 in 50ms (next.js: 26ms, proxy.ts: 6ms, application-code: 18ms)
+ GET /api/stock-market/status 200 in 168ms (next.js: 9ms, proxy.ts: 9ms, application-code: 150ms)
+ GET /api/stock-market/status 200 in 181ms (next.js: 20ms, proxy.ts: 8ms, application-code: 153ms)
+ GET /api/stock-market/status 200 in 154ms (next.js: 5ms, proxy.ts: 6ms, application-code: 143ms)
+ GET /api/stock-market/status 200 in 179ms (next.js: 5ms, proxy.ts: 4ms, application-code: 170ms)
+ GET /api/stock-market/status 200 in 141ms (next.js: 5ms, proxy.ts: 6ms, application-code: 130ms)
+ GET /api/stock-market/status 200 in 125ms (next.js: 8ms, proxy.ts: 7ms, application-code: 110ms)
+ GET /api/stock-market/status 200 in 135ms (next.js: 19ms, proxy.ts: 7ms, application-code: 110ms)
+✓ Compiled in 1330ms
+ GET / 200 in 35ms (next.js: 8ms, proxy.ts: 6ms, application-code: 21ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 258ms (next.js: 11ms, proxy.ts: 227ms, application-code: 21ms)
+ GET /api/stock-market/status 200 in 162ms (next.js: 20ms, proxy.ts: 5ms, application-code: 137ms)
+ GET / 200 in 40ms (next.js: 10ms, proxy.ts: 8ms, application-code: 22ms)
+✓ Compiled in 292ms
+ GET /login?next=%2Fadmin%2Fgames 200 in 199ms (next.js: 10ms, proxy.ts: 167ms, application-code: 22ms)
+ GET /api/stock-market/status 200 in 86ms (next.js: 4ms, proxy.ts: 5ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 162ms (next.js: 4ms, proxy.ts: 5ms, application-code: 153ms)
+ GET /api/stock-market/status 200 in 105ms (next.js: 5ms, proxy.ts: 5ms, application-code: 95ms)
+ GET /directory 200 in 85ms (next.js: 13ms, proxy.ts: 7ms, application-code: 64ms)
+[browser] Image with src "/directory/data-talk.svg" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 263ms (next.js: 5ms, proxy.ts: 5ms, application-code: 253ms)
+ GET /directory 200 in 65ms (next.js: 10ms, proxy.ts: 5ms, application-code: 49ms)
+ GET /directory 200 in 64ms (next.js: 8ms, proxy.ts: 6ms, application-code: 50ms)
+ GET /directory 200 in 62ms (next.js: 8ms, proxy.ts: 6ms, application-code: 49ms)
+ GET /api/stock-market/status 200 in 118ms (next.js: 5ms, proxy.ts: 5ms, application-code: 108ms)
+ GET /api/stock-market/status 200 in 119ms (next.js: 4ms, proxy.ts: 5ms, application-code: 110ms)
+ GET /directory 200 in 61ms (next.js: 8ms, proxy.ts: 5ms, application-code: 49ms)
+ GET /api/stock-market/status 200 in 113ms (next.js: 5ms, proxy.ts: 5ms, application-code: 103ms)
+ GET /api/stock-market/status 200 in 345ms (next.js: 5ms, proxy.ts: 4ms, application-code: 335ms)
+ GET /api/stock-market/status 200 in 138ms (next.js: 5ms, proxy.ts: 5ms, application-code: 128ms)
+ GET /api/stock-market/status 200 in 189ms (next.js: 15ms, proxy.ts: 25ms, application-code: 150ms)
+ GET /api/stock-market/status 200 in 193ms (next.js: 38ms, proxy.ts: 23ms, application-code: 132ms)
+ GET / 200 in 104ms (next.js: 14ms, proxy.ts: 5ms, application-code: 84ms)
+ GET /api/stock-market/status 200 in 118ms (next.js: 26ms, proxy.ts: 24ms, application-code: 68ms)
+ GET /api/stock-market/status 200 in 153ms (next.js: 13ms, proxy.ts: 44ms, application-code: 96ms)
+ GET /directory 200 in 238ms (next.js: 73ms, proxy.ts: 10ms, application-code: 155ms)
+ GET /directory 200 in 69ms (next.js: 19ms, proxy.ts: 14ms, application-code: 35ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 309ms (next.js: 8ms, proxy.ts: 278ms, application-code: 23ms)
+ GET /directory 200 in 1082ms (next.js: 733ms, proxy.ts: 136ms, application-code: 212ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+✓ Compiled in 178ms
+ GET /directory 200 in 42ms (next.js: 11ms, proxy.ts: 5ms, application-code: 25ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 281ms (next.js: 10ms, proxy.ts: 249ms, application-code: 22ms)
+ GET /directory 200 in 115ms (next.js: 24ms, proxy.ts: 12ms, application-code: 79ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+✓ Compiled in 259ms
+ GET /directory 200 in 57ms (next.js: 12ms, proxy.ts: 12ms, application-code: 32ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 341ms (next.js: 9ms, proxy.ts: 302ms, application-code: 30ms)
+ GET /directory 200 in 120ms (next.js: 40ms, proxy.ts: 19ms, application-code: 61ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET / 200 in 54ms (next.js: 14ms, proxy.ts: 5ms, application-code: 35ms)
+ GET /api/stock-market/status 200 in 262ms (next.js: 82ms, proxy.ts: 30ms, application-code: 149ms)
+ GET /api/stock-market/status 200 in 265ms (next.js: 27ms, proxy.ts: 83ms, application-code: 155ms)
+ GET /api/stock-market/status 200 in 332ms (next.js: 7ms, proxy.ts: 5ms, application-code: 320ms)
+ GET /api/stock-market/status 200 in 145ms (next.js: 7ms, proxy.ts: 8ms, application-code: 130ms)
+ GET /api/stock-market/status 200 in 156ms (next.js: 5ms, proxy.ts: 21ms, application-code: 130ms)
+ GET /api/stock-market/status 200 in 149ms (next.js: 4ms, proxy.ts: 5ms, application-code: 140ms)
+ GET /api/stock-market/status 200 in 136ms (next.js: 7ms, proxy.ts: 9ms, application-code: 120ms)
+ GET /api/stock-market/status 200 in 137ms (next.js: 17ms, proxy.ts: 7ms, application-code: 113ms)
+ GET /api/stock-market/status 200 in 181ms (next.js: 5ms, proxy.ts: 5ms, application-code: 172ms)
+ GET / 200 in 40ms (next.js: 13ms, proxy.ts: 6ms, application-code: 22ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 300ms (next.js: 10ms, proxy.ts: 269ms, application-code: 21ms)
+ GET /api/stock-market/status 200 in 97ms (next.js: 6ms, proxy.ts: 7ms, application-code: 84ms)
+ GET /api/stock-market/status 200 in 124ms (next.js: 16ms, proxy.ts: 6ms, application-code: 102ms)
+ GET /api/stock-market/status 200 in 138ms (next.js: 5ms, proxy.ts: 5ms, application-code: 128ms)
+ GET /api/stock-market/status 200 in 143ms (next.js: 7ms, proxy.ts: 5ms, application-code: 131ms)
+ GET /api/stock-market/status 200 in 149ms (next.js: 4ms, proxy.ts: 19ms, application-code: 125ms)
+ GET / 200 in 266ms (next.js: 148ms, proxy.ts: 5ms, application-code: 113ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 325ms (next.js: 50ms, proxy.ts: 36ms, application-code: 239ms)
+ GET /api/stock-market/status 200 in 323ms (next.js: 104ms, proxy.ts: 57ms, application-code: 162ms)
+ GET /api/stock-market/status 200 in 131ms (next.js: 5ms, proxy.ts: 5ms, application-code: 122ms)
+ GET /api/stock-market/status 200 in 134ms (next.js: 16ms, proxy.ts: 6ms, application-code: 111ms)
+ GET /api/stock-market/status 200 in 143ms (next.js: 8ms, proxy.ts: 9ms, application-code: 126ms)
