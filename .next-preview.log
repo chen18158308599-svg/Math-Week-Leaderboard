@@ -1185719,3 +1185719,260 @@ Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
  GET /api/stock-market/status 200 in 131ms (next.js: 5ms, proxy.ts: 5ms, application-code: 122ms)
  GET /api/stock-market/status 200 in 134ms (next.js: 16ms, proxy.ts: 6ms, application-code: 111ms)
  GET /api/stock-market/status 200 in 143ms (next.js: 8ms, proxy.ts: 9ms, application-code: 126ms)
+ GET /api/stock-market/status 200 in 110ms (next.js: 4ms, proxy.ts: 6ms, application-code: 100ms)
+ GET /api/stock-market/status 200 in 121ms (next.js: 16ms, proxy.ts: 6ms, application-code: 99ms)
+ GET /api/stock-market/status 200 in 149ms (next.js: 6ms, proxy.ts: 7ms, application-code: 136ms)
+ GET /api/stock-market/status 200 in 113ms (next.js: 5ms, proxy.ts: 6ms, application-code: 103ms)
+ GET /api/stock-market/status 200 in 142ms (next.js: 5ms, proxy.ts: 5ms, application-code: 132ms)
+ GET /api/stock-market/status 200 in 605ms (next.js: 5ms, proxy.ts: 5ms, application-code: 594ms)
+ GET /api/stock-market/status 200 in 147ms (next.js: 18ms, proxy.ts: 4ms, application-code: 124ms)
+ GET /api/stock-market/status 200 in 185ms (next.js: 6ms, proxy.ts: 13ms, application-code: 165ms)
+ GET /api/stock-market/status 200 in 189ms (next.js: 23ms, proxy.ts: 15ms, application-code: 151ms)
+ GET /api/stock-market/status 200 in 4.7s (next.js: 1487ms, proxy.ts: 455ms, application-code: 2.7s)
+ GET /api/stock-market/status 503 in 64ms (next.js: 11ms, proxy.ts: 17ms, application-code: 35ms)
+ GET /api/stock-market/status 503 in 141ms (next.js: 24ms, proxy.ts: 44ms, application-code: 73ms)
+ GET /api/stock-market/status 503 in 116ms (next.js: 37ms, proxy.ts: 31ms, application-code: 49ms)
+ GET /api/stock-market/status 200 in 202ms (next.js: 10ms, proxy.ts: 15ms, application-code: 176ms)
+ GET /api/stock-market/status 200 in 200ms (next.js: 41ms, proxy.ts: 14ms, application-code: 145ms)
+ GET /api/stock-market/status 200 in 267ms (next.js: 24ms, proxy.ts: 15ms, application-code: 228ms)
+ GET /api/stock-market/status 200 in 101ms (next.js: 5ms, proxy.ts: 5ms, application-code: 90ms)
+ GET /api/stock-market/status 200 in 96ms (next.js: 5ms, proxy.ts: 5ms, application-code: 86ms)
+ GET /api/stock-market/status 200 in 93ms (next.js: 6ms, proxy.ts: 5ms, application-code: 82ms)
+ GET /api/stock-market/status 200 in 98ms (next.js: 5ms, proxy.ts: 5ms, application-code: 88ms)
+ GET /api/stock-market/status 200 in 107ms (next.js: 7ms, proxy.ts: 11ms, application-code: 88ms)
+ GET /api/stock-market/status 200 in 127ms (next.js: 18ms, proxy.ts: 11ms, application-code: 98ms)
+ GET /api/stock-market/status 200 in 157ms (next.js: 5ms, proxy.ts: 6ms, application-code: 147ms)
+ GET /api/stock-market/status 200 in 287ms (next.js: 5ms, proxy.ts: 6ms, application-code: 276ms)
+ GET /api/stock-market/status 200 in 91ms (next.js: 6ms, proxy.ts: 6ms, application-code: 79ms)
+ GET /api/stock-market/status 200 in 121ms (next.js: 7ms, proxy.ts: 9ms, application-code: 105ms)
+ GET /api/stock-market/status 200 in 126ms (next.js: 19ms, proxy.ts: 8ms, application-code: 98ms)
+⨯ ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  [90m1 |[0m ﻿[32m"use client"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m [33mImage[0m [36mfrom[0m [32m"next/image"[0m;
+  [90m  |[0m                               [31m[1m^[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m styles [36mfrom[0m [32m"./leaderboard-guide.module.css"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m { useLeaderboard } [36mfrom[0m [32m"@/lib/leaderboard/use-leaderboard"[0m;
+  [90m5 |[0m [36mimport[0m { [33mWeekShell[0m } [36mfrom[0m [32m"@/components/week-shell"[0m;
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mLeaderboardView[0m() {
+
+
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  [90m1 |[0m ﻿[32m"use client"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m [33mImage[0m [36mfrom[0m [32m"next/image"[0m;
+  [90m  |[0m                               [31m[1m^[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m styles [36mfrom[0m [32m"./leaderboard-guide.module.css"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m { useLeaderboard } [36mfrom[0m [32m"@/lib/leaderboard/use-leaderboard"[0m;
+  [90m5 |[0m [36mimport[0m { [33mWeekShell[0m } [36mfrom[0m [32m"@/components/week-shell"[0m;
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mLeaderboardView[0m() {
+
+
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  [90m1 |[0m ﻿[32m"use client"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m [33mImage[0m [36mfrom[0m [32m"next/image"[0m;
+  [90m  |[0m                               [31m[1m^[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m styles [36mfrom[0m [32m"./leaderboard-guide.module.css"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m { useLeaderboard } [36mfrom[0m [32m"@/lib/leaderboard/use-leaderboard"[0m;
+  [90m5 |[0m [36mimport[0m { [33mWeekShell[0m } [36mfrom[0m [32m"@/components/week-shell"[0m;
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mLeaderboardView[0m() {
+
+
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+⨯ ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  [90m1 |[0m ﻿[32m"use client"[0m;
+[31m[1m>[0m [90m2 |[0m [36mimport[0m [33mImage[0m [36mfrom[0m [32m"next/image"[0m;
+  [90m  |[0m                               [31m[1m^[0m
+[31m[1m>[0m [90m3 |[0m [36mimport[0m styles [36mfrom[0m [32m"./leaderboard-guide.module.css"[0m;
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m4 |[0m [36mimport[0m { useLeaderboard } [36mfrom[0m [32m"@/lib/leaderboard/use-leaderboard"[0m;
+  [90m5 |[0m [36mimport[0m { [33mWeekShell[0m } [36mfrom[0m [32m"@/components/week-shell"[0m;
+  [90m6 |[0m [36mexport[0m [36mfunction[0m [33mLeaderboardView[0m() {
+
+
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+ GET / 200 in 45ms (next.js: 10ms, proxy.ts: 8ms, application-code: 27ms)
+[browser] ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  1 | ﻿"use client";
+> 2 | import Image from "next/image";
+    |                               ^
+> 3 | import styles from "./leaderboard-guide.module.css";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
+  5 | import { WeekShell } from "@/components/week-shell";
+  6 | export function LeaderboardView() {
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  1 | ﻿"use client";
+> 2 | import Image from "next/image";
+    |                               ^
+> 3 | import styles from "./leaderboard-guide.module.css";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
+  5 | import { WeekShell } from "@/components/week-shell";
+  6 | export function LeaderboardView() {
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+ GET /login?next=%2Fadmin%2Fgames 200 in 302ms (next.js: 9ms, proxy.ts: 271ms, application-code: 22ms)
+[browser] ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  1 | ﻿"use client";
+> 2 | import Image from "next/image";
+    |                               ^
+> 3 | import styles from "./leaderboard-guide.module.css";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
+  5 | import { WeekShell } from "@/components/week-shell";
+  6 | export function LeaderboardView() {
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+[browser] ./src/app/leaderboard/leaderboard-view.tsx:2:31
+Error: Module not found: Can't resolve './leaderboard-guide.module.css'
+  1 | ﻿"use client";
+> 2 | import Image from "next/image";
+    |                               ^
+> 3 | import styles from "./leaderboard-guide.module.css";
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  4 | import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
+  5 | import { WeekShell } from "@/components/week-shell";
+  6 | export function LeaderboardView() {
+
+Import trace:
+  Server Component:
+    ./src/app/leaderboard/leaderboard-view.tsx
+    ./src/app/leaderboard/page.tsx
+
+https://nextjs.org/docs/messages/module-not-found 
+ GET /api/stock-market/status 200 in 345ms (next.js: 5ms, proxy.ts: 5ms, application-code: 335ms)
+ GET /leaderboard 200 in 75ms (next.js: 18ms, proxy.ts: 6ms, application-code: 51ms)
+ GET /api/stock-market/status 200 in 89ms (next.js: 5ms, proxy.ts: 6ms, application-code: 77ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /leaderboard 200 in 184ms (next.js: 137ms, proxy.ts: 8ms, application-code: 39ms)
+[browser] Image with src "/whats-on-today/prizes-composite.webp" was detected as the Largest Contentful Paint (LCP). Please add the `loading="eager"` property if this image is above the fold.
+Read more: https://nextjs.org/docs/app/api-reference/components/image#loading
+ GET /api/stock-market/status 200 in 98ms (next.js: 7ms, proxy.ts: 5ms, application-code: 86ms)
+ GET /api/stock-market/status 200 in 100ms (next.js: 21ms, proxy.ts: 10ms, application-code: 69ms)
+ GET /api/stock-market/status 200 in 111ms (next.js: 8ms, proxy.ts: 11ms, application-code: 92ms)
+ GET /api/stock-market/status 200 in 93ms (next.js: 6ms, proxy.ts: 10ms, application-code: 76ms)
+ GET /api/stock-market/status 200 in 130ms (next.js: 11ms, proxy.ts: 17ms, application-code: 103ms)
+ GET /api/stock-market/status 200 in 157ms (next.js: 26ms, proxy.ts: 16ms, application-code: 115ms)
+ GET /leaderboard 200 in 79ms (next.js: 13ms, proxy.ts: 8ms, application-code: 58ms)
+ GET /leaderboard 200 in 45ms (next.js: 10ms, proxy.ts: 12ms, application-code: 23ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 174ms (next.js: 10ms, proxy.ts: 141ms, application-code: 22ms)
+ GET /leaderboard 200 in 66ms (next.js: 12ms, proxy.ts: 16ms, application-code: 38ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 234ms (next.js: 11ms, proxy.ts: 193ms, application-code: 29ms)
+ GET / 200 in 38ms (next.js: 10ms, proxy.ts: 6ms, application-code: 22ms)
+ GET /api/stock-market/status 200 in 122ms (next.js: 8ms, proxy.ts: 8ms, application-code: 107ms)
+ GET /api/stock-market/status 200 in 129ms (next.js: 5ms, proxy.ts: 19ms, application-code: 105ms)
+ GET /api/stock-market/status 200 in 137ms (next.js: 8ms, proxy.ts: 8ms, application-code: 120ms)
+ GET / 200 in 81ms (next.js: 11ms, proxy.ts: 11ms, application-code: 60ms)
+ GET /api/stock-market/status 200 in 97ms (next.js: 9ms, proxy.ts: 14ms, application-code: 74ms)
+ GET /api/stock-market/status 200 in 117ms (next.js: 24ms, proxy.ts: 18ms, application-code: 75ms)
+ GET /directory 200 in 56ms (next.js: 16ms, proxy.ts: 9ms, application-code: 31ms)
+ GET /directory 200 in 46ms (next.js: 10ms, proxy.ts: 10ms, application-code: 27ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 216ms (next.js: 10ms, proxy.ts: 185ms, application-code: 21ms)
+ GET /directory 200 in 51ms (next.js: 13ms, proxy.ts: 10ms, application-code: 27ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 141ms (next.js: 11ms, proxy.ts: 106ms, application-code: 23ms)
+ GET /leaderboard 200 in 66ms (next.js: 14ms, proxy.ts: 6ms, application-code: 46ms)
+ GET /leaderboard 200 in 52ms (next.js: 8ms, proxy.ts: 7ms, application-code: 38ms)
+ GET / 200 in 35ms (next.js: 10ms, proxy.ts: 5ms, application-code: 20ms)
+ GET /api/stock-market/status 200 in 177ms (next.js: 7ms, proxy.ts: 7ms, application-code: 163ms)
+ GET /api/stock-market/status 200 in 170ms (next.js: 4ms, proxy.ts: 17ms, application-code: 150ms)
+ GET /api/stock-market/status 200 in 143ms (next.js: 5ms, proxy.ts: 5ms, application-code: 133ms)
+ GET / 200 in 40ms (next.js: 10ms, proxy.ts: 6ms, application-code: 24ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 207ms (next.js: 9ms, proxy.ts: 176ms, application-code: 22ms)
+ GET /api/stock-market/status 200 in 70ms (next.js: 6ms, proxy.ts: 8ms, application-code: 56ms)
+ GET /api/stock-market/status 200 in 109ms (next.js: 15ms, proxy.ts: 8ms, application-code: 85ms)
+ GET / 200 in 62ms (next.js: 14ms, proxy.ts: 12ms, application-code: 35ms)
+ GET /login?next=%2Fadmin%2Fgames 200 in 134ms (next.js: 12ms, proxy.ts: 94ms, application-code: 28ms)
+ GET /leaderboard 200 in 47ms (next.js: 11ms, proxy.ts: 8ms, application-code: 27ms)
+ GET /leaderboard 200 in 73ms (next.js: 11ms, proxy.ts: 9ms, application-code: 54ms)
+ GET /directory 200 in 57ms (next.js: 14ms, proxy.ts: 9ms, application-code: 34ms)
+ GET /leaderboard 200 in 49ms (next.js: 10ms, proxy.ts: 9ms, application-code: 31ms)
+ GET /games 200 in 54ms (next.js: 12ms, proxy.ts: 9ms, application-code: 32ms)
+ GET / 200 in 42ms (next.js: 9ms, proxy.ts: 6ms, application-code: 27ms)
+ GET /api/stock-market/status 200 in 93ms (next.js: 7ms, proxy.ts: 5ms, application-code: 81ms)
+ GET /api/stock-market/status 200 in 110ms (next.js: 5ms, proxy.ts: 19ms, application-code: 87ms)
+ GET /api/stock-market/status 200 in 88ms (next.js: 5ms, proxy.ts: 6ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 154ms (next.js: 17ms, proxy.ts: 8ms, application-code: 129ms)
+ GET /api/stock-market/status 200 in 157ms (next.js: 6ms, proxy.ts: 9ms, application-code: 142ms)
+ GET /api/stock-market/status 200 in 114ms (next.js: 5ms, proxy.ts: 8ms, application-code: 101ms)
+ GET /api/stock-market/status 200 in 82ms (next.js: 6ms, proxy.ts: 6ms, application-code: 70ms)
+ GET / 200 in 52ms (next.js: 14ms, proxy.ts: 14ms, application-code: 23ms)
+✓ Compiled in 187ms
+ GET /login?next=%2Fadmin%2Fgames 200 in 312ms (next.js: 14ms, proxy.ts: 276ms, application-code: 23ms)
+ GET /api/stock-market/status 200 in 80ms (next.js: 7ms, proxy.ts: 15ms, application-code: 59ms)
+ GET /api/stock-market/status 200 in 107ms (next.js: 19ms, proxy.ts: 14ms, application-code: 74ms)
+ GET /api/stock-market/status 200 in 92ms (next.js: 7ms, proxy.ts: 7ms, application-code: 77ms)
+ GET /api/stock-market/status 200 in 143ms (next.js: 8ms, proxy.ts: 11ms, application-code: 124ms)
+ GET /api/stock-market/status 200 in 143ms (next.js: 20ms, proxy.ts: 11ms, application-code: 111ms)
+ GET /api/stock-market/status 200 in 114ms (next.js: 7ms, proxy.ts: 9ms, application-code: 99ms)
+ GET / 200 in 87ms (next.js: 12ms, proxy.ts: 10ms, application-code: 65ms)
+ GET /api/stock-market/status 200 in 80ms (next.js: 8ms, proxy.ts: 14ms, application-code: 58ms)
+ GET /api/stock-market/status 200 in 117ms (next.js: 20ms, proxy.ts: 13ms, application-code: 84ms)
+ GET /leaderboard 200 in 52ms (next.js: 17ms, proxy.ts: 8ms, application-code: 27ms)
+ GET / 200 in 46ms (next.js: 10ms, proxy.ts: 9ms, application-code: 27ms)
+ GET /api/stock-market/status 200 in 124ms (next.js: 10ms, proxy.ts: 11ms, application-code: 102ms)
+ GET /api/stock-market/status 200 in 117ms (next.js: 7ms, proxy.ts: 26ms, application-code: 84ms)
+ GET /api/stock-market/status 200 in 103ms (next.js: 6ms, proxy.ts: 8ms, application-code: 89ms)
+ GET /api/stock-market/status 200 in 100ms (next.js: 6ms, proxy.ts: 9ms, application-code: 85ms)
+ GET /api/stock-market/status 200 in 99ms (next.js: 7ms, proxy.ts: 8ms, application-code: 85ms)
+ GET /api/stock-market/status 200 in 100ms (next.js: 8ms, proxy.ts: 9ms, application-code: 83ms)

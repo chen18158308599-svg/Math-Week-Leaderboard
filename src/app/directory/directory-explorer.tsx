@@ -9,7 +9,7 @@ import styles from "./directory.module.css";
 
 function PreviewImage({ card, sizes }: { card: DiscoverCard; sizes: string }) {
   const placeholder = card.image.endsWith(".svg");
-  return <><Image src={card.image} alt={placeholder ? `${card.title} illustration; on-site photo coming soon` : `${card.title} at Math Week`} fill sizes={sizes} />{placeholder && <span className={styles.photoLabel}>PHOTO COMING SOON</span>}</>;
+  return <><Image src={card.image} alt={placeholder ? `${card.title} illustration; on-site photo coming soon` : card.id === "digital" ? "Mathverse digital games promotional preview showing six game realms" : `${card.title} at Math Week`} fill sizes={sizes} />{placeholder && <span className={styles.photoLabel}>PHOTO COMING SOON</span>}</>;
 }
 
 export default function DirectoryExplorer({ initialDay }: { initialDay: number }) {

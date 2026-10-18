@@ -102,8 +102,8 @@
 
 .showcase { min-width: 0; overflow: hidden; border: 1px solid #dbe3f4; border-radius: 18px; background: #edf1fc; }
 .slideMedia { position: relative; aspect-ratio: 16/9; }
-.slideMedia img { object-fit: contain; }
-.slideLabel { position: absolute; top: 12px; left: 12px; border-radius: 20px; padding: 7px 12px; background: #ffffffed; color: #4059b4; font-size: 12px; font-weight: 600; }
+.slideMedia img { object-fit: contain; padding-top: 64px; }
+.slideLabel { position: absolute; top: 0; left: 0; right: 0; display: flex; align-items: center; min-height: 64px; padding: 10px 18px; background: #354fc9; color: #fff; font-size: clamp(18px, 1.8vw, 26px); line-height: 1.2; font-weight: 600; }
 .slidePlaceholder { position: absolute; bottom: 12px; left: 12px; background: #ffffffed; padding: 6px 10px; border-radius: 16px; color: #65738b; font-size: 9px; letter-spacing: 1px; }
 .slideControls { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; background: #fff; }
 .slideDots { display: flex; flex-wrap: wrap; }

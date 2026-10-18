@@ -1,9 +1,19 @@
 ﻿"use client";
-import Link from "next/link";
+import Image from "next/image";
+import { useRef, useState } from "react";
+import styles from "./leaderboard-guide.module.css";
 import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
 import { WeekShell } from "@/components/week-shell";
+const POINT_GUIDES = [
+  { title: "Solve a puzzle card", summary: "Solve on site, then scan and submit.", image: "/directory/cards.svg", steps: ["Find a printed puzzle card in the library and solve it.", "Scan the card's QR code. Sign in with your school email.", "Follow the input instructions and submit your answer. A correct answer earns points."] },
+  { title: "Play a digital game", summary: "Finish a game and scan your result QR.", image: "/whats-on-today/digital-game.webp", steps: ["Play at the event touchscreen and finish the game.", "Scan the result QR and sign in with your school email. Claim within 1 minute.", "In two-player games, only the winner claims. Your points depend on your result."] },
+  { title: "Take a committee challenge", summary: "Complete a challenge; explain it for a bonus.", image: "/directory/committee.svg", steps: ["Visit a staffed committee booth and complete a challenge.", "Ask staff to check your result. Scan the completion QR for 10 points.", "Explain your solution to staff for 20 points total. If you already claimed 10, scan the explanation QR to add the other 10."] },
+];
 export function LeaderboardView() {
   const { rows, loading } = useLeaderboard("individual", 20);
+  const [selectedGuide, setSelectedGuide] = useState<(typeof POINT_GUIDES)[number] | null>(null);
+  const guideDialog = useRef<HTMLDialogElement>(null);
+  const guideOpener = useRef<HTMLButtonElement | null>(null);
   return (
     <WeekShell idleSeconds={60}>
       <div className="page-intro">
@@ -57,26 +67,38 @@ export function LeaderboardView() {
             ))
           )}
         </section>
-        <aside className="ranking-aside">
-          <span className="aside-symbol" aria-hidden="true">
-            ↗
-          </span>
-          <p className="week-eyebrow">HOW TO EARN POINTS</p>
-          <h2>
-            Solve puzzles.
-            <br />
-            Join activities.
-          </h2>
-          <p>
-            Scan a printed puzzle card to submit an answer, or collect a claim
-            QR from staff after a qualifying win. Sign in on your phone with
-            your university Microsoft account. Each activity scores once.
-          </p>
-          <Link href="/directory" className="week-button">
-            View activities →
-          </Link>
+        <aside className={styles.guide} aria-label="Points guide and awards">
+          <section aria-labelledby="points-guide-title">
+            <p className="week-eyebrow">PLAY ON SITE / CLAIM ON YOUR PHONE</p>
+            <h2 id="points-guide-title">How to gain points</h2>
+            <p className={styles.signIn}>Scan a QR code and sign in with your school email.</p>
+            <ol className={styles.steps}>
+              {POINT_GUIDES.map(guide => <li key={guide.title}><button className={styles.guideCard} aria-haspopup="dialog" onClick={event => {
+                guideOpener.current = event.currentTarget;
+                setSelectedGuide(guide);
+                guideDialog.current?.showModal();
+                if (guideDialog.current) guideDialog.current.scrollTop = 0;
+              }}><strong>{guide.title}<span aria-hidden="true">↗</span></strong><p>{guide.summary}</p><span className={styles.readGuide}>How to claim points</span></button></li>)}
+            </ol>
+            <p className={styles.note}>Points appear here after a successful claim. The same reward cannot be collected twice.</p>
+          </section>
+          <section className={styles.awards} aria-labelledby="leaderboard-awards-title">
+            <h2 id="leaderboard-awards-title"><span aria-hidden="true">★ </span>Awards</h2>
+            <Image src="/whats-on-today/prizes-composite.webp" alt="Math Week awards: a camping chair, thermos, character blankets and magnetic badge" width={1200} height={675} sizes="(max-width: 900px) 90vw, 32vw" />
+            <p>Camping chair · Thermos · Nap blanket · Magnetic badge</p>
+          </section>
         </aside>
       </div>
+      <dialog ref={guideDialog} className={styles.dialog} aria-labelledby="points-detail-title" onClick={event => { if (event.target === event.currentTarget) guideDialog.current?.close(); }} onClose={() => guideOpener.current?.focus()}>
+        {selectedGuide && <>
+          <div className={styles.dialogImage}><Image src={selectedGuide.image} alt={selectedGuide.image.endsWith(".svg") ? `${selectedGuide.title} illustration` : "Mathverse digital games promotional preview"} fill sizes="640px" /></div>
+          <div className={styles.dialogCopy}><p className="week-eyebrow">HOW TO GAIN POINTS</p><h2 id="points-detail-title">{selectedGuide.title}</h2>
+            <ol>{selectedGuide.steps.map(step => <li key={step}>{step}</li>)}</ol>
+            <p>Points appear on the leaderboard after a successful claim.</p>
+            <button className={styles.close} onClick={() => guideDialog.current?.close()}>Back to leaderboard</button>
+          </div>
+        </>}
+      </dialog>
     </WeekShell>
   );
 }

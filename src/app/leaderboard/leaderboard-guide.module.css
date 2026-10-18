@@ -1,0 +1,30 @@
+.guide { padding: 24px; background: #edf2ff; border: 1px solid #dfe6f6; border-radius: 20px; min-width: 0; }
+.guide h2 { font-size: 25px; font-weight: 600; line-height: 1.2; margin: 10px 0 14px; color: #2c4269; }
+.signIn { padding: 12px 14px; background: #fff; border-radius: 10px; color: #4059b4; font-size: 13px; line-height: 1.6; }
+.steps { list-style: none; counter-reset: points-step; display: grid; gap: 18px; margin: 20px 0; padding: 0; }
+.steps li { position: relative; padding-left: 38px; counter-increment: points-step; }
+.steps li::before { content: counter(points-step); position: absolute; left: 0; top: 0; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: #4d6bfe; color: #fff; font-size: 12px; }
+.steps strong { display: block; font-size: 15px; margin-bottom: 5px; color: #2c4269; }
+.steps p, .note, .awards p { color: #62738d; font-size: 12px; line-height: 1.7; }
+.note { border-top: 1px solid #d9e2f6; padding-top: 14px; }
+.awards { margin-top: 24px; padding-top: 18px; border-top: 1px solid #d9e2f6; }
+.awards h2 span { color: #b38627; }
+.awards img { display: block; width: 100%; height: auto; object-fit: contain; border-radius: 12px; }
+.awards p { margin-top: 10px; }
+@media (max-width: 600px) { .guide { padding: 20px; } }
+.guideCard { width: 100%; display: block; text-align: left; padding: 12px; border: 1px solid #dce4f7; border-radius: 12px; background: #fff; cursor: pointer; }
+.guideCard strong { display: flex; justify-content: space-between; gap: 10px; }
+.guideCard strong > span { color: #4d6bfe; }
+.readGuide { display: block; color: #4059b4; font-size: 11px; margin-top: 8px; }
+.guideCard:focus-visible, .dialog button:focus-visible { outline: 3px solid #6c80fc; outline-offset: 3px; }
+.guideCard:hover { border-color: #6c80fc; }
+.dialog { position: fixed; inset: 0; margin: auto; width: min(640px, calc(100% - 32px)); max-height: 88svh; overflow-y: auto; border: 0; padding: 0; border-radius: 24px; background: #fff; color: #263550; box-shadow: 0 24px 90px #10224744; }
+.dialog::backdrop { background: #13234399; backdrop-filter: blur(5px); }
+.dialogImage { position: relative; aspect-ratio: 16/9; background: #edf1fc; }
+.dialogImage img { object-fit: contain; }
+.dialogCopy { padding: 26px; }
+.dialogCopy h2 { font-size: 28px; line-height: 1.2; margin: 12px 0 20px; }
+.dialogCopy ol { padding-left: 22px; }
+.dialogCopy li { padding-left: 4px; margin-bottom: 12px; font-size: 14px; line-height: 1.7; color: #5e6f89; }
+.dialogCopy > p:last-of-type { font-size: 12px; color: #64738b; line-height: 1.7; }
+.close { display: block; width: 100%; padding: 14px; border-radius: 12px; background: #4d6bfe; color: #fff; margin-top: 20px; cursor: pointer; font-size: 14px; }
