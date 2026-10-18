@@ -9,7 +9,7 @@ import styles from "./directory.module.css";
 const slides = [
   { src: WEEK_POSTER.src, alt: WEEK_POSTER.alt, title: "Math Week", placeholder: false },
   { src: "/whats-on-today/prizes-composite.webp", alt: "Camping chair, thermos, character blankets and magnetic badge", title: "★ Awards", placeholder: false },
-  ...EXPERIENCES.filter(card => ["cards", "digital", "hands-on", "committee", "market"].includes(card.id)).map(card => ({ src: card.image, alt: card.image.endsWith(".svg") ? `${card.title} illustration; on-site photograph coming soon` : "Mathverse digital games promotional preview showing six game realms", title: card.title, placeholder: card.image.endsWith(".svg") })),
+  ...EXPERIENCES.filter(card => ["cards", "digital", "hands-on", "committee", "market"].includes(card.id)).map(card => ({ src: card.image, alt: card.image.endsWith(".svg") ? `${card.title} illustration; on-site photograph coming soon` : card.id === "digital" ? "Mathverse digital games promotional preview showing six game realms" : `${card.title} activity preview`, title: card.title, placeholder: card.image.endsWith(".svg") })),
 ];
 
 function subscribeMotion(callback: () => void) {

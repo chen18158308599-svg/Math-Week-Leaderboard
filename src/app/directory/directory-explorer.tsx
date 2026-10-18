@@ -55,7 +55,7 @@ export default function DirectoryExplorer({ initialDay }: { initialDay: number }
       </button>)}</div>
     </section>}
     <section className={styles.section}>
-      <div className={styles.sectionTitle}><div><p className="week-eyebrow">SEVEN WAYS TO GET CURIOUS</p><h2>What will you try?</h2></div><span>All experiences / visit the team on site</span></div>
+      <div className={styles.sectionTitle}><div><p className="week-eyebrow">SIX WAYS TO GET CURIOUS</p><h2>What will you try?</h2></div><span>All experiences / visit the team on site</span></div>
       <div className={styles.experienceGrid}>{picks.map(card => <button className={styles.card} key={card.id} onClick={() => open(card)}>
         <div className={styles.photo}><PreviewImage card={card} sizes="(min-width: 1500px) 450px, 33vw" /></div>
         <div className={styles.cardCopy}><span className={styles.category}>{card.category}</span><h3>{card.title}</h3><p>{card.teaser}</p>
@@ -66,7 +66,7 @@ export default function DirectoryExplorer({ initialDay }: { initialDay: number }
     </section>
     <section className={styles.wayfinding}>
       <div><p className="week-eyebrow">MAKE YOUR WAY AROUND</p><h2>Less searching.<br />More discovering.</h2></div>
-      <div><article><span>01 / EXPLORE</span><h3>Follow the displays</h3><p>Find exhibition pieces, printed puzzles and the opinion wall around the library.</p></article><article><span>02 / PLAY</span><h3>Head to Library 2F</h3><p>Find the digital and committee booths. Ask the team which challenges are available.</p></article><article><span>03 / JOIN IN</span><h3>Check your session venue</h3><p>Talks and the Rubik session: Library 1F. Movie and closing celebration: Mini Cinema.</p></article></div>
+      <div><article><span>01 / EXPLORE</span><h3>Follow the displays</h3><p>Find exhibition pieces and printed puzzles around the library.</p></article><article><span>02 / PLAY</span><h3>Head to Library 2F</h3><p>Find the digital and committee booths. Ask the team which challenges are available.</p></article><article><span>03 / JOIN IN</span><h3>Check your session venue</h3><p>Talks and the Rubik session: Library 1F. Movie and closing celebration: Mini Cinema.</p></article></div>
     </section>
     <dialog ref={dialog} className={styles.dialog} aria-labelledby="directory-detail-title" onClick={e => { if (e.target === e.currentTarget) close(); }} onClose={() => opener.current?.focus()}>
       {selected && <><div className={styles.dialogPhoto}><PreviewImage card={selected} sizes="640px" /></div><div className={styles.dialogCopy}>
