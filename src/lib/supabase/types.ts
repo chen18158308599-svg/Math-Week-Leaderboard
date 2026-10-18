@@ -48,6 +48,7 @@ export interface CardPuzzle {
 }
 
 export interface ClaimToken {
+  renewed_at: string | null;
   result_payload: { gameKey: string; attemptId: string; playerSlot: string; finalScore: number; outcome: string; finalizedAt: string } | null;
   points_snapshot: number | null;
   attempt_id: string | null;
@@ -110,6 +111,7 @@ export interface Database {
       leaderboard_group: { Row: LeaderboardGroupRow; Relationships: [] };
     };
     Functions: {
+      renew_digital_claim: { Args: { p_token: string }; Returns: ClaimToken[] };
       committee_award: {
         Args: { p_code: string; p_claim: boolean };
         Returns: { game_name: string; tier: string; target_points: number; total_points: number; points_added: number }[];

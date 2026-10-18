@@ -6,6 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { SITE_ACCESS_COOKIE, validSiteAccessToken } from "@/lib/site-access";
 import type { ClaimToken, Game } from "@/lib/supabase/types";
 import { digitalClaimPoints } from "@/lib/digital-points";
+import { claimDeadline } from "@/lib/digital-claim-deadline";
 const schema = z.object({
   gameKey: z.enum(["conway", "deal", "knn", "sequence", "planarity", "symmetry"]),
   attemptId: z.string().min(8).max(160).regex(/^[a-zA-Z0-9-]+$/),
@@ -13,6 +14,7 @@ const schema = z.object({
   finalScore: z.number().int().min(0).max(100000),
   outcome: z.enum(["win", "loss", "draw", "completed"]),
   finalizedAt: z.iso.datetime(),
+  renew: z.boolean().optional().default(false),
 }).strict();
 const TTL = 60;
 export async function POST(request: Request) {
@@ -25,7 +27,7 @@ export async function POST(request: Request) {
   try { body = JSON.parse(raw); } catch { return reply({ error: "Invalid JSON" }, 400); }
   const parsed = schema.safeParse(body);
   if (!parsed.success) return reply({ error: "Invalid game result" }, 400);
-  const result = parsed.data;
+  const { renew, ...result } = parsed.data;
   const dual = result.gameKey === "conway" || result.gameKey === "planarity";
   if (dual === (result.playerSlot === "single")) return reply({ error: "Invalid player slot or number" }, 400);
   if (["conway", "planarity"].includes(result.gameKey) && result.outcome !== "win") return reply({ error: "Only the winner can claim points" }, 403);
@@ -60,7 +62,14 @@ export async function POST(request: Request) {
   }
   if (!claim || error) return reply({ error: "Unable to load result" }, 503);
   if (!sameResult(claim)) return reply({ error: "Result conflict" }, 409);
-  const deadline = Math.min(Date.parse(claim.expires_at), Date.parse(claim.created_at) + TTL * 1000);
+  if (renew && !claim.used_at) {
+    // @ts-expect-error Supabase's RPC input inference has a gap with this handwritten schema.
+    const response = await admin.rpc("renew_digital_claim", { p_token: claim.token });
+    const renewed = response as unknown as { data: ClaimToken[] | null; error: unknown };
+    if (renewed.error || !renewed.data?.[0]) return reply({ error: "Unable to renew QR. Please retry or ask event staff." }, 503);
+    claim = renewed.data[0];
+  }
+  const deadline = claimDeadline(claim);
   if (!claim.used_at && deadline <= Date.now()) return reply({ code: "RESULT_EXPIRED", error: "This result expired and cannot be claimed again." }, 410);
   return reply({ token: claim.token, expiresAt: new Date(deadline).toISOString(), used: !!claim.used_at,
     pointsAwarded: claim.used_at ? claim.points_snapshot : points, claimUrl: `${new URL(request.url).origin}/claim/${claim.token}` });

@@ -13,7 +13,8 @@ function PlayerClaim({ submission, slot, requestClaim }) {
     const timer = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(timer);
   }, [attemptId, localGameId, result, slot, requestClaim]);
-  const expired = player.expiresAt && Date.parse(player.expiresAt) <= now;
+  const loading = player.state === "loading";
+  const expired = !loading && player.expiresAt && Date.parse(player.expiresAt) <= now;
   return <section className="post-game-player">
     {slot !== "single" && <h2>PLAYER {slot === "p1" ? "1" : "2"} WINS</h2>}
     {submission.localGameId === "symmetry" && <p>One claim per activity. Return home to try again.</p>}
@@ -22,13 +23,13 @@ function PlayerClaim({ submission, slot, requestClaim }) {
       {player.qrDataUrl && !expired && <>
         <img className="claim-qr" src={player.qrDataUrl} width="248" height="248" alt="Scan to sign in and claim this result" />
         <p>Scan &amp; sign in with your school account.</p>
-        <p className="post-game-countdown" role="timer">{Math.max(0, Math.ceil((Date.parse(player.expiresAt) - now) / 1000))}s remaining</p>
+        <p className="post-game-countdown" role="timer">{loading ? "Renewing QR…" : `${Math.max(0, Math.min(60, Math.ceil((Date.parse(player.expiresAt) - now) / 1000)))}s remaining`}</p>
       </>}
       {(player.error || expired) && <p className="post-game-error" role="alert">{expired ? "This result has expired." : player.error}</p>}
       {window.parent === window && <p>Open this game from <a href={`${LEADERBOARD_ORIGIN}/games`}>Math Week Digital Games</a> to claim points.</p>}
       {!expired && !player.qrDataUrl && ["pending", "loading"].includes(player.state) && <p role="status">Loading QR…</p>}
       {!expired && player.state !== "expired" && <>
-        <button className="post-game-retry" title="Reload the same QR. The countdown does not restart." onClick={() => requestClaim(submission, slot)}>RETRY QR</button>
+        <button className="post-game-retry" disabled={loading} title="Renew this unclaimed result for another 60 seconds." onClick={() => requestClaim(submission, slot, true)}>{loading ? "RENEWING…" : "RECLAIM QR"}</button>
       </>}
     </>}
   </section>;
@@ -40,7 +41,7 @@ export default function PostGameSubmission({ submission, onReturnHome, requestCl
     const checkExpiry = () => {
       if (claimableSlots(submission).some(slot => {
         const player = submission.players[slot];
-        return player.state === "expired" || (player.expiresAt && Date.parse(player.expiresAt) <= Date.now());
+        return player.state !== "loading" && (player.state === "expired" || (player.expiresAt && Date.parse(player.expiresAt) <= Date.now()));
       })) onReturnHome();
     };
     checkExpiry();

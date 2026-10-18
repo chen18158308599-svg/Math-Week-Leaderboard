@@ -1,3 +1,4 @@
+import { claimDeadline } from "@/lib/digital-claim-deadline";
 import { digitalClaimPoints } from "@/lib/digital-points";
 import { requireUser } from "@/lib/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -49,7 +50,7 @@ export default async function ClaimPage({
   if (!submission && claim.used_at) {
     return <Message title="Already claimed" body="This code has already been used." />;
   }
-  if (!submission && new Date().getTime() >= Math.min(Date.parse(claim.expires_at), claim.result_payload ? Date.parse(claim.created_at) + 60000 : Infinity)) {
+  if (!submission && new Date().getTime() >= claimDeadline(claim)) {
     return <Message title="Expired" body="This code expired — ask staff for a new one." />;
   }
 

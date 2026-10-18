@@ -44,10 +44,13 @@ export function useScoreRecording() {
       window.removeEventListener("message", message);
     };
   }, []);
-  const requestClaim = useCallback((submission, slot) => {
+  const requestClaim = useCallback((submission, slot, renew = false) => {
     if (!canClaimResult(submission.localGameId, submission.results[slot])) return;
+    if (renew) setSubmissions(current => current.map(item => item.attemptId === submission.attemptId ? {
+      ...item, players: { ...item.players, [slot]: { ...item.players[slot], state: "loading", error: null } },
+    } : item));
     window.parent.postMessage({ type: "mathweek:claim-result", gameKey: submission.localGameId,
-      ...submission.results[slot], attemptId: submission.attemptId, playerSlot: slot }, LEADERBOARD_ORIGIN);
+      ...submission.results[slot], attemptId: submission.attemptId, playerSlot: slot, renew }, LEADERBOARD_ORIGIN);
   }, []);
   return {
     pendingSubmission: submissions.find(item => item.attemptId === activeAttemptId) || submissions.at(-1),

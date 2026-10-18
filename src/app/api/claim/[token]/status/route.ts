@@ -1,3 +1,4 @@
+import { claimDeadline } from "@/lib/digital-claim-deadline";
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import type { ClaimToken } from "@/lib/supabase/types";
@@ -26,6 +27,6 @@ export async function GET(
 
   return NextResponse.json({
     used: data.used_at !== null,
-    expired: Date.now() >= Math.min(Date.parse(data.expires_at), data.result_payload ? Date.parse(data.created_at) + 60000 : Infinity),
+    expired: Date.now() >= claimDeadline(data),
   }, { headers: { "Cache-Control": "no-store" } });
 }

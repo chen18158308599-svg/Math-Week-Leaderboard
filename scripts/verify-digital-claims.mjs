@@ -9,7 +9,7 @@ const scaling = {};
 vm.runInNewContext(ts.transpileModule(readFileSync(new URL('../src/lib/digital-points.ts', import.meta.url),'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, {exports: scaling});
 const db = new PGlite();
 await db.exec(`
-create role anon; create role authenticated;
+create role anon; create role authenticated; create role service_role;
 create schema auth;
 create function auth.uid() returns uuid language sql as $$ select nullif(current_setting('test.uid', true), '')::uuid $$;
 create table profiles(id uuid primary key);
@@ -25,6 +25,7 @@ await db.exec(readFileSync(new URL('../supabase/migrations/0021_digital_short_ga
 await db.exec(readFileSync(new URL('../supabase/migrations/0022_digital_medium_rounds.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0023_knn_two_maps.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0024_digital_claim_points_boost.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0025_renew_digital_claim_window.sql', import.meta.url), 'utf8'));
 for (const [key, target] of Object.entries(scaling.DIGITAL_SCORE_TARGETS)) {
   assert.equal(scaling.digitalClaimPoints(key,target),19);
   assert.equal((await db.query('select digital_claim_points($1,$2) as points',[key,target])).rows[0].points,19);
@@ -68,6 +69,7 @@ await db.exec(readFileSync(new URL('../supabase/migrations/0021_digital_short_ga
 await db.exec(readFileSync(new URL('../supabase/migrations/0022_digital_medium_rounds.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0023_knn_two_maps.sql', import.meta.url), 'utf8'));
 await db.exec(readFileSync(new URL('../supabase/migrations/0024_digital_claim_points_boost.sql', import.meta.url), 'utf8'));
+await db.exec(readFileSync(new URL('../supabase/migrations/0025_renew_digital_claim_window.sql', import.meta.url), 'utf8'));
 assert.equal((await db.query("select count(*)::int as count from games where type='digital' and digital_key <> 'average' and embed_url='/digital-play/index.html'")).rows[0].count,6);
 // Exercise the real route with its Supabase transport replaced by a PostgreSQL adapter.
 function table(name) {
@@ -98,13 +100,20 @@ function table(name) {
   }; return chain;
 }
 let authorized = true;
+const deadlines = {};
+vm.runInNewContext(ts.transpileModule(readFileSync(new URL('../src/lib/digital-claim-deadline.ts',import.meta.url),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS}}).outputText,{exports:deadlines});
 const exports = {};
 const source = ts.transpileModule(readFileSync(new URL('../src/app/api/games/claim-result/route.ts', import.meta.url),'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
 vm.runInNewContext(source, { exports, URL, Date, Object, JSON, require: name => {
   if (name === 'next/server') return { NextResponse: { json: (value, init) => Response.json(value, init) } };
   if (name === 'next/headers') return { cookies: async () => ({ get: () => ({ value: 'display' }) }) };
   if (name.endsWith('/digital-points')) return scaling;
-  if (name.endsWith('/admin')) return { createAdminClient: () => ({ from: table }) };
+  if (name.endsWith('/digital-claim-deadline')) return deadlines;
+  if (name.endsWith('/admin')) return { createAdminClient: () => ({ from: table, rpc: async (name,args) => {
+    assert.equal(name,'renew_digital_claim');
+    try {const response=await db.query('select * from renew_digital_claim($1)',[args.p_token]);return {data:response.rows,error:null};}
+    catch(error){return {data:null,error};}
+  } }) };
   if (name.endsWith('/site-access')) return { SITE_ACCESS_COOKIE: 'access', validSiteAccessToken: () => authorized };
   if (name.endsWith('/event-date')) return { todayInEventTimezone: () => '2026-10-15' };
   return require(name);
@@ -193,5 +202,30 @@ await assert.rejects(db.query('select * from claim_token($1)',[winToken]),/alrea
 await db.query("select set_config('test.uid',$1,false)",[user2]);
 await db.exec("insert into claim_tokens(game_id,token,attempt_id,player_slot,points_snapshot,expires_at,result_payload) select id,'invalid-survival-band','invalid-band-attempt','single',10,now()+interval '1 minute','{\"gameKey\":\"symmetry\",\"outcome\":\"loss\",\"finalScore\":10}'::jsonb from games where digital_key='symmetry'");
 await assert.rejects(db.query("select * from claim_token('invalid-survival-band')"),/invalid_survival_result/);
+// Explicit renew keeps the same result/token, while all authorities use the new window.
+await db.exec("update games set is_active=true where digital_key='knn'");
+const renewResult={...base,attemptId:'knn-explicit-renewal-test'};
+const renewFirst=await report(renewResult);
+await db.query("update claim_tokens set created_at=now()-interval '10 minutes', expires_at=now()-interval '1 second' where token=$1",[renewFirst.token]);
+const beforeRenew=(await db.query('select * from claim_tokens where token=$1',[renewFirst.token])).rows[0];
+assert.equal((await report(renewResult)).status,410);
+const renewed=await report({...renewResult,renew:true});
+assert.equal(renewed.status,200);assert.equal(renewed.token,renewFirst.token);
+assert.ok(Date.parse(renewed.expiresAt)-Date.now()>58000);
+const renewedRow=(await db.query('select * from claim_tokens where token=$1',[renewFirst.token])).rows[0];
+assert.equal(+renewedRow.created_at,+beforeRenew.created_at);
+assert.deepEqual(renewedRow.result_payload,beforeRenew.result_payload);
+assert.equal(deadlines.claimDeadline(renewedRow),Date.parse(renewed.expiresAt));
+assert.equal((await report({...renewResult,renew:true,finalScore:1})).status,409);
+assert.equal((await db.query('select * from claim_token($1)',[renewFirst.token])).rows[0].points_awarded,19);
+const usedRow=(await db.query('select * from claim_tokens where token=$1',[renewFirst.token])).rows[0];
+assert.equal((await report({...renewResult,renew:true})).used,true);
+const usedAfter=(await db.query('select * from renew_digital_claim($1)',[renewFirst.token])).rows[0];
+assert.equal(+usedAfter.expires_at,+usedRow.expires_at);
+assert.equal(+usedAfter.renewed_at,+usedRow.renewed_at);
+assert.equal((await db.query('select count(*)::int as n from claim_tokens where attempt_id=$1',[renewResult.attemptId])).rows[0].n,1);
+await db.exec('set role authenticated');
+await assert.rejects(db.query('select * from renew_digital_claim($1)',[renewFirst.token]),/permission denied/);
+await db.exec('reset role');
 await db.close();
-console.log('Digital claims verified: variable scores, metadata, two seats, retired Average, six all-day games, idempotency, permanent expiry, authentication and legacy awards.');
+console.log('Digital claims verified: variable scores, metadata, two seats, retired Average, six all-day games, idempotency, normal-retry expiry, explicit server renewal, no duplicate awards, renewal permissions, authentication and legacy awards.');

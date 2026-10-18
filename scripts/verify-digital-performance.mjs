@@ -17,8 +17,9 @@ try {
   page.on('pageerror',e=>errors.push(e.message));
   await page.route('**/api/games/claim-result',async route=>{
     reports++;
+    const renew = route.request().postDataJSON().renew === true;
     await new Promise(resolve=>setTimeout(resolve,300));
-    await route.fulfill({json:{token:'test-only',expiresAt:new Date(Date.now()+60000).toISOString(),used:false,pointsAwarded:19,claimUrl:origin+'/claim/test-only'}});
+    await route.fulfill({json:{token:'test-only',expiresAt:new Date(Date.now()+(renew?60000:20000)).toISOString(),used:false,pointsAwarded:19,claimUrl:origin+'/claim/test-only'}});
   });
   await page.route('**/api/claim/*/status',route=>route.fulfill({json:{used:false,expired:false}}));
   await page.goto(origin+'/games',{waitUntil:'domcontentloaded'});
@@ -43,9 +44,13 @@ try {
   const elapsed=Date.now()-start;
   assert.equal(await frame.getByText('Conway Table Tennis Arena',{exact:true}).count(),0,'Finished game must unmount while QR is displayed');
   assert.equal(reports,1);
-  await frame.getByRole('button',{name:'RETRY QR',exact:true}).click();
-  await page.waitForTimeout(350);
-  assert.equal(reports,1,'Ready QR retry must reuse the same code without another result request');
+  const beforeRenew = await frame.getByRole('timer').textContent();
+  assert.ok(Number.parseInt(beforeRenew)<=21);
+  await frame.getByRole('button',{name:'RECLAIM QR',exact:true}).click();
+  await frame.getByRole('button',{name:'RENEWING…',exact:true}).waitFor();
+  await frame.getByRole('button',{name:'RECLAIM QR',exact:true}).waitFor();
+  assert.equal(reports,2,'Explicit reclaim must renew the server deadline');
+  assert.ok(Number.parseInt(await frame.getByRole('timer').textContent())>=58,'Displayed countdown follows renewed server expiry');
   assert.equal(requests.filter(url=>/\/assets\/(conway|deal|knn|sequence|planarity|symmetry)-.*\.png$/.test(url)).length,0);
   await frame.getByRole('button',{name:'RETURN HOME',exact:true}).click();
   for (const [label,module] of [['Open Deal or No Deal','DealOrNoDeal'],['Open KNN','KNN'],['Open Number Sequence','NumberSequence'],['Open Planarity','Planarity'],['Open Symmetry','Symmetry']]) {
@@ -76,5 +81,5 @@ try {
   await recovery.getByRole('button',{name:'Open Conway',exact:true}).waitFor();
   await recovery.close();
   console.log('PASS: no background-music requests; static island menu; high-DPI KNN backing surface capped; failed module displays a working reload action.');
-  console.log(`PASS: games load on demand, no heavy island PNGs or host background, finished game unmounts, QR visible in ${elapsed}ms with a mocked 300ms server delay, retry makes no extra result request. No real scores created.`);
+  console.log(`PASS: games load on demand, no heavy island PNGs or host background, finished game unmounts, QR visible in ${elapsed}ms with a mocked 300ms server delay; Reclaim renews server and displayed expiry. No real scores created.`);
 } finally { await browser.close(); }
