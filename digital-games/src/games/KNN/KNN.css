@@ -3700,6 +3700,21 @@ body{
 .game .interact-btn span, .game .run-btn span { font-size:17px; }
 .game .interact-btn i, .game .run-btn > i { font-size:32px; }
 .game .interact-btn { border:3px solid #fff250; box-shadow:0 0 20px #ffe55280; }
+
+/* Group movement, interaction and sprint near the lower middle-left. */
+.game { --touch-cluster-left: clamp(24px, 18vw, 300px); }
+.game .stick { left: var(--touch-cluster-left); bottom: 30px; }
+.game .action-buttons { left: calc(var(--touch-cluster-left) + 184px); right: auto; bottom: 30px; flex-direction: row; align-items: end; gap: 12px; }
+.game .map-btn { left: calc(var(--touch-cluster-left) + 184px); right: auto; bottom: 136px; min-width: 120px; min-height: 60px; }
+@media (max-width: 600px) {
+  .game { --touch-cluster-left: 12px; }
+  .game .stick { width: 104px; height: 104px; bottom: 20px; }
+  .game .stick-knob { width: 46px; height: 46px; }
+  .game .action-buttons { left: 128px; bottom: 20px; gap: 8px; }
+  .game .interact-btn, .game .run-btn { width: 80px; min-width: 80px; min-height: 72px; }
+  .game .interact-btn span, .game .run-btn span { font-size: 13px; }
+  .game .map-btn { left: 128px; bottom: 108px; min-width: 80px; min-height: 56px; }
+}
 .game .map-btn { left:auto; right:28px; bottom:260px; min-width:100px; min-height:60px; }
 .knn-point:not(.selected) { outline:none; box-shadow:0 2px 7px #0008; }
 .knn-point.selected { outline:4px solid #fff250; outline-offset:4px; box-shadow:0 0 20px #ffe552; }
