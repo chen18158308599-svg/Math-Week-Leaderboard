@@ -46,6 +46,7 @@ export async function submitPuzzleAnswerAction(
   const rpcResult = await supabase.rpc("submit_puzzle_answer", {
     p_slug: slug,
     p_answer: submitted,
+    p_raw_answer: answer,
   });
   const { data, error } = rpcResult as unknown as {
     data: PuzzleRpcRow[] | null;

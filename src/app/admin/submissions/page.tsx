@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import Link from "next/link";
 import type { Game, Profile, Submission } from "@/lib/supabase/types";
 import { PageHeader, card, dangerButton, secondaryButton, td, th } from "../ui";
 import { toggleFlagAction, deleteSubmissionAction } from "./actions";
@@ -54,7 +55,7 @@ export default async function SubmissionsPage() {
                 <td className={`${td} text-neutral-500`}>
                   {new Date(s.created_at).toLocaleString()}
                 </td>
-                <td className={`${td} font-medium`}>{nicknameFor(s.user_id)}</td>
+                <td className={`${td} font-medium`}><Link className="text-amber-700 underline" href={`/admin/players/${s.user_id}`}>{nicknameFor(s.user_id)}</Link></td>
                 <td className={`${td} text-neutral-600`}>{gameNameFor(s.game_id)}</td>
                 <td className={td}>
                   <span className="rounded-full bg-neutral-100 px-2.5 py-1 text-xs font-medium text-neutral-700">

@@ -73,6 +73,15 @@ export interface Submission {
   created_at: string;
 }
 
+export interface CardPuzzleAttempt {
+  id: string;
+  user_id: string;
+  card_puzzle_id: string;
+  correct: boolean;
+  created_at: string;
+  submitted_answer: string | string[] | null;
+}
+
 export interface DailyFeature {
   id: string;
   date: string;
@@ -102,6 +111,7 @@ export interface Database {
       stations: { Row: Station; Insert: Partial<Station>; Update: Partial<Station>; Relationships: [] };
       games: { Row: Game; Insert: Partial<Game>; Update: Partial<Game>; Relationships: [] };
       card_puzzles: { Row: CardPuzzle; Insert: Partial<CardPuzzle>; Update: Partial<CardPuzzle>; Relationships: [] };
+      card_puzzle_attempts: { Row: CardPuzzleAttempt; Insert: Partial<CardPuzzleAttempt>; Update: Partial<CardPuzzleAttempt>; Relationships: [] };
       claim_tokens: { Row: ClaimToken; Insert: Partial<ClaimToken>; Update: Partial<ClaimToken>; Relationships: [] };
       submissions: { Row: Submission; Insert: Partial<Submission>; Update: Partial<Submission>; Relationships: [] };
       daily_features: { Row: DailyFeature; Insert: Partial<DailyFeature>; Update: Partial<DailyFeature>; Relationships: [] };
@@ -129,7 +139,7 @@ export interface Database {
         Returns: { game_id: string; game_name: string; points_awarded: number }[];
       };
       submit_puzzle_answer: {
-        Args: { p_slug: string; p_answer: string };
+        Args: { p_slug: string; p_answer: string; p_raw_answer?: string | string[] };
         Returns: {
           correct: boolean;
           locked: boolean;

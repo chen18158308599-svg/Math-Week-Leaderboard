@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/lib/supabase/admin";
+import Link from "next/link";
 import type { LeaderboardIndividualRow } from "@/lib/supabase/types";
 import { PageHeader, card, secondaryButton, td, th } from "../ui";
 
@@ -39,7 +40,7 @@ export default async function AdminLeaderboardPage() {
             {rows.map((r, i) => (
               <tr key={r.user_id}>
                 <td className={`${td} text-neutral-500`}>{i + 1}</td>
-                <td className={`${td} font-medium`}>{r.nickname}</td>
+                <td className={`${td} font-medium`}><Link className="text-amber-700 underline" href={`/admin/players/${r.user_id}`}>{r.nickname}</Link></td>
                 <td className={td}>{r.total_points}</td>
               </tr>
             ))}
