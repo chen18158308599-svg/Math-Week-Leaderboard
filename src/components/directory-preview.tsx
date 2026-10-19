@@ -8,14 +8,14 @@ export function DirectoryPreview({ date, large }: { date: string; large: boolean
   return <div className={`${styles.preview} ${large ? styles.large : styles.small}`}>
     <div className={styles.collage}>
       <div className={styles.tile}>
-        <Image src="/whats-on-today/random3.webp" alt="Rubik cubes and mathematical displays at the library" fill sizes={large ? "(max-width: 600px) 55vw, 35vw" : "18vw"} />
+        <Image src="/whats-on-today/rubik.webp" alt="Rubik cubes and mathematical displays at the library" fill sizes={large ? "(max-width: 600px) 55vw, 35vw" : "18vw"} />
         <span className={styles.caption}>Explore Math Week.</span>
       </div>
       <div className={styles.tile}>
         <Image src="/whats-on-today/random2.webp" alt="Puzzle cards displayed on the library wall" fill sizes={large ? "(max-width: 600px) 35vw, 20vw" : "12vw"} />
       </div>
       <div className={styles.tile}>
-        <Image src="/whats-on-today/random4.webp" alt="Wooden mathematical puzzles on a library activity table" fill sizes={large ? "(max-width: 600px) 35vw, 20vw" : "12vw"} />
+        <Image src="/whats-on-today/kanoodle.webp" alt="Students solving the giant Kanoodle puzzle" fill sizes={large ? "(max-width: 600px) 35vw, 20vw" : "12vw"} />
       </div>
     </div>
     <div className={styles.copy}>

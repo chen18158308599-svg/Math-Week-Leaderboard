@@ -18,7 +18,8 @@ export default function DirectoryExplorer({ initialDay }: { initialDay: number }
   const dialog = useRef<HTMLDialogElement>(null);
   const opener = useRef<HTMLElement | null>(null);
   const events = SPECIAL_EVENTS[day] ?? [];
-  const picks = DAY_PICKS[day].map(id => EXPERIENCES.find(card => card.id === id)!);
+  const dailyPicks = [...DAY_PICKS[day].map(id => EXPERIENCES.find(card => card.id === id)!), ...events.filter(card => card.id === "rubik")];
+  const picks = [...dailyPicks.filter(card => card.id !== "market" && card.id !== "digital"), ...["market", "digital"].flatMap(id => dailyPicks.filter(card => card.id === id))];
   const open = (card: DiscoverCard) => {
     opener.current = document.activeElement as HTMLElement;
     setSelected(card);
@@ -55,7 +56,7 @@ export default function DirectoryExplorer({ initialDay }: { initialDay: number }
       </button>)}</div>
     </section>}
     <section className={styles.section}>
-      <div className={styles.sectionTitle}><div><p className="week-eyebrow">SIX WAYS TO GET CURIOUS</p><h2>What will you try?</h2></div><span>All experiences / visit the team on site</span></div>
+      <div className={styles.sectionTitle}><div><p className="week-eyebrow">{picks.length} WAYS TO GET CURIOUS</p><h2>What will you try?</h2></div><span>Explore activities / visit the team on site</span></div>
       <div className={styles.experienceGrid}>{picks.map(card => <button className={styles.card} key={card.id} onClick={() => open(card)}>
         <div className={styles.photo}><PreviewImage card={card} sizes="(min-width: 1500px) 450px, 33vw" /></div>
         <div className={styles.cardCopy}><span className={styles.category}>{card.category}</span><h3>{card.title}</h3><p>{card.teaser}</p>
