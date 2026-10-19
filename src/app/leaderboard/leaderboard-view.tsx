@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import styles from "./leaderboard-guide.module.css";
 import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
 import { WeekShell } from "@/components/week-shell";
+import { RankingQr } from "./ranking-qr";
 const POINT_GUIDES = [
   { title: "Solve a puzzle card", summary: "Solve on site, then scan and submit.", image: "/directory/cards.svg", steps: ["Find a printed puzzle card in the library and solve it.", "Scan the card's QR code. Sign in with your school email.", "Follow the input instructions and submit your answer. A correct answer earns points."] },
   { title: "Play a digital game", summary: "Finish a game and scan your result QR.", image: "/whats-on-today/digital-game.webp", steps: ["Play at the event touchscreen and finish the game.", "Scan the result QR and sign in with your school email. Claim within 1 minute.", "In two-player games, only the winner claims. Your points depend on your result."] },
@@ -79,6 +80,7 @@ export function LeaderboardView() {
           </nav>}
         </section>
         <aside className={styles.guide} aria-label="Points guide and awards">
+          <RankingQr />
           <section aria-labelledby="points-guide-title">
             <p className="week-eyebrow">PLAY ON SITE / CLAIM ON YOUR PHONE</p>
             <h2 id="points-guide-title">How to gain points</h2>
