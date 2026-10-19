@@ -48,3 +48,4 @@ next-env.d.ts
 card_based/card_qr/committee_codes.private.json
 # Private score-reset backups contain participant identifiers.
 output/leaderboard_backups/
+output/stock_market/private_backups/
