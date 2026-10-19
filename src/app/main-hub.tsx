@@ -11,7 +11,7 @@ import { todayInEventTimezone } from "@/lib/event-date";
 import { DirectoryPreview } from "@/components/directory-preview";
 const PANELS = ["events", "digital", "market", "ranking"] as const;
 type Panel = typeof PANELS[number];
-const TITLES = { events: "What's on", digital: "Digital Based", market: "MAT Stock Market", ranking: "Leaderboard" };
+const TITLES = { events: "What's on", digital: "Digital Game", market: "MAT Stock Market", ranking: "Leaderboard" };
 const LINKS = { events: "/directory", digital: "/games", market: "/stock-market", ranking: "/leaderboard" };
 function LiveScore({ points }: { points: number }) {
   const element = useRef<HTMLSpanElement>(null);
