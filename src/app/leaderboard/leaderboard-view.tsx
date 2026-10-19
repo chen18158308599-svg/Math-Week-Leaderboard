@@ -6,9 +6,9 @@ import { useLeaderboard } from "@/lib/leaderboard/use-leaderboard";
 import { WeekShell } from "@/components/week-shell";
 import { RankingQr } from "./ranking-qr";
 const POINT_GUIDES = [
-  { title: "Solve a puzzle card", summary: "Solve on site, then scan and submit.", image: "/directory/cards.svg", steps: ["Find a printed puzzle card in the library and solve it.", "Scan the card's QR code. Sign in with your school email.", "Follow the input instructions and submit your answer. A correct answer earns points."] },
-  { title: "Play a digital game", summary: "Finish a game and scan your result QR.", image: "/whats-on-today/digital-game.webp", steps: ["Play at the event touchscreen and finish the game.", "Scan the result QR and sign in with your school email. Claim within 1 minute.", "In two-player games, only the winner claims. Your points depend on your result."] },
-  { title: "Take a committee challenge", summary: "Complete a challenge; explain it for a bonus.", image: "/directory/committee.svg", steps: ["Visit a staffed committee booth and complete a challenge.", "Ask staff to check your result. Scan the completion QR for 10 points.", "Explain your solution to staff for 20 points total. If you already claimed 10, scan the explanation QR to add the other 10."] },
+  { title: "Solve a puzzle card", summary: "Solve on site, then scan and submit.", image: "/whats-on-today/random2.webp", imageAlt: "Puzzle cards displayed on the library wall", steps: ["Find a printed puzzle card in the library and solve it.", "Scan the card's QR code. Sign in with your school email.", "Follow the input instructions and submit your answer. A correct answer earns points."] },
+  { title: "Play a digital game", summary: "Finish a game and scan your result QR.", image: "/whats-on-today/digital-game.webp", imageAlt: "Mathverse digital games promotional preview", steps: ["Play at the event touchscreen and finish the game.", "Scan the result QR and sign in with your school email. Claim within 1 minute.", "In two-player games, only the winner claims. Your points depend on your result."] },
+  { title: "Take a committee challenge", summary: "Complete a challenge; explain it for a bonus.", image: "/whats-on-today/luban-lock.webp", imageAlt: "Wooden Luban lock puzzles at the library challenge booth", steps: ["Visit a staffed committee booth and complete a challenge.", "Ask staff to check your result. Scan the completion QR for 10 points.", "Explain your solution to staff for 20 points total. If you already claimed 10, scan the explanation QR to add the other 10."] },
 ];
 export function LeaderboardView() {
   const { rows, loading, error } = useLeaderboard("individual", null);
@@ -104,7 +104,7 @@ export function LeaderboardView() {
       </div>
       <dialog ref={guideDialog} className={styles.dialog} aria-labelledby="points-detail-title" onClick={event => { if (event.target === event.currentTarget) guideDialog.current?.close(); }} onClose={() => guideOpener.current?.focus()}>
         {selectedGuide && <>
-          <div className={styles.dialogImage}><Image src={selectedGuide.image} alt={selectedGuide.image.endsWith(".svg") ? `${selectedGuide.title} illustration` : "Mathverse digital games promotional preview"} fill sizes="640px" /></div>
+          <div className={styles.dialogImage}><Image src={selectedGuide.image} alt={selectedGuide.imageAlt} fill sizes="640px" /></div>
           <div className={styles.dialogCopy}><p className="week-eyebrow">HOW TO GAIN POINTS</p><h2 id="points-detail-title">{selectedGuide.title}</h2>
             <ol>{selectedGuide.steps.map(step => <li key={step}>{step}</li>)}</ol>
             <p>Points appear on the leaderboard after a successful claim.</p>
