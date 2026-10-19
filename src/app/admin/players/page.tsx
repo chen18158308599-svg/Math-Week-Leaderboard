@@ -16,7 +16,7 @@ export default async function PlayersPage({ searchParams }: { searchParams: Prom
   const { data, count, error } = await query.order("created_at", { ascending: false }).order("id").range((page - 1) * 50, page * 50 - 1).returns<Profile[]>();
   const href = (p: number) => `/admin/players?${new URLSearchParams({ q, page: String(p) })}`;
   return <div>
-    <PageHeader title="Players" subtitle="Find any registered player, including those with no points or only incorrect answers." />
+    <PageHeader title="Players" subtitle="Find any registered player, including those with no points or only incorrect answers." action={<Link className={secondaryButton} href="/admin/history">View all history</Link>} />
     <form className="mb-6 flex gap-3" action="/admin/players">
       <input className={`${input} w-80`} name="q" defaultValue={q} aria-label="Nickname or email" placeholder="Nickname or school email" maxLength={100} />
       <button className={secondaryButton}>Search</button>
