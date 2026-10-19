@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { LeaderboardGroupRow, LeaderboardIndividualRow } from "@/lib/supabase/types";
 
@@ -15,20 +15,31 @@ const POLL_FALLBACK_MS = 8000;
 // submissions (re-fetches the view whenever one lands), and a polling fallback in
 // case the realtime socket drops — matches the doc's "realtime, polling every 5-10s
 // as acceptable fallback" guidance.
-export function useLeaderboard(mode: LeaderboardMode, limit = 10) {
+export function useLeaderboard(mode: LeaderboardMode, limit: number | null = 10) {
   const [rows, setRows] = useState<LeaderboardRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const fetching = useRef(false);
   const [supabase] = useState(() => createClient());
 
   const refetch = useCallback(async () => {
+    if (fetching.current) return;
+    fetching.current = true;
+    try {
     const view = mode === "individual" ? "leaderboard_individual" : "leaderboard_group";
-    const { data } = await supabase
-      .from(view)
-      .select("*")
-      .order("total_points", { ascending: false })
-      .limit(limit);
-
-    if (!data) return;
+    // Fetch every page for the full board, including beyond Supabase's row cap.
+    // The homepage keeps its existing five-player preview via a numeric limit.
+    const data: (LeaderboardIndividualRow | LeaderboardGroupRow)[] = [];
+    const batchSize = 500;
+    for (let offset = 0; ; offset += batchSize) {
+      const query = supabase.from(view).select("*")
+        .order("total_points", { ascending: false })
+        .order(mode === "individual" ? "user_id" : "group_id", { ascending: true });
+      const result = await (limit === null ? query.range(offset, offset + batchSize - 1) : query.limit(limit));
+      if (result.error || !result.data) throw new Error("Leaderboard unavailable");
+      data.push(...result.data);
+      if (limit !== null || result.data.length < batchSize) break;
+    }
 
     const normalized: LeaderboardRow[] =
       mode === "individual"
@@ -44,7 +55,12 @@ export function useLeaderboard(mode: LeaderboardMode, limit = 10) {
           }));
 
     setRows(normalized);
+    setError(false);
+    } catch { setError(true); }
+    finally {
     setLoading(false);
+    fetching.current = false;
+    }
   }, [mode, limit, supabase]);
 
   useEffect(() => {
@@ -71,5 +87,5 @@ export function useLeaderboard(mode: LeaderboardMode, limit = 10) {
     };
   }, [refetch, supabase]);
 
-  return { rows, loading };
+  return { rows, loading, error };
 }

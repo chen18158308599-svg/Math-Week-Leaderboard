@@ -10,7 +10,12 @@ const POINT_GUIDES = [
   { title: "Take a committee challenge", summary: "Complete a challenge; explain it for a bonus.", image: "/directory/committee.svg", steps: ["Visit a staffed committee booth and complete a challenge.", "Ask staff to check your result. Scan the completion QR for 10 points.", "Explain your solution to staff for 20 points total. If you already claimed 10, scan the explanation QR to add the other 10."] },
 ];
 export function LeaderboardView() {
-  const { rows, loading } = useLeaderboard("individual", 20);
+  const { rows, loading, error } = useLeaderboard("individual", null);
+  const [requestedPage, setPage] = useState(1);
+  const pageCount = Math.max(1, Math.ceil(rows.length / 10));
+  const page = Math.min(requestedPage, pageCount);
+  const offset = (page - 1) * 10;
+  const visibleRows = rows.slice(offset, offset + 10);
   const [selectedGuide, setSelectedGuide] = useState<(typeof POINT_GUIDES)[number] | null>(null);
   const guideDialog = useRef<HTMLDialogElement>(null);
   const guideOpener = useRef<HTMLButtonElement | null>(null);
@@ -27,9 +32,10 @@ export function LeaderboardView() {
         </h1>
         <p>
           Students are ranked by total activity points. Scores update
-          automatically as points are recorded.
+          automatically as points are recorded. View 10 students per page; use the arrows to see more rankings.
         </p>
       </div>
+      {error && <p role="alert">Scores could not be refreshed. Retrying automatically…</p>}
       <div className="leaderboard-layout">
         <section className="ranking-board" aria-label="Individual rankings">
           <div className="ranking-heading">
@@ -47,13 +53,13 @@ export function LeaderboardView() {
               </p>
             </div>
           ) : (
-            rows.map((row, i) => (
+            visibleRows.map((row, i) => (
               <div
-                className={"ranking-row " + (i < 3 ? "ranking-top" : "")}
+                className={"ranking-row " + (offset + i < 3 ? "ranking-top" : "")}
                 key={row.key}
               >
                 <span className="rank-number">
-                  {String(i + 1).padStart(2, "0")}
+                  {String(offset + i + 1).padStart(2, "0")}
                 </span>
                 <span className="ranking-avatar" aria-hidden="true">
                   {row.label.slice(0, 1).toUpperCase()}
@@ -66,6 +72,11 @@ export function LeaderboardView() {
               </div>
             ))
           )}
+          {!loading && rows.length > 0 && <nav className={styles.pagination} aria-label="Leaderboard pages">
+            <button type="button" disabled={page === 1} onClick={() => setPage(page - 1)}>← Previous</button>
+            <span role="status" aria-live="polite">Page {page} of {pageCount}<small>Ranks {offset + 1}–{Math.min(offset + 10, rows.length)} · {rows.length} students</small></span>
+            <button type="button" disabled={page === pageCount} onClick={() => setPage(page + 1)}>Next →</button>
+          </nav>}
         </section>
         <aside className={styles.guide} aria-label="Points guide and awards">
           <section aria-labelledby="points-guide-title">
