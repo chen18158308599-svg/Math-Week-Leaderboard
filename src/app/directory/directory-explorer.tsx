@@ -66,7 +66,7 @@ export default function DirectoryExplorer({ initialDay }: { initialDay: number }
     </section>
     <section className={styles.wayfinding}>
       <div><p className="week-eyebrow">MAKE YOUR WAY AROUND</p><h2>Less searching.<br />More discovering.</h2></div>
-      <div><article><span>01 / EXPLORE</span><h3>Follow the displays</h3><p>Find exhibition pieces and printed puzzles around the library.</p></article><article><span>02 / PLAY</span><h3>Head to Library 2F</h3><p>Find the digital and committee booths. Ask the team which challenges are available.</p></article><article><span>03 / JOIN IN</span><h3>Check your session venue</h3><p>Talks and the Rubik session: Library 1F. Movie and closing celebration: Mini Cinema.</p></article></div>
+      <div><article><span>01 / EXPLORE</span><h3>Follow the displays</h3><p>Find exhibition pieces and printed puzzles around the library.</p></article><article><span>02 / PLAY</span><h3>Head to Library 2F</h3><p>Find the digital and committee booths. Ask the team which challenges are available.</p></article><article><span>03 / JOIN IN</span><h3>Check your session venue</h3><p>Talks: Library 1F Mini Cinema. Rubik booth: Library 2F Entrance. Movie: Mini Cinema.</p></article></div>
     </section>
     <dialog ref={dialog} className={styles.dialog} aria-labelledby="directory-detail-title" onClick={e => { if (e.target === e.currentTarget) close(); }} onClose={() => opener.current?.focus()}>
       {selected && <><div className={styles.dialogPhoto}><PreviewImage card={selected} sizes="640px" /></div><div className={styles.dialogCopy}>
