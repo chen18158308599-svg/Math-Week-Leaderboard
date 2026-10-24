@@ -11,4 +11,4 @@ Production: `npm run build` then `npm start`. The build generates `public/digita
 
 After editing game source during development, run `npm run build:digital-games` and reopen the iframe. Tests: `npm run test:digital-games` and `npm run test:digital-claims`.
 
-See [migration and Supabase setup](new_instructions/same_origin_game_migration.md).
+See [migration and Supabase setup](new_instructions/arrangements/same_origin_game_migration.md).
